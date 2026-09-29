@@ -363,6 +363,18 @@
         certificationsData = certificationsResult.data || [];
         recommendationsData = recommendationsResult.data || [];
         outcomesData = outcomesResult.data || [];
+
+        // Render the public-profile contract consistently even when the profile
+        // owner is signed in. Owner RLS access may return private records, but a
+        // public profile must never count or reference a disabled section.
+        if (profile.show_experiences === false) experiencesData = [];
+        if (profile.show_projects === false) projectsData = [];
+        if (profile.show_skills === false) skillsData = [];
+        if (profile.show_organizations === false) organizationsData = [];
+        if (profile.show_certifications === false) certificationsData = [];
+        if (profile.show_recommendations === false) recommendationsData = [];
+        if (profile.show_outcomes !== true) outcomesData = [];
+
         const experienceIds = experiencesData.map(x => x.id);
         const projectIds = projectsData.map(x => x.id);
         const certificationIds = certificationsData.map(x => x.id);
