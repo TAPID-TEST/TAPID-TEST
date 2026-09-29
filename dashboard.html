@@ -31,6 +31,7 @@
 <div class="field"><label for="school">University</label><input id="school" required=""/></div>
 <div class="field"><label for="major">Major</label><input id="major" required=""/></div>
 <div class="form-grid"><div class="field"><label for="schoolYear">Year in school</label><select id="schoolYear" required=""><option value="">Select…</option><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option><option>Graduate Student</option><option>Alumni</option></select></div><div class="field"><label for="graduationYear">Graduation year</label><input id="graduationYear" max="2100" min="2000" required="" type="number"/></div></div>
+<div class="field" id="alumniSinceField" hidden><label for="alumniSince">Alumni since</label><input id="alumniSince" max="2100" min="1900" type="number"/><div class="help">Keeps your TapID useful after graduation while preserving your permanent profile URL.</div></div>
 <div class="field"><label for="bio">Short bio</label><textarea id="bio" maxlength="700"></textarea></div>
 <div class="form-actions"><button class="btn btn-primary" id="saveProfileBtn" type="submit">Save Profile</button></div>
 </form>
@@ -269,6 +270,10 @@
     const linkDialog = document.getElementById('linkDialog');
 
     usernameInput.addEventListener('input', () => { usernameInput.value = tapid.cleanUsername(usernameInput.value); });
+    document.getElementById('schoolYear').addEventListener('change', event => {
+      document.getElementById('alumniSinceField').hidden = event.target.value !== 'Alumni';
+      if (event.target.value !== 'Alumni') document.getElementById('alumniSince').value = '';
+    });
 
     function populateProfile(profile) {
       currentProfile = profile;
@@ -282,6 +287,8 @@
       document.getElementById('major').value = profile.major || '';
       document.getElementById('schoolYear').value = profile.school_year || '';
       document.getElementById('graduationYear').value = profile.graduation_year || '';
+      document.getElementById('alumniSince').value = profile.alumni_since || '';
+      document.getElementById('alumniSinceField').hidden = profile.school_year !== 'Alumni';
       document.getElementById('bio').value = profile.bio || '';
       const name = [profile.first_name, profile.last_name].filter(Boolean).join(' ') || 'Your TapID';
       document.getElementById('welcome').textContent = `${name}'s TapID`;
@@ -986,7 +993,8 @@
       const btn = document.getElementById('saveProfileBtn');
       tapid.setBusy(btn, true, 'Saving…');
       try {
-        const payload = { first_name: firstName.value.trim(), last_name: lastName.value.trim(), username: currentProfile.card_activated ? currentProfile.username : tapid.cleanUsername(usernameInput.value), school: school.value.trim(), major: major.value.trim(), school_year: schoolYear.value, graduation_year: Number(graduationYear.value), bio: bio.value.trim() || null, updated_at: new Date().toISOString() };
+        const alumniSinceValue = document.getElementById('alumniSince').value;
+        const payload = { first_name: firstName.value.trim(), last_name: lastName.value.trim(), username: currentProfile.card_activated ? currentProfile.username : tapid.cleanUsername(usernameInput.value), school: school.value.trim(), major: major.value.trim(), school_year: schoolYear.value, graduation_year: Number(graduationYear.value), alumni_since: schoolYear.value === 'Alumni' && alumniSinceValue ? Number(alumniSinceValue) : null, bio: bio.value.trim() || null, updated_at: new Date().toISOString() };
         if (payload.username.length < 3) throw new Error('Username must be at least 3 characters.');
         const { data, error } = await tapid.client.from('profiles').update(payload).eq('id', currentUser.id).select().single();
         if (error) throw error;

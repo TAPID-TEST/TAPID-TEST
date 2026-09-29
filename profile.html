@@ -393,7 +393,9 @@
 
         document.getElementById('name').textContent = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
         document.getElementById('major').textContent = profile.major || 'Major not listed';
-        document.getElementById('schoolYear').textContent = profile.school_year || 'Year not listed';
+        document.getElementById('schoolYear').textContent = profile.school_year === 'Alumni' && profile.alumni_since
+          ? `Alumni since ${profile.alumni_since}`
+          : (profile.school_year || 'Year not listed');
         document.getElementById('school').textContent = profile.school || 'University not listed';
         document.getElementById('gradYear').textContent = profile.graduation_year ? `Class of ${profile.graduation_year}` : 'Graduation year not listed';
         const bio = document.getElementById('bio'); bio.textContent = profile.bio || ''; bio.hidden = !profile.bio;

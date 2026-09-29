@@ -78,6 +78,11 @@ const statusLabel=v=>({connected:'Connected',follow_up:'Follow Up',interview:'In
 const dateLabel=v=>v?new Date(v).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'';
 async function requireEmployer(){user=await tapid.requireUser();if(!user)return false;const rr=await tapid.client.from('employer_recruiters').select('*').eq('user_id',user.id).maybeSingle();if(rr.error)throw rr.error;if(!rr.data){location.replace('employer-login.html');return false;}recruiter=rr.data;const cr=await tapid.client.from('companies').select('*').eq('id',recruiter.company_id).maybeSingle();if(cr.error)throw cr.error;company=cr.data;return true;}
 async function loadConnectionRequests(){
+  if(recruiter.verification_status!=='verified'){
+    connectionRequests=[];
+    renderConnectionRequests();
+    return;
+  }
   const result=await tapid.client.rpc('employer_request_inbox'); if(result.error)throw result.error;
   connectionRequests=result.data||[];
   renderConnectionRequests();
