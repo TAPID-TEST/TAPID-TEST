@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Employer Portal — TapID</title><link rel="stylesheet" href="styles.css">
+</head>
+<body class="employer-dashboard-page">
+<header class="shell topbar employer-topbar">
+  <a class="brand" href="index.html">Tap<span>ID</span></a>
+  <div class="employer-topbar-label">Employer Portal</div>
+  <div class="nav-actions"><button id="logoutBtn" class="btn btn-secondary employer-logout" type="button">Log Out</button></div>
+</header>
+<main class="shell employer-page">
+  <section class="employer-hero employer-hero-refresh">
+    <div class="employer-hero-copy">
+      <div class="eyebrow">Candidate connections</div>
+      <h1 id="companyName">Your candidates</h1>
+      <p class="subtle">Everyone your company has connected with through TapID, in one place.</p>
+      <span id="verificationBadge" class="badge off">VERIFICATION PENDING</span>
+    </div>
+    <div class="metric-card employer-metric-card"><strong id="candidateCount">0</strong><span>Connections</span></div>
+  </section>
+
+  <section class="card employer-event-card employer-panel">
+    <div class="section-head"><div><h2>Official Career Fairs</h2><p class="subtle">Register for a university event. After approval, set it as your current event before tapping student cards.</p></div></div>
+    <div class="event-setting"><select id="currentEvent"><option value="">Select a published career fair…</option></select><button id="registerEventBtn" class="btn btn-secondary" type="button">Request Registration</button><button id="saveEventBtn" class="btn btn-primary" type="button">Set Current Event</button></div>
+    <div id="eventMessage" class="message" hidden></div>
+  </section>
+
+  <section class="card employer-panel employer-request-panel">
+    <div class="section-head"><div><div class="eyebrow">Student interest</div><h2>Connection Requests</h2><p class="subtle">Students who missed your booth can send their public TapID for review. Your contact information stays private until you accept.</p></div><span id="requestBadge" class="badge">0</span></div>
+    <div id="requestEmpty" class="empty-state compact"><h3>No pending requests.</h3><p class="subtle">New career-fair requests will appear here.</p></div>
+    <div id="employerRequestList" class="employer-request-list"></div>
+  </section>
+
+<section class="card employer-panel employer-candidates-panel">
+    <div class="section-head"><div><h2>Connected Students</h2><p class="subtle">Students you connect with in person or accept from a career-fair request appear here.</p></div><span id="connectionBadge" class="badge">0</span></div>
+    <div class="candidate-toolbar recruiter-toolbar">
+      <div class="candidate-search-wrap"><span class="candidate-search-icon" aria-hidden="true">⌕</span><input id="candidateSearch" type="search" placeholder="Search name, major, school, event, or skill"></div>
+      <select id="majorFilter" aria-label="Filter candidates by major"><option value="">All majors</option></select>
+      <select id="yearFilter" aria-label="Filter candidates by school year"><option value="">All years</option></select>
+      <select id="eventFilter" aria-label="Filter candidates by event"><option value="">All events</option></select>
+      <select id="statusFilter" aria-label="Filter candidates by status"><option value="">All statuses</option><option value="connected">Connected</option><option value="follow_up">Follow Up</option><option value="interview">Interview</option><option value="offer">Offer</option><option value="passed">Passed</option></select>
+    </div>
+    <div class="candidate-results-bar"><span id="candidateResultCount">0 candidates</span><button id="clearCandidateFilters" class="text-button" type="button">Clear filters</button></div>
+    <div id="empty" class="empty-state"><h3>No candidates yet.</h3><p class="subtle">Your saved students will appear here after your first TapID connection.</p></div>
+    <div id="candidateList" class="candidate-list"></div>
+  </section>
+</main>
+
+<dialog id="employerRequestDialog" class="dialog-card dialog-wide">
+  <div class="section-head"><div><div class="eyebrow">Connection request</div><h2 id="requestStudentName">Student</h2><p id="requestStudentMeta" class="subtle"></p></div><button id="closeEmployerRequest" class="icon-btn" type="button">×</button></div>
+  <div class="request-message-card"><span class="eyebrow">Student message</span><p id="requestStudentMessage"></p></div>
+  <div class="candidate-actions"><a id="requestProfileBtn" class="btn btn-secondary" target="_blank" rel="noopener">View Public TapID</a></div>
+  <p class="subtle">Accepting creates a mutual TapID connection. The student will then receive your recruiter contact information and appear in Connected Students.</p>
+  <div id="employerRequestMessage" class="message" hidden></div>
+  <div class="dialog-actions"><button id="acceptEmployerRequest" class="btn btn-primary" type="button">Accept Connection</button><button id="declineEmployerRequest" class="btn btn-secondary" type="button">Decline</button></div>
+</dialog>
+
+<dialog id="candidateDialog" class="dialog-card dialog-wide">
+  <div class="section-head"><div><div class="eyebrow">Candidate</div><h2 id="candidateName">Student</h2><p id="candidateMeta" class="subtle"></p></div><button id="closeCandidate" class="icon-btn" type="button">×</button></div>
+  <div id="candidateBio" class="candidate-bio" hidden></div><div id="candidateSkills" class="candidate-skill-strip" hidden></div>
+  <div class="candidate-actions"><a id="viewProfileBtn" class="btn btn-primary" target="_blank" rel="noopener">View Full TapID Profile</a><a id="viewResumeBtn" class="btn btn-secondary" target="_blank" rel="noopener" hidden>View Résumé</a></div>
+  <div class="form-grid employer-edit-grid">
+    <div class="field"><label for="candidateStatus">Candidate status</label><select id="candidateStatus"><option value="connected">Connected</option><option value="follow_up">Follow Up</option><option value="interview">Interview</option><option value="offer">Offer</option><option value="passed">Passed</option></select></div>
+    <div class="field"><label>Event</label><div id="candidateEvent" class="static-field">—</div></div>
+  </div>
+  <div class="field"><label for="candidateNotes">Private recruiter notes</label><textarea id="candidateNotes" maxlength="2000" placeholder="What should your team remember about this student?"></textarea><div class="help">Visible only to recruiters at your company.</div></div>
+  <div id="candidateMessage" class="message" hidden></div>
+  <div class="form-actions"><button id="saveCandidateBtn" class="btn btn-primary" type="button">Save Candidate Details</button></div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script>
+<script>
+let user,recruiter,company,connections=[],profiles=new Map(),resumes=new Map(),skills=new Map(),selected=null,connectionRequests=[],selectedRequest=null,careerFairs=[],fairRegistrations=[];
+const esc=v=>String(v||'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+const statusLabel=v=>({connected:'Connected',follow_up:'Follow Up',interview:'Interview',offer:'Offer',passed:'Passed'}[v]||'Connected');
+const dateLabel=v=>v?new Date(v).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'';
+async function requireEmployer(){user=await tapid.requireUser();if(!user)return false;const rr=await tapid.client.from('employer_recruiters').select('*').eq('user_id',user.id).maybeSingle();if(rr.error)throw rr.error;if(!rr.data){location.replace('employer-login.html');return false;}recruiter=rr.data;const cr=await tapid.client.from('companies').select('*').eq('id',recruiter.company_id).maybeSingle();if(cr.error)throw cr.error;company=cr.data;return true;}
+async function loadConnectionRequests(){
+  const result=await tapid.client.rpc('employer_request_inbox'); if(result.error)throw result.error;
+  connectionRequests=result.data||[];
+  renderConnectionRequests();
+}
+async function loadCareerFairs(){const [fr,rr]=await Promise.all([tapid.client.from('career_fairs').select('*').eq('is_published',true).order('starts_at'),tapid.client.from('career_fair_employers').select('*').eq('company_id',recruiter.company_id)]);if(fr.error)throw fr.error;if(rr.error)throw rr.error;careerFairs=fr.data||[];fairRegistrations=rr.data||[];const select=document.getElementById('currentEvent');select.innerHTML='<option value="">Select a published career fair…</option>'+careerFairs.map(f=>{const reg=fairRegistrations.find(r=>r.career_fair_id===f.id);const suffix=reg?` — ${reg.status}`:'';return `<option value="${f.id}">${esc(f.name+suffix)}</option>`;}).join('');const active=careerFairs.find(f=>f.name===recruiter.current_event_name);if(active)select.value=String(active.id);}
+async function registerForEvent(){const id=Number(document.getElementById('currentEvent').value);if(!id)return tapid.setMessage(document.getElementById('eventMessage'),'Select an event first.','error');const r=await tapid.client.rpc('register_company_for_fair',{p_career_fair_id:id});if(r.error)return tapid.setMessage(document.getElementById('eventMessage'),r.error.message,'error');await loadCareerFairs();tapid.setMessage(document.getElementById('eventMessage'),'Registration requested. The university must approve it before students see your company.','success');}
+function renderConnectionRequests(){
+  const root=document.getElementById('employerRequestList'), empty=document.getElementById('requestEmpty'), badge=document.getElementById('requestBadge');
+  root.innerHTML=''; badge.textContent=connectionRequests.length; empty.hidden=connectionRequests.length>0;
+  connectionRequests.forEach(r=>{
+    const name=[r.first_name,r.last_name].filter(Boolean).join(' ')||'Student';
+    const item=document.createElement('button'); item.type='button'; item.className='employer-request-item';
+    item.innerHTML=`<span class="connection-avatar">${esc(name.charAt(0).toUpperCase())}</span><span class="editable-copy"><strong>${esc(name)}</strong><small>${esc([r.major,r.school_year,r.school].filter(Boolean).join(' · '))}</small><small>${esc(r.event_name)} · ${esc(dateLabel(r.requested_at))}</small></span><span class="request-status request-pending">Review</span>`;
+    item.addEventListener('click',()=>openConnectionRequest(r)); root.appendChild(item);
+  });
+}
+function openConnectionRequest(r){
+  selectedRequest=r; const name=[r.first_name,r.last_name].filter(Boolean).join(' ')||'Student';
+  document.getElementById('requestStudentName').textContent=name;
+  document.getElementById('requestStudentMeta').textContent=[r.major,r.school_year,r.school,r.graduation_year?`Class of ${r.graduation_year}`:null].filter(Boolean).join(' · ');
+  document.getElementById('requestStudentMessage').textContent=r.message;
+  const profileBtn=document.getElementById('requestProfileBtn'); profileBtn.href=tapid.profileUrl(r.username);
+  tapid.setMessage(document.getElementById('employerRequestMessage'),'');
+  document.getElementById('employerRequestDialog').showModal();
+}
+async function respondToRequest(accept){
+  if(!selectedRequest)return;
+  const acceptBtn=document.getElementById('acceptEmployerRequest'), declineBtn=document.getElementById('declineEmployerRequest'), msg=document.getElementById('employerRequestMessage');
+  tapid.setBusy(accept?acceptBtn:declineBtn,true,accept?'Connecting…':'Declining…');
+  try{
+    const result=await tapid.client.rpc('respond_employer_connection_request',{p_request_id:selectedRequest.request_id,p_accept:accept});
+    if(result.error)throw result.error;
+    tapid.setMessage(msg,accept?'Connection accepted. The student is now in Connected Students.':'Request declined.','success');
+    await Promise.all([loadConnectionRequests(),loadCandidates()]);
+    setTimeout(()=>document.getElementById('employerRequestDialog').close(),850);
+  }catch(error){tapid.setMessage(msg,error.message,'error');}
+  finally{tapid.setBusy(accept?acceptBtn:declineBtn,false);}
+}
+
+async function loadCandidates(){
+  const result=await tapid.client.from('employer_connections').select('*').eq('company_id',recruiter.company_id).order('connected_at',{ascending:false}); if(result.error)throw result.error; connections=result.data||[];
+  const ids=[...new Set(connections.map(x=>x.student_user_id))]; profiles=new Map(); resumes=new Map(); skills=new Map();
+  if(ids.length){const [pr,rr,sr]=await Promise.all([tapid.client.from('profiles').select('id,username,first_name,last_name,school,major,school_year,graduation_year,bio').in('id',ids),tapid.client.from('resumes').select('user_id,file_path,file_url').in('user_id',ids),tapid.client.from('skills').select('user_id,name,is_public').in('user_id',ids).eq('is_public',true)]);if(pr.error)throw pr.error;if(rr.error)throw rr.error;if(sr.error)throw sr.error;(pr.data||[]).forEach(x=>profiles.set(x.id,x));await Promise.all((rr.data||[]).map(async x=>{if(x.file_path)x.file_url=await tapid.signedFileUrl('resumes',x.file_path);resumes.set(x.user_id,x);}));(sr.data||[]).forEach(x=>{const a=skills.get(x.user_id)||[];a.push(x.name);skills.set(x.user_id,a);});}
+  render();
+}
+function render(){
+  document.getElementById('candidateCount').textContent=connections.length;document.getElementById('connectionBadge').textContent=connections.length;
+  const fill=(id,values,label)=>{const el=document.getElementById(id),old=el.value;el.innerHTML=`<option value="">${label}</option>`+values.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');el.value=values.includes(old)?old:'';};
+  fill('eventFilter',[...new Set(connections.map(x=>x.event_name).filter(Boolean))].sort(),'All events');
+  fill('majorFilter',[...new Set([...profiles.values()].map(x=>x.major).filter(Boolean))].sort(),'All majors');
+  fill('yearFilter',[...new Set([...profiles.values()].map(x=>x.school_year).filter(Boolean))].sort(),'All years');
+  renderList();
+}
+function renderList(){
+  const q=document.getElementById('candidateSearch').value.trim().toLowerCase(), event=document.getElementById('eventFilter').value, major=document.getElementById('majorFilter').value, year=document.getElementById('yearFilter').value,status=document.getElementById('statusFilter').value;
+  const list=document.getElementById('candidateList');list.innerHTML='';
+  const shown=connections.filter(c=>{const p=profiles.get(c.student_user_id), sk=skills.get(c.student_user_id)||[];const hay=[p?.first_name,p?.last_name,p?.major,p?.school,p?.school_year,c.event_name,...sk].join(' ').toLowerCase();return(!q||hay.includes(q))&&(!event||c.event_name===event)&&(!major||p?.major===major)&&(!year||p?.school_year===year)&&(!status||c.candidate_status===status);});
+  const count=document.getElementById('candidateResultCount'); if(count) count.textContent=`${shown.length} ${shown.length===1?'candidate':'candidates'}`;
+  document.getElementById('empty').hidden=connections.length>0;
+  if(connections.length&&shown.length===0) list.innerHTML='<div class="empty-state compact"><h3>No matches.</h3><p class="subtle">Try clearing a filter or searching a broader term.</p></div>';
+  shown.forEach(c=>{const p=profiles.get(c.student_user_id), name=p?[p.first_name,p.last_name].filter(Boolean).join(' '):'Profile unavailable', meta=[p?.major,p?.school_year,p?.school].filter(Boolean).join(' · '), sk=(skills.get(c.student_user_id)||[]).slice(0,3);const b=document.createElement('button');b.type='button';b.className='candidate-item recruiter-candidate-item';b.innerHTML=`<span class="connection-avatar">${esc(name.charAt(0).toUpperCase()||'?')}</span><span class="editable-copy"><strong>${esc(name)}</strong><small>${esc(meta||'TapID candidate')}</small>${sk.length?`<span class="candidate-mini-skills">${sk.map(x=>`<span>${esc(x)}</span>`).join('')}</span>`:''}<small>${esc(c.event_name||'Connection')} · ${esc(dateLabel(c.connected_at))}</small></span><span class="candidate-status status-${esc(c.candidate_status)}">${esc(statusLabel(c.candidate_status))}</span>`;b.addEventListener('click',()=>openCandidate(c));list.appendChild(b);});
+}
+function openCandidate(c){selected=c;const p=profiles.get(c.student_user_id), name=p?[p.first_name,p.last_name].filter(Boolean).join(' '):'Profile unavailable';document.getElementById('candidateName').textContent=name;document.getElementById('candidateMeta').textContent=[p?.major,p?.school_year,p?.school,p?.graduation_year?`Class of ${p.graduation_year}`:null].filter(Boolean).join(' · ');const bio=document.getElementById('candidateBio');bio.textContent=p?.bio||'';bio.hidden=!p?.bio;const skillBox=document.getElementById('candidateSkills'), candidateSkillNames=skills.get(c.student_user_id)||[];skillBox.innerHTML=candidateSkillNames.slice(0,8).map(x=>`<span>${esc(x)}</span>`).join('');skillBox.hidden=!candidateSkillNames.length;const view=document.getElementById('viewProfileBtn');if(p?.username){view.href=tapid.profileUrl(p.username);view.hidden=false}else view.hidden=true;const resume=resumes.get(c.student_user_id), rb=document.getElementById('viewResumeBtn');if(resume?.file_url){rb.href=resume.file_url;rb.hidden=false}else rb.hidden=true;document.getElementById('candidateStatus').value=c.candidate_status||'connected';document.getElementById('candidateEvent').textContent=c.event_name||'No event tagged';document.getElementById('candidateNotes').value=c.private_notes||'';tapid.setMessage(document.getElementById('candidateMessage'),'');document.getElementById('candidateDialog').showModal();}
+async function saveCandidate(){if(!selected)return;const btn=document.getElementById('saveCandidateBtn'),msg=document.getElementById('candidateMessage');tapid.setBusy(btn,true,'Saving…');try{const patch={candidate_status:document.getElementById('candidateStatus').value,private_notes:document.getElementById('candidateNotes').value.trim()||null,updated_at:new Date().toISOString()};const r=await tapid.client.from('employer_connections').update(patch).eq('id',selected.id);if(r.error)throw r.error;Object.assign(selected,patch);tapid.setMessage(msg,'Saved.','success');renderList();}catch(e){tapid.setMessage(msg,e.message,'error');}finally{tapid.setBusy(btn,false);}}
+async function saveEvent(){const btn=document.getElementById('saveEventBtn'),msg=document.getElementById('eventMessage'),id=Number(document.getElementById('currentEvent').value),fair=careerFairs.find(f=>f.id===id),reg=fairRegistrations.find(r=>r.career_fair_id===id);if(!fair||reg?.status!=='approved')return tapid.setMessage(msg,'The university must approve your registration before you can set this event.','error');tapid.setBusy(btn,true,'Saving…');try{const r=await tapid.client.from('employer_recruiters').update({current_event_name:fair.name,updated_at:new Date().toISOString()}).eq('user_id',user.id);if(r.error)throw r.error;recruiter.current_event_name=fair.name;tapid.setMessage(msg,`Current event set to “${fair.name}”. New connections will be tagged automatically.`,'success');}catch(e){tapid.setMessage(msg,e.message,'error');}finally{tapid.setBusy(btn,false);}}
+async function init(){try{if(!(await requireEmployer()))return;document.getElementById('companyName').textContent=company?.name||'Your candidates';const vb=document.getElementById('verificationBadge');vb.textContent=(recruiter.verification_status||'pending').toUpperCase();vb.className=recruiter.verification_status==='verified'?'badge':'badge off';await Promise.all([loadCandidates(),loadConnectionRequests(),loadCareerFairs()]);}catch(e){console.error(e);alert(e.message||'Could not load employer portal.');}}
+document.getElementById('acceptEmployerRequest').addEventListener('click',()=>respondToRequest(true));
+document.getElementById('declineEmployerRequest').addEventListener('click',()=>respondToRequest(false));
+document.getElementById('closeEmployerRequest').addEventListener('click',()=>document.getElementById('employerRequestDialog').close());
+document.getElementById('candidateSearch').addEventListener('input',renderList);['eventFilter','majorFilter','yearFilter','statusFilter'].forEach(id=>document.getElementById(id).addEventListener('change',renderList));document.getElementById('clearCandidateFilters').addEventListener('click',()=>{document.getElementById('candidateSearch').value='';['eventFilter','majorFilter','yearFilter','statusFilter'].forEach(id=>document.getElementById(id).value='');renderList();});document.getElementById('registerEventBtn').addEventListener('click',registerForEvent);document.getElementById('saveEventBtn').addEventListener('click',saveEvent);document.getElementById('saveCandidateBtn').addEventListener('click',saveCandidate);document.getElementById('closeCandidate').addEventListener('click',()=>document.getElementById('candidateDialog').close());document.getElementById('logoutBtn').addEventListener('click',async()=>{await tapid.client.auth.signOut();location.replace('employer-login.html');});init();
+</script>
+</body></html>

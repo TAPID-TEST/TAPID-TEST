@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Set Up Your TapID</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="onboarding-page">
+  <header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a><button id="logoutBtn" class="btn btn-secondary" type="button">Log Out</button></header>
+  <main class="auth-wrap">
+    <section class="card">
+      <div class="eyebrow">Orientation setup</div>
+      <h1>Build your professional identity.</h1>
+      <p class="subtle">Start with the basics. After this step, you’ll activate the public identity connected to your TapID card. You can keep building your profile at any time.</p>
+      <div id="message" class="message" hidden></div>
+      <form id="onboardingForm">
+        <div class="form-grid">
+          <div class="field"><label for="firstName">First name</label><input id="firstName" required></div>
+          <div class="field"><label for="lastName">Last name</label><input id="lastName" required></div>
+        </div>
+        <div class="field"><label for="username">TapID username</label><input id="username" autocapitalize="none" spellcheck="false" required></div>
+        <div class="field"><label for="school">University</label><input id="school" placeholder="Cal Poly" required></div>
+        <div class="field"><label for="major">Major</label><input id="major" placeholder="Civil Engineering" required></div>
+        <div class="form-grid">
+          <div class="field"><label for="schoolYear">Year in school</label><select id="schoolYear" required><option value="">Select…</option><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option><option>Graduate Student</option><option>Alumni</option></select></div>
+          <div class="field"><label for="graduationYear">Graduation year</label><input id="graduationYear" type="number" min="2000" max="2100" placeholder="2027" required></div>
+        </div>
+        <div class="field"><label for="bio">Short bio <span class="subtle">(optional)</span></label><textarea id="bio" maxlength="700" placeholder="A short introduction to who you are and what you're interested in."></textarea></div>
+        <div class="form-actions"><button id="saveBtn" class="btn btn-primary btn-block" type="submit">Save & Continue to Card Activation</button></div>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let currentUser;
+    const message = document.getElementById('message');
+    const saveBtn = document.getElementById('saveBtn');
+    const usernameInput = document.getElementById('username');
+
+    usernameInput.addEventListener('input', () => { usernameInput.value = tapid.cleanUsername(usernameInput.value); });
+
+    async function init() {
+      currentUser = await tapid.requireUser();
+      if (!currentUser) return;
+      try {
+        const profile = await tapid.getProfileById(currentUser.id);
+        if (!profile) throw new Error('Your TapID profile record could not be found.');
+        document.getElementById('firstName').value = profile.first_name || '';
+        document.getElementById('lastName').value = profile.last_name || '';
+        usernameInput.value = profile.username || '';
+        document.getElementById('school').value = profile.school || '';
+        document.getElementById('major').value = profile.major || '';
+        document.getElementById('schoolYear').value = profile.school_year || '';
+        document.getElementById('graduationYear').value = profile.graduation_year || '';
+        document.getElementById('bio').value = profile.bio || '';
+      } catch (error) {
+        tapid.setMessage(message, error.message, 'error');
+      }
+    }
+
+    document.getElementById('onboardingForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const username = tapid.cleanUsername(usernameInput.value);
+      if (username.length < 3) {
+        tapid.setMessage(message, 'Username must be at least 3 characters.', 'error');
+        return;
+      }
+      tapid.setBusy(saveBtn, true, 'Saving…');
+      try {
+        const payload = {
+          first_name: document.getElementById('firstName').value.trim(),
+          last_name: document.getElementById('lastName').value.trim(),
+          username,
+          school: document.getElementById('school').value.trim(),
+          major: document.getElementById('major').value.trim(),
+          school_year: document.getElementById('schoolYear').value,
+          graduation_year: Number(document.getElementById('graduationYear').value),
+          bio: document.getElementById('bio').value.trim() || null,
+          onboarding_complete: true,
+          updated_at: new Date().toISOString()
+        };
+        if (!payload.first_name || !payload.last_name || !payload.school || !payload.major || !payload.school_year || !payload.graduation_year) {
+          throw new Error('Complete all required fields.');
+        }
+        const { error } = await tapid.client.from('profiles').update(payload).eq('id', currentUser.id);
+        if (error) throw error;
+        window.location.replace('card.html');
+      } catch (error) {
+        const msg = (error.message || '').toLowerCase().includes('duplicate') ? 'That username is already taken. Choose another.' : error.message;
+        tapid.setMessage(message, msg, 'error');
+      } finally {
+        tapid.setBusy(saveBtn, false);
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await tapid.client.auth.signOut();
+      window.location.replace('login.html');
+    });
+
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TapID Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="public-profile-page">
+  <header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a></header>
+  <main class="shell public-page">
+    <div id="loading" class="card empty-state"><div class="eyebrow">TapID</div><h2>Loading profile…</h2></div>
+    <div id="unavailable" class="card empty-state" hidden><div class="eyebrow">TapID</div><h1>Profile unavailable.</h1><p class="subtle">This TapID profile could not be found or is currently inactive.</p></div>
+
+    <div id="publicContent" hidden>
+      <section class="public-hero recruiter-hero">
+        <img id="publicAvatar" class="public-avatar" alt="Profile photo" hidden>
+        <div class="eyebrow">Professional identity</div>
+        <h1 id="name"></h1>
+        <div class="public-meta"><span id="major"></span><span id="schoolYear"></span><span id="school"></span><span id="gradYear"></span></div>
+        <p id="bio" class="public-bio"></p>
+      </section>
+
+      <section class="card public-section public-connect-hub">
+        <div class="section-head"><div><div class="eyebrow">Connect</div><h2>Keep the conversation going</h2></div></div>
+        <div class="primary-action-grid">
+          <a id="resumeBtn" class="action-tile" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-file-lines"></i><span><strong>View Résumé</strong><small>Open the latest PDF</small></span></a>
+          <button id="saveContactBtn" class="action-tile" type="button"><i class="fa-solid fa-address-card"></i><span><strong>Save Contact</strong><small>Add this person to your contacts</small></span></button>
+          <button id="connectBtn" class="action-tile action-tile-gold" type="button"><i class="fa-solid fa-handshake"></i><span><strong>Connect With <span id="connectFirstName">Me</span></strong><small>Share your info back</small></span></button>
+        </div>
+        <div id="resumeUnavailable" class="availability-note" hidden>Résumé not available</div>
+        <div id="contactSection" class="compact-contact" hidden><div id="contactDetails" class="contact-details"></div></div>
+        <div id="linksSection" class="compact-links" hidden><div id="publicLinks" class="public-links"></div></div>
+      </section>
+
+      <section id="snapshotSection" class="card public-section" hidden>
+        <div class="eyebrow">Quick snapshot</div><h2>At a glance</h2>
+        <div id="snapshotGrid" class="snapshot-grid"></div>
+      </section>
+
+      <section id="featuredExperienceSection" class="card public-section feature-section" hidden>
+        <div class="eyebrow">Professional experience</div><h2>Featured Experience</h2>
+        <div id="featuredExperience"></div>
+        <button id="showAllExperiencesBtn" class="text-action" type="button">View all professional experiences</button>
+      </section>
+
+      <section id="experiencesSection" class="card public-section" hidden>
+        <div class="eyebrow">Professional experience</div><h2>All Experience</h2>
+        <div id="publicExperiences" class="public-entry-list"></div>
+      </section>
+
+      <section id="featuredProjectSection" class="card public-section feature-section" hidden>
+        <div class="eyebrow">Featured work</div><h2>Featured Project</h2>
+        <div id="featuredProject"></div>
+        <button id="showAllProjectsBtn" class="text-action" type="button">View all projects</button>
+      </section>
+
+      <section id="projectsSection" class="card public-section" hidden>
+        <div class="eyebrow">Featured work</div><h2>All Projects</h2>
+        <div id="publicProjects" class="public-entry-list"></div>
+      </section>
+
+      <section id="skillsSection" class="card public-section" hidden>
+        <div class="eyebrow">Evidence-backed abilities</div><h2>Technical &amp; Professional Skills</h2>
+        <div id="publicSkills" class="skill-grid"></div>
+      </section>
+
+      <section id="organizationsSection" class="card public-section" hidden>
+        <div class="eyebrow">Involvement</div><h2>Leadership &amp; Organizations</h2>
+        <div id="publicOrganizations" class="public-entry-list"></div>
+      </section>
+
+      <section id="certificationsSection" class="card public-section" hidden>
+        <div class="eyebrow">Credentials</div><h2>Certifications &amp; Training</h2>
+        <div id="publicCertifications" class="public-entry-list"></div>
+      </section>
+
+      <section id="recommendationsSection" class="card public-section" hidden>
+        <div class="eyebrow">Trusted perspective</div><h2>Recommendations</h2>
+        <div id="publicRecommendations" class="public-entry-list"></div>
+      </section>
+
+      <section id="outcomesSection" class="card public-section" hidden>
+        <div class="eyebrow">Professional journey</div><h2>Career Outcomes</h2>
+        <div id="publicOutcomes" class="public-entry-list"></div>
+      </section>
+
+      <footer class="public-profile-footer"><span>TapID</span><span id="lastUpdated"></span></footer>
+    </div>
+  </main>
+
+  <dialog id="connectDialog" class="dialog-card dialog-wide">
+    <form id="connectForm" method="dialog">
+      <div class="section-head"><div><div class="eyebrow">Two-way networking</div><h2 id="connectDialogTitle">Connect</h2><p class="subtle">Share only the information you want the profile owner to keep. This is voluntary and is not collected just by tapping the card.</p><p id="employerConnectContext" class="employer-connect-context" hidden></p></div><button id="closeConnectDialog" class="icon-btn" type="button" aria-label="Close">×</button></div>
+      <div class="form-grid"><div class="field"><label for="visitorName">Your name *</label><input id="visitorName" required></div><div class="field"><label for="visitorCompany">Company / organization</label><input id="visitorCompany"></div></div>
+      <div class="form-grid"><div class="field"><label for="visitorEmail">Email *</label><input id="visitorEmail" type="email" required></div><div class="field"><label for="visitorPhone">Phone</label><input id="visitorPhone" type="tel"></div></div>
+      <div class="field"><label for="visitorWhereMet">Where we met</label><input id="visitorWhereMet" placeholder="Fall Engineering Career Fair"></div>
+      <div class="field"><label for="visitorMessage">Message</label><textarea id="visitorMessage" maxlength="600" placeholder="Optional note for them to remember the conversation."></textarea></div>
+      <label class="consent-row"><input id="visitorConsent" type="checkbox" required><span>I choose to share this information with this TapID profile owner.</span></label>
+      <div id="connectMessage" class="message" hidden></div>
+      <div class="form-actions"><button id="submitConnectionBtn" class="btn btn-primary" type="submit">Share My Info</button></div>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let profileData;
+    let contactData;
+    let linksData = [];
+    let experiencesData = [];
+    let projectsData = [];
+    let mediaData = [];
+    let skillsData = [];
+    let experienceSkillsData = [];
+    let projectSkillsData = [];
+    let organizationsData = [];
+    let certificationsData = [];
+    let recommendationsData = [];
+    let outcomesData = [];
+    let employerRecruiterData = null;
+    let employerCompanyData = null;
+
+    function addContactRow(label, value, href) {
+      if (!value) return;
+      const row = document.createElement('div');
+      row.className = 'contact-row';
+      row.innerHTML = `<span>${label}</span>${href ? `<a href="${href}">${escapeHtml(value)}</a>` : `<strong>${escapeHtml(value)}</strong>`}`;
+      document.getElementById('contactDetails').appendChild(row);
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+    }
+
+    function formatDateRange(startDate, endDate, isCurrent = false) {
+      const fmt = value => {
+        if (!value) return '';
+        return new Date(`${value}T12:00:00`).toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+      };
+      const start = fmt(startDate);
+      const end = isCurrent ? 'Present' : fmt(endDate);
+      return start && end ? `${start} – ${end}` : (start || end || '');
+    }
+
+    function detailBlock(label, value) {
+      if (!value) return '';
+      return `<div class="detail-block"><h3>${escapeHtml(label)}</h3><p>${escapeHtml(value)}</p></div>`;
+    }
+
+    function mediaGallery(items) {
+      if (!items.length) return '';
+      return `<div class="public-media-grid">${items.map(item => `<a href="${escapeHtml(item.file_url)}" target="_blank" rel="noopener"><img src="${escapeHtml(item.file_url)}" alt="${escapeHtml(item.caption || 'Project media')}" loading="lazy"></a>`).join('')}</div>`;
+    }
+
+    function experienceMarkup(item, featured = false) {
+      const subtitle = [item.company, item.experience_type, formatDateRange(item.start_date, item.end_date, item.is_current), item.location].filter(Boolean).join(' · ');
+      const media = mediaData.filter(m => m.experience_id === item.id);
+      const lead = item.overview || item.work_description || item.role_description || '';
+      return `<details class="public-entry ${featured ? 'featured-entry' : ''}" ${featured ? 'open' : ''}><summary><span class="public-entry-title"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(subtitle)}</small>${featured && lead ? `<p>${escapeHtml(lead)}</p>` : ''}</span></summary><div class="public-entry-body">${detailBlock('Overview', item.overview)}${detailBlock('My Role', item.role_description)}${detailBlock('What I Actually Did', item.work_description)}${detailBlock('Problems I Helped Solve', item.problems_solved)}${detailBlock('Accomplishments', item.accomplishments)}${detailBlock('What I Learned', item.lessons_learned)}${mediaGallery(media)}</div></details>`;
+    }
+
+    function projectMarkup(item, featured = false) {
+      const subtitle = [item.course_or_org, formatDateRange(item.start_date, item.end_date), item.team_size ? `Team of ${item.team_size}` : null].filter(Boolean).join(' · ');
+      const media = mediaData.filter(m => m.project_id === item.id);
+      const lead = item.result || item.problem || item.role_description || '';
+      const external = item.external_url ? `<div class="project-external"><a class="btn btn-secondary" href="${escapeHtml(item.external_url)}" target="_blank" rel="noopener">Open Project Link ↗</a></div>` : '';
+      return `<details class="public-entry ${featured ? 'featured-entry' : ''}" ${featured ? 'open' : ''}><summary><span class="public-entry-title"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(subtitle)}</small>${featured && lead ? `<p>${escapeHtml(lead)}</p>` : ''}</span></summary><div class="public-entry-body">${detailBlock('The Problem', item.problem)}${detailBlock('My Role', item.role_description)}${detailBlock('Process', item.process)}${detailBlock('Result', item.result)}${detailBlock('What I Learned', item.lessons_learned)}${mediaGallery(media)}${external}</div></details>`;
+    }
+
+    function renderPublicExperiences() {
+      const featured = experiencesData.find(item => item.is_featured);
+      const rest = featured ? experiencesData.filter(item => item.id !== featured.id) : experiencesData;
+      const featureSection = document.getElementById('featuredExperienceSection');
+      if (featured) {
+        document.getElementById('featuredExperience').innerHTML = experienceMarkup(featured, true);
+        featureSection.hidden = false;
+      } else featureSection.hidden = true;
+      const container = document.getElementById('publicExperiences');
+      container.innerHTML = rest.map(item => experienceMarkup(item)).join('');
+      const section = document.getElementById('experiencesSection');
+      section.hidden = featured ? true : rest.length === 0;
+      const allBtn = document.getElementById('showAllExperiencesBtn');
+      allBtn.hidden = rest.length === 0;
+      allBtn.onclick = () => { section.hidden = !section.hidden; allBtn.textContent = section.hidden ? 'View all professional experiences' : 'Hide additional experiences'; };
+    }
+
+    function renderPublicProjects() {
+      const featured = projectsData.find(item => item.is_featured);
+      const rest = featured ? projectsData.filter(item => item.id !== featured.id) : projectsData;
+      const featureSection = document.getElementById('featuredProjectSection');
+      if (featured) {
+        document.getElementById('featuredProject').innerHTML = projectMarkup(featured, true);
+        featureSection.hidden = false;
+      } else featureSection.hidden = true;
+      const container = document.getElementById('publicProjects');
+      container.innerHTML = rest.map(item => projectMarkup(item)).join('');
+      const section = document.getElementById('projectsSection');
+      section.hidden = featured ? true : rest.length === 0;
+      const allBtn = document.getElementById('showAllProjectsBtn');
+      allBtn.hidden = rest.length === 0;
+      allBtn.onclick = () => { section.hidden = !section.hidden; allBtn.textContent = section.hidden ? 'View all projects' : 'Hide additional projects'; };
+    }
+
+    function renderSnapshot() {
+      const items = [
+        ['fa-briefcase', experiencesData.length, experiencesData.length === 1 ? 'Experience' : 'Experiences'],
+        ['fa-diagram-project', projectsData.length, projectsData.length === 1 ? 'Project' : 'Projects'],
+        ['fa-people-group', organizationsData.length, organizationsData.length === 1 ? 'Organization' : 'Organizations'],
+        ['fa-certificate', certificationsData.length, certificationsData.length === 1 ? 'Certification' : 'Certifications']
+      ].filter(([, count]) => count > 0);
+      const section = document.getElementById('snapshotSection');
+      if (!items.length) { section.hidden = true; return; }
+      document.getElementById('snapshotGrid').innerHTML = items.map(([icon,count,label]) => `<div class="snapshot-item"><i class="fa-solid ${icon}"></i><strong>${count}</strong><span>${label}</span></div>`).join('');
+      section.hidden = false;
+    }
+
+    function renderPublicSkills() {
+      const container = document.getElementById('publicSkills');
+      container.innerHTML = '';
+      skillsData.forEach(skill => {
+        const expIds = experienceSkillsData.filter(x => x.skill_id === skill.id).map(x => x.experience_id);
+        const projIds = projectSkillsData.filter(x => x.skill_id === skill.id).map(x => x.project_id);
+        const expItems = experiencesData.filter(x => expIds.includes(x.id));
+        const projItems = projectsData.filter(x => projIds.includes(x.id));
+        const evidence = [
+          ...expItems.map(item => `<li><span>Experience</span><strong>${escapeHtml(item.title)}</strong>${item.company ? `<small>${escapeHtml(item.company)}</small>` : ''}</li>`),
+          ...projItems.map(item => `<li><span>Project</span><strong>${escapeHtml(item.title)}</strong>${item.course_or_org ? `<small>${escapeHtml(item.course_or_org)}</small>` : ''}</li>`)
+        ];
+        const details = document.createElement('details');
+        details.className = 'skill-card';
+        details.innerHTML = `<summary><span><strong>${escapeHtml(skill.name)}</strong><small>${escapeHtml(skill.category || 'Skill')}</small></span><span class="evidence-count">${evidence.length} evidence</span></summary><div class="skill-evidence">${evidence.length ? `<p>Demonstrated in:</p><ul>${evidence.join('')}</ul>` : '<p class="subtle">Evidence has not been linked yet.</p>'}</div>`;
+        container.appendChild(details);
+      });
+      document.getElementById('skillsSection').hidden = skillsData.length === 0;
+    }
+
+    function renderPublicOrganizations() {
+      const container = document.getElementById('publicOrganizations');
+      container.innerHTML = '';
+      organizationsData.forEach(item => {
+        const details = document.createElement('details');
+        details.className = 'public-entry';
+        const subtitle = [item.role, formatDateRange(item.start_date, item.end_date, item.is_current)].filter(Boolean).join(' · ');
+        details.innerHTML = `<summary><span class="public-entry-title"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(subtitle)}</small></span></summary><div class="public-entry-body">${detailBlock('Responsibilities & Involvement', item.description)}${detailBlock('Accomplishments', item.accomplishments)}</div>`;
+        container.appendChild(details);
+      });
+      document.getElementById('organizationsSection').hidden = organizationsData.length === 0;
+    }
+
+    function renderPublicCertifications() {
+      const container = document.getElementById('publicCertifications');
+      container.innerHTML = '';
+      certificationsData.forEach(item => {
+        const details = document.createElement('details');
+        details.className = 'public-entry';
+        const issue = item.issue_date ? new Date(`${item.issue_date}T12:00:00`).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : '';
+        const subtitle = [item.issuer, issue ? `Issued ${issue}` : null].filter(Boolean).join(' · ');
+        const expiration = item.expiration_date ? new Date(`${item.expiration_date}T12:00:00`).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : '';
+        const credential = item.credential_url ? `<div class="project-external"><a class="btn btn-secondary" href="${escapeHtml(item.credential_url)}" target="_blank" rel="noopener">View Credential ↗</a></div>` : '';
+        const certificateMedia = mediaData.find(m => m.certification_id === item.id);
+        let certificateDocument = '';
+        if (certificateMedia) {
+          const isPdf = certificateMedia.media_type === 'pdf' || String(certificateMedia.file_path || '').toLowerCase().endsWith('.pdf');
+          certificateDocument = isPdf
+            ? `<div class="certificate-public-document"><span class="certificate-file-icon"><i class="fa-solid fa-file-pdf"></i></span><div><strong>Certificate document</strong><small>PDF credential evidence</small></div><a class="btn btn-secondary" href="${escapeHtml(certificateMedia.file_url)}" target="_blank" rel="noopener">View Certificate ↗</a></div>`
+            : `<div class="certificate-public-preview"><a href="${escapeHtml(certificateMedia.file_url)}" target="_blank" rel="noopener"><img src="${escapeHtml(certificateMedia.file_url)}" alt="${escapeHtml(item.name)} certificate" loading="lazy"></a><a class="btn btn-secondary" href="${escapeHtml(certificateMedia.file_url)}" target="_blank" rel="noopener">View Certificate ↗</a></div>`;
+        }
+        details.innerHTML = `<summary><span class="public-entry-title"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(subtitle)}</small></span></summary><div class="public-entry-body">${item.credential_id ? detailBlock('Credential ID', item.credential_id) : ''}${expiration ? detailBlock('Expires', expiration) : ''}${certificateDocument}${credential}</div>`;
+        container.appendChild(details);
+      });
+      document.getElementById('certificationsSection').hidden = certificationsData.length === 0;
+    }
+
+    function renderPublicRecommendations() {
+      const container=document.getElementById('publicRecommendations');
+      container.innerHTML='';
+      recommendationsData.forEach(item=>{
+        const block=document.createElement('article');block.className='public-entry';
+        const author=[item.author_name,item.author_title,item.author_organization].filter(Boolean).join(' · ');
+        block.innerHTML=`<h3>${escapeHtml(author)}</h3>${item.relationship?`<p class="subtle">${escapeHtml(item.relationship)}</p>`:''}${item.recommendation_text?`<p>${escapeHtml(item.recommendation_text)}</p>`:''}`;
+        container.appendChild(block);
+      });
+      document.getElementById('recommendationsSection').hidden=!recommendationsData.length;
+    }
+
+    function renderPublicOutcomes() {
+      const labels={interview:'Interview',internship:'Internship',offer:'Offer',accepted_offer:'Accepted Offer',job:'Job'};
+      const container=document.getElementById('publicOutcomes');container.innerHTML='';
+      outcomesData.forEach(item=>{const block=document.createElement('article');block.className='public-entry';const meta=[item.company_name,item.title,item.outcome_date?new Date(item.outcome_date+'T00:00:00').toLocaleDateString():null].filter(Boolean).join(' · ');block.innerHTML=`<div class="eyebrow">${escapeHtml(labels[item.outcome_type]||item.outcome_type)}</div><h3>${escapeHtml(meta)}</h3>${item.notes?`<p>${escapeHtml(item.notes)}</p>`:''}<small class="subtle">${item.verification_status==='verified'?'Verified outcome':'Student reported'}</small>`;container.appendChild(block);});
+      document.getElementById('outcomesSection').hidden=!outcomesData.length;
+    }
+
+    function resetConnectForm() {
+      document.getElementById('connectForm').reset();
+      const msg = document.getElementById('connectMessage');
+      msg.hidden = true;
+      msg.textContent = '';
+      msg.className = 'message';
+      document.getElementById('submitConnectionBtn').hidden = false;
+    }
+
+    function openConnectDialog() {
+      resetConnectForm();
+      const first = profileData?.first_name || 'this person';
+      document.getElementById('connectDialogTitle').textContent = `Connect With ${first}`;
+      const context = document.getElementById('employerConnectContext');
+      context.hidden = true;
+      if (employerRecruiterData) {
+        document.getElementById('visitorName').value = employerRecruiterData.recruiter_name || '';
+        document.getElementById('visitorEmail').value = employerRecruiterData.recruiter_email || '';
+        document.getElementById('visitorCompany').value = employerCompanyData?.name || '';
+        document.getElementById('visitorWhereMet').value = employerRecruiterData.current_event_name || '';
+        context.textContent = `Employer account detected${employerCompanyData?.name ? ` · ${employerCompanyData.name}` : ''}. Connecting will also save ${first} to your employer portal.`;
+        context.hidden = false;
+        document.getElementById('submitConnectionBtn').textContent = 'Connect';
+      } else {
+        document.getElementById('submitConnectionBtn').textContent = 'Share My Info';
+      }
+      document.getElementById('connectDialog').showModal();
+    }
+
+    async function init() {
+      const username = tapid.cleanUsername(new URLSearchParams(window.location.search).get('u'));
+      const loading = document.getElementById('loading');
+      const unavailable = document.getElementById('unavailable');
+      try {
+        if (!username) throw new Error('missing');
+        const profile = await tapid.getProfileByUsername(username);
+        if (!profile || profile.profile_active !== true || profile.card_activated !== true) throw new Error('unavailable');
+        profileData = profile;
+
+        const [resumeResult, contactResult, linksResult, experiencesResult, projectsResult, skillsResult, organizationsResult, certificationsResult, recommendationsResult, outcomesResult] = await Promise.all([
+          tapid.client.from('resumes').select('*').eq('user_id', profile.id).eq('is_public', true).maybeSingle(),
+          tapid.client.from('public_contacts').select('*').eq('user_id', profile.id).maybeSingle(),
+          tapid.client.from('links').select('*').eq('user_id', profile.id).eq('is_public', true).order('sort_order').order('id'),
+          tapid.client.from('experiences').select('*').eq('user_id', profile.id).eq('is_public', true).order('sort_order').order('id'),
+          tapid.client.from('projects').select('*').eq('user_id', profile.id).eq('is_public', true).order('sort_order').order('id'),
+          tapid.client.from('skills').select('*').eq('user_id', profile.id).eq('is_public', true).order('id'),
+          tapid.client.from('organizations').select('*').eq('user_id', profile.id).eq('is_public', true).order('sort_order').order('id'),
+          tapid.client.from('certifications').select('*').eq('user_id', profile.id).eq('is_public', true).order('sort_order').order('id'),
+          tapid.client.from('recommendations').select('*').eq('student_user_id',profile.id).eq('is_public',true).eq('status','submitted').order('updated_at',{ascending:false}),
+          tapid.client.from('career_outcomes').select('*').eq('student_user_id',profile.id).eq('is_public',true).order('outcome_date',{ascending:false})
+        ]);
+        if (resumeResult.error) throw resumeResult.error;
+        if (contactResult.error) throw contactResult.error;
+        if (linksResult.error) throw linksResult.error;
+        if (experiencesResult.error) throw experiencesResult.error;
+        if (projectsResult.error) throw projectsResult.error;
+        if (skillsResult.error) throw skillsResult.error;
+        if (organizationsResult.error) throw organizationsResult.error;
+        if (certificationsResult.error) throw certificationsResult.error;
+        if (recommendationsResult.error) throw recommendationsResult.error;
+        if (outcomesResult.error) throw outcomesResult.error;
+        contactData = contactResult.data;
+        linksData = linksResult.data || [];
+        experiencesData = experiencesResult.data || [];
+        projectsData = projectsResult.data || [];
+        skillsData = skillsResult.data || [];
+        organizationsData = organizationsResult.data || [];
+        certificationsData = certificationsResult.data || [];
+        recommendationsData = recommendationsResult.data || [];
+        outcomesData = outcomesResult.data || [];
+        const experienceIds = experiencesData.map(x => x.id);
+        const projectIds = projectsData.map(x => x.id);
+        const certificationIds = certificationsData.map(x => x.id);
+        let mediaQuery = tapid.client.from('media').select('*').eq('user_id', profile.id);
+        if (experienceIds.length || projectIds.length || certificationIds.length) {
+          const filters = [];
+          if (experienceIds.length) filters.push(`experience_id.in.(${experienceIds.join(',')})`);
+          if (projectIds.length) filters.push(`project_id.in.(${projectIds.join(',')})`);
+          if (certificationIds.length) filters.push(`certification_id.in.(${certificationIds.join(',')})`);
+          mediaQuery = mediaQuery.or(filters.join(','));
+          const mediaResult = await mediaQuery.order('sort_order').order('id');
+          if (mediaResult.error) throw mediaResult.error;
+          mediaData = mediaResult.data || [];
+          await Promise.all(mediaData.map(async item=>{if(item.file_path)item.file_url=await tapid.signedFileUrl('media',item.file_path);}));
+        }
+
+        const skillIds = skillsData.map(x => x.id);
+        if (skillIds.length) {
+          const [expSkillResult, projSkillResult] = await Promise.all([
+            tapid.client.from('experience_skills').select('*').in('skill_id', skillIds),
+            tapid.client.from('project_skills').select('*').in('skill_id', skillIds)
+          ]);
+          if (expSkillResult.error) throw expSkillResult.error;
+          if (projSkillResult.error) throw projSkillResult.error;
+          experienceSkillsData = expSkillResult.data || [];
+          projectSkillsData = projSkillResult.data || [];
+        }
+
+        document.getElementById('name').textContent = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+        document.getElementById('major').textContent = profile.major || 'Major not listed';
+        document.getElementById('schoolYear').textContent = profile.school_year || 'Year not listed';
+        document.getElementById('school').textContent = profile.school || 'University not listed';
+        document.getElementById('gradYear').textContent = profile.graduation_year ? `Class of ${profile.graduation_year}` : 'Graduation year not listed';
+        const bio = document.getElementById('bio'); bio.textContent = profile.bio || ''; bio.hidden = !profile.bio;
+
+        if (profile.avatar_path && profile.avatar_is_public) { const avatar=document.getElementById('publicAvatar'); avatar.src=await tapid.signedFileUrl('avatars',profile.avatar_path); avatar.hidden=false; }
+        if (resumeResult.data?.file_path) document.getElementById('resumeBtn').href = await tapid.signedFileUrl('resumes',resumeResult.data.file_path);
+        else if (resumeResult.data?.file_url) document.getElementById('resumeBtn').href = resumeResult.data.file_url;
+        else { document.getElementById('resumeBtn').hidden = true; document.getElementById('resumeUnavailable').hidden = false; }
+
+        const contactSection = document.getElementById('contactSection');
+        const location = profile.show_location === false ? '' : [contactData?.city, contactData?.state].filter(Boolean).join(', ');
+        addContactRow('Email', contactData?.email, contactData?.email ? `mailto:${contactData.email}` : null);
+        addContactRow('Phone', contactData?.phone, contactData?.phone ? `tel:${contactData.phone}` : null);
+        addContactRow('Website', contactData?.website, contactData?.website || null);
+        addContactRow('Location', location, null);
+        if (contactData && (contactData.email || contactData.phone || contactData.website || location)) contactSection.hidden = false;
+
+        if (linksData.length) {
+          const links = document.getElementById('publicLinks');
+          linksData.forEach(link => {
+            const meta = tapid.platformMeta(link.platform);
+            const a = document.createElement('a');
+            a.className = 'public-link'; a.href = link.url; a.target = '_blank'; a.rel = 'noopener';
+            a.innerHTML = `<span class="social-icon ${meta.className}"><i class="${meta.icon}"></i></span><span><strong>${escapeHtml(link.label || meta.label)}</strong><small>${escapeHtml(new URL(link.url).hostname.replace(/^www\./, ''))}</small></span><i class="fa-solid fa-arrow-up-right-from-square link-arrow"></i>`;
+            links.appendChild(a);
+          });
+          document.getElementById('linksSection').hidden = false;
+        }
+
+        if(profile.show_experiences!==false)renderPublicExperiences();
+        if(profile.show_projects!==false)renderPublicProjects();
+        if(profile.show_skills!==false)renderPublicSkills();
+        if(profile.show_organizations!==false)renderPublicOrganizations();
+        if(profile.show_certifications!==false)renderPublicCertifications();
+        if(profile.show_recommendations!==false)renderPublicRecommendations();
+        if(profile.show_outcomes===true)renderPublicOutcomes();
+        renderSnapshot();
+
+        document.getElementById('saveContactBtn').addEventListener('click', () => tapid.downloadVCard(profileData, contactData, linksData));
+        document.getElementById('connectFirstName').textContent = profile.first_name || 'Me';
+        const updated = profile.updated_at ? new Date(profile.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        document.getElementById('lastUpdated').textContent = updated ? `Profile updated ${updated}` : '';
+        document.getElementById('connectBtn').addEventListener('click', openConnectDialog);
+
+        // A signed-in recruiter uses the same Connect form as everyone else.
+        // On submit, TapID securely creates both sides of the relationship.
+        const authUser = await tapid.getUser();
+        if (authUser) {
+          const recruiterResult = await tapid.client.from('employer_recruiters').select('*').eq('user_id', authUser.id).maybeSingle();
+          if (!recruiterResult.error && recruiterResult.data) {
+            employerRecruiterData = recruiterResult.data;
+            const companyResult = await tapid.client.from('companies').select('id,name').eq('id', employerRecruiterData.company_id).maybeSingle();
+            if (!companyResult.error) employerCompanyData = companyResult.data;
+            contactSection.hidden = false;
+          }
+        }
+        loading.hidden = true;
+        document.getElementById('publicContent').hidden = false;
+        document.title = `${document.getElementById('name').textContent} — TapID`;
+      } catch (error) {
+        console.error(error);
+        loading.hidden = true;
+        unavailable.hidden = false;
+      }
+    }
+    document.getElementById('closeConnectDialog').addEventListener('click', () => document.getElementById('connectDialog').close());
+    document.getElementById('connectForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const btn = document.getElementById('submitConnectionBtn');
+      const msg = document.getElementById('connectMessage');
+      tapid.setBusy(btn, true, 'Sharing…');
+      try {
+        if (!profileData?.id) throw new Error('This profile is unavailable.');
+        if (!document.getElementById('visitorConsent').checked) throw new Error('Please confirm that you want to share your information.');
+        const name = document.getElementById('visitorName').value.trim();
+        const email = document.getElementById('visitorEmail').value.trim();
+        if (!name || !email) throw new Error('Name and email are required.');
+        if (employerRecruiterData) {
+          if (email.toLowerCase() !== String(employerRecruiterData.recruiter_email || '').toLowerCase()) {
+            throw new Error(`Use the email for your signed-in employer account: ${employerRecruiterData.recruiter_email}`);
+          }
+          const { error } = await tapid.client.rpc('connect_employer_to_student', { p_student_user_id: profileData.id });
+          if (error) throw error;
+          msg.textContent = `Connected with ${profileData.first_name || 'this student'}. They are now saved in your employer portal, and your recruiter information is saved in their Connections.`;
+        } else {
+          const payload = {
+            profile_owner_id: profileData.id,
+            visitor_name: name,
+            company: document.getElementById('visitorCompany').value.trim() || null,
+            email,
+            phone: document.getElementById('visitorPhone').value.trim() || null,
+            where_met: document.getElementById('visitorWhereMet').value.trim() || null,
+            message: document.getElementById('visitorMessage').value.trim() || null
+          };
+          const { error } = await tapid.client.from('connections').insert(payload);
+          if (error) throw error;
+          msg.textContent = `Shared with ${profileData.first_name || 'this person'}. Returning to profile…`;
+        }
+        msg.className = 'message success';
+        msg.hidden = false;
+        btn.hidden = true;
+        setTimeout(() => {
+          document.getElementById('connectDialog').close();
+          document.getElementById('connectForm').reset();
+          msg.hidden = true;
+          btn.hidden = false;
+        }, 700);
+      } catch (error) {
+        msg.textContent = error.message;
+        msg.className = 'message error';
+        msg.hidden = false;
+      } finally { tapid.setBusy(btn, false); }
+    });
+
+    init();
+  </script>
+</body>
+</html>

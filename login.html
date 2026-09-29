@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Log In — TapID</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-page">
+  <header class="auth-nav auth-shell">
+    <a class="brand auth-brand" href="index.html">Tap<span>ID</span></a>
+    <a class="auth-nav-link" href="signup.html">Create account</a>
+  </header>
+
+  <main class="auth-main auth-shell">
+    <section class="auth-panel" aria-labelledby="loginTitle">
+      <div class="auth-heading">
+        <div class="eyebrow">Welcome back</div>
+        <h1 id="loginTitle">Log in to TapID.</h1>
+        <p>Manage your profile, connections, and card from one place.</p>
+      </div>
+
+      <div id="message" class="message" hidden></div>
+
+      <form id="loginForm" class="auth-form">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+        </div>
+        <div class="form-actions auth-submit-row">
+          <button id="loginBtn" class="btn btn-primary btn-block auth-primary" type="submit">Log In</button>
+        </div>
+      </form>
+
+      <p class="auth-switch"><a href="forgot-password.html">Forgot your password?</a></p>
+
+      <p class="auth-switch">New to TapID? <a href="signup.html">Create your account</a></p>
+    </section>
+  </main>
+
+  <footer class="auth-footer auth-shell">
+    <a href="employer-login.html">Employer sign in</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script>
+    const form = document.getElementById('loginForm');
+    const message = document.getElementById('message');
+    const button = document.getElementById('loginBtn');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      tapid.setMessage(message, '');
+      tapid.setBusy(button, true, 'Logging in…');
+      try {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const { data, error } = await tapid.client.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+
+        const profile = await tapid.getProfileById(data.user.id);
+        if (!profile) throw new Error('Your TapID profile record could not be found.');
+
+        const params = new URLSearchParams(window.location.search);
+        const requested = params.get('next');
+        if (requested && requested.startsWith('/') && !requested.startsWith('//')) {
+          window.location.replace(requested);
+        } else if (tapid.onboardingComplete(profile)) {
+          window.location.replace('dashboard.html');
+        } else {
+          window.location.replace('onboarding.html');
+        }
+      } catch (error) {
+        tapid.setMessage(message, tapid.friendlyAuthError(error), 'error');
+      } finally {
+        tapid.setBusy(button, false);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Create Employer Account — TapID</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-page employer-auth-page">
+  <header class="auth-nav auth-shell">
+    <a class="brand auth-brand" href="index.html">Tap<span>ID</span></a>
+    <a class="auth-nav-link" href="employer-login.html">Log in</a>
+  </header>
+
+  <main class="auth-main auth-shell auth-main-signup">
+    <section class="auth-panel auth-panel-wide employer-auth-panel" aria-labelledby="employerSignupTitle">
+      <div class="auth-heading">
+        <div class="eyebrow">Employer portal</div>
+        <h1 id="employerSignupTitle">Create recruiter account.</h1>
+        <p>Save the students you meet and keep the context from every career fair connection.</p>
+      </div>
+
+      <div id="message" class="message" hidden></div>
+
+      <form id="form" class="auth-form" novalidate>
+        <div class="form-grid auth-name-grid">
+          <div class="field">
+            <label for="company">Company</label>
+            <input id="company" placeholder="Kiewit" required>
+          </div>
+          <div class="field">
+            <label for="name">Recruiter name</label>
+            <input id="name" autocomplete="name" placeholder="Jordan Lee" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Work email</label>
+          <input id="email" type="email" autocomplete="email" placeholder="you@company.com" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required>
+        </div>
+        <div class="form-actions auth-submit-row">
+          <button id="button" class="btn btn-primary btn-block auth-primary" type="submit">Create Employer Account</button>
+        </div>
+      </form>
+
+      <p class="auth-switch">Already have an account? <a href="employer-login.html">Log in</a></p>
+    </section>
+  </main>
+
+  <footer class="auth-footer auth-shell">
+    <a href="login.html">Student sign in</a>
+  </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script>
+  <script>
+    const form=document.getElementById('form'), message=document.getElementById('message'), button=document.getElementById('button');
+    form.addEventListener('submit', async e=>{
+      e.preventDefault(); tapid.setMessage(message,'');
+      const company=document.getElementById('company').value.trim(), name=document.getElementById('name').value.trim(), email=document.getElementById('email').value.trim(), password=document.getElementById('password').value;
+      if(!company||!name||!email||password.length<8){tapid.setMessage(message,'Complete every field and use a password of at least 8 characters.','error');return;}
+      tapid.setBusy(button,true,'Creating account…');
+      try{
+        const {data,error}=await tapid.client.auth.signUp({email,password,options:{data:{user_type:'employer',employer_company:company,recruiter_name:name}}});
+        if(error) throw error;
+        if(!data.session){tapid.setMessage(message,'Account created. Confirm your email, then use Employer Log In.','success');form.reset();return;}
+        const {error:regError}=await tapid.client.rpc('register_employer',{p_company_name:company,p_recruiter_name:name,p_recruiter_email:email});
+        if(regError) throw regError;
+        location.replace('employer-dashboard.html');
+      }catch(error){tapid.setMessage(message,tapid.friendlyAuthError(error),'error');}
+      finally{tapid.setBusy(button,false);}
+    });
+  </script>
+</body></html>

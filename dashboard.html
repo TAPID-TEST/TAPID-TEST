@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Dashboard — TapID</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet"/>
+<link href="styles.css" rel="stylesheet"/>
+</head>
+<body class="dashboard-page">
+<header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a><div class="nav-actions"><a class="btn btn-secondary" href="journey.html">Recommendations &amp; Outcomes</a><a class="btn btn-secondary" href="account.html">Account &amp; Privacy</a><button class="btn btn-secondary" id="logoutBtn" type="button">Log Out</button></div></header>
+<main class="dashboard-shell dashboard shell">
+<div class="dashboard-hero dash-head">
+<div><div class="eyebrow">Your professional workspace</div><h1 id="welcome">Your TapID</h1><p class="subtle">Keep your professional identity current as you learn, build, and connect.</p></div>
+<a class="btn btn-gold" href="#" id="publicBtn" rel="noopener" target="_blank">View Public Profile ↗</a>
+</div>
+<div class="message" hidden="" id="message"></div>
+<div class="dashboard-grid">
+<div class="dashboard-main">
+<section class="dashboard-section dashboard-home" data-section="home" id="dash-home">
+<div class="home-welcome card"><div><div class="eyebrow">Your TapID</div><h2 id="homeGreeting">Welcome back</h2><p class="subtle" id="homeStatusText">Your professional identity is ready to grow.</p></div><div class="home-status-actions"><span class="badge off" id="homeLiveBadge">PROFILE OFF</span><a class="btn btn-primary" href="#" id="homePublicBtn" rel="noopener" target="_blank">View Public Profile ↗</a></div></div>
+<div class="home-metrics"><button class="home-metric" data-jump="experience" type="button"><strong id="homeExperienceCount">0</strong><span>Experiences</span></button><button class="home-metric" data-jump="projects" type="button"><strong id="homeProjectCount">0</strong><span>Projects</span></button><button class="home-metric" data-jump="skills" type="button"><strong id="homeSkillCount">0</strong><span>Skills</span></button><button class="home-metric" data-jump="certifications" type="button"><strong id="homeCertificationCount">0</strong><span>Certifications</span></button><button class="home-metric" data-jump="connections" type="button"><strong id="summaryConnectionCount">0</strong><span>Connections</span></button></div>
+<div class="home-grid"><div class="card home-panel"><div class="section-head"><div><h2>Continue building</h2><p class="subtle">Small updates keep your TapID useful when opportunities appear.</p></div></div><div class="home-actions"><button class="home-action" data-jump="projects" type="button"><i class="fa-solid fa-diagram-project"></i><span><strong>Add or update a project</strong><small>Capture work while the details are fresh.</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="home-action" data-jump="experience" type="button"><i class="fa-solid fa-briefcase"></i><span><strong>Update your experience</strong><small>Document what you did beyond résumé bullets.</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="home-action" data-jump="resume" type="button"><i class="fa-solid fa-file-lines"></i><span><strong>Keep your résumé current</strong><small>Replace your PDF whenever it changes.</small></span><i class="fa-solid fa-chevron-right"></i></button></div></div><div class="card home-panel"><div class="section-head"><div><h2>Your network</h2><p class="subtle">People you chose to keep from real-world conversations.</p></div></div><div class="network-home"><strong id="homeConnectionBig">0</strong><span>connections</span><button class="btn btn-secondary" data-jump="connections" type="button">Open My Connections</button></div></div></div>
+</section>
+<section class="dashboard-section card" data-section="profile" hidden id="dash-profile">
+<div class="section-head"><div><h2>Basic Profile</h2><p class="subtle">Your academic and professional introduction.</p></div></div>
+<form id="profileForm">
+<div class="form-grid"><div class="field"><label for="firstName">First name</label><input id="firstName" required=""/></div><div class="field"><label for="lastName">Last name</label><input id="lastName" required=""/></div></div>
+<div class="field"><label for="username">TapID username</label><input autocapitalize="none" id="username" required="" spellcheck="false"/><div class="help" hidden="" id="usernameLockHelp">Locked after card activation so the NFC/QR URL stays permanent.</div></div>
+<div class="field"><label for="school">University</label><input id="school" required=""/></div>
+<div class="field"><label for="major">Major</label><input id="major" required=""/></div>
+<div class="form-grid"><div class="field"><label for="schoolYear">Year in school</label><select id="schoolYear" required=""><option value="">Select…</option><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option><option>Graduate Student</option><option>Alumni</option></select></div><div class="field"><label for="graduationYear">Graduation year</label><input id="graduationYear" max="2100" min="2000" required="" type="number"/></div></div>
+<div class="field"><label for="bio">Short bio</label><textarea id="bio" maxlength="700"></textarea></div>
+<div class="form-actions"><button class="btn btn-primary" id="saveProfileBtn" type="submit">Save Profile</button></div>
+</form>
+</section>
+<section class="dashboard-section card" data-section="contact" hidden="" id="dash-contact">
+<div class="section-head"><div><h2>Contact Information</h2><p class="subtle">You control exactly which details appear publicly. Save Contact uses only the information you make public.</p></div></div>
+<form id="contactForm">
+<div class="form-grid"><div class="field"><label for="contactEmail">Email</label><input id="contactEmail" type="email"/></div><div class="field"><label for="contactPhone">Phone</label><input id="contactPhone" type="tel"/></div></div>
+<div class="field"><label for="contactWebsite">Website</label><input id="contactWebsite" inputmode="url" placeholder="https://..."/></div>
+<div class="form-grid"><div class="field"><label for="contactCity">City</label><input id="contactCity"/></div><div class="field"><label for="contactState">State</label><input id="contactState"/></div></div>
+<div class="visibility-grid">
+<label class="toggle-row"><input id="showEmail" type="checkbox"/><span>Show email publicly</span></label>
+<label class="toggle-row"><input id="showPhone" type="checkbox"/><span>Show phone publicly</span></label>
+<label class="toggle-row"><input id="showWebsite" type="checkbox"/><span>Show website publicly</span></label>
+</div>
+<div class="form-actions"><button class="btn btn-primary" id="saveContactBtn" type="submit">Save Contact Info</button><button class="btn btn-danger" id="deleteContactBtn" type="button">Delete Contact Info</button></div>
+</form>
+</section>
+<section class="dashboard-section card" data-section="resume" hidden="" id="dash-resume">
+<div class="section-head"><div><h2>Résumé</h2><p class="subtle" id="resumeStatus">Checking résumé…</p></div></div>
+<input accept="application/pdf,.pdf" class="hidden-input" id="resumeFile" type="file"/>
+<div class="action-row"><button class="btn btn-primary" id="resumeActionBtn" type="button">Upload Résumé</button><button class="btn btn-danger" hidden="" id="deleteResumeBtn" type="button">Delete Résumé</button></div>
+<p class="help">PDF only. The public profile shows “Résumé not available” until one is uploaded.</p>
+</section>
+<section class="dashboard-section card" data-section="links" hidden="" id="dash-links">
+<div class="section-head"><div><h2>Professional &amp; Social Links</h2><p class="subtle">Add LinkedIn, Instagram, GitHub, a portfolio, or any other link you want to share.</p></div><button class="btn btn-secondary" id="addLinkBtn" type="button">+ Add Link</button></div>
+<div class="item-list" id="linksList"></div>
+<div class="inline-empty" id="linksEmpty">No links added yet.</div>
+</section>
+<section class="dashboard-section card" data-section="experience" hidden="" id="dash-experience">
+<div class="section-head"><div><h2>Beyond the Résumé</h2><p class="subtle">Document the context, work, problems, accomplishments, and lessons that do not fit on a one-page résumé.</p></div><button class="btn btn-secondary" id="addExperienceBtn" type="button">+ Add Experience</button></div>
+<div class="item-list" id="experiencesList"></div>
+<div class="inline-empty" id="experiencesEmpty">No experiences added yet.</div>
+</section>
+<section class="dashboard-section card" data-section="projects" hidden="" id="dash-projects">
+<div class="section-head"><div><h2>Projects</h2><p class="subtle">Turn class, club, personal, and professional work into detailed evidence of what you have done.</p></div><button class="btn btn-secondary" id="addProjectBtn" type="button">+ Add Project</button></div>
+<div class="item-list" id="projectsList"></div>
+<div class="inline-empty" id="projectsEmpty">No projects added yet.</div>
+</section>
+<section class="dashboard-section card" data-section="skills" hidden="" id="dash-skills">
+<div class="section-head"><div><h2>Skills &amp; Evidence</h2><p class="subtle">List a skill, then connect it to the experiences and projects where you actually used it.</p></div><button class="btn btn-secondary" id="addSkillBtn" type="button">+ Add Skill</button></div>
+<div class="item-list" id="skillsList"></div>
+<div class="inline-empty" id="skillsEmpty">No skills added yet.</div>
+</section>
+<section class="dashboard-section card" data-section="organizations" hidden="" id="dash-organizations">
+<div class="section-head"><div><h2>Organizations</h2><p class="subtle">Document clubs, teams, research groups, professional societies, and leadership involvement.</p></div><button class="btn btn-secondary" id="addOrganizationBtn" type="button">+ Add Organization</button></div>
+<div class="item-list" id="organizationsList"></div>
+<div class="inline-empty" id="organizationsEmpty">No organizations added yet.</div>
+</section>
+<section class="dashboard-section card" data-section="certifications" hidden="" id="dash-certifications">
+<div class="section-head"><div><h2>Certifications &amp; Training</h2><p class="subtle">Add credentials, exams, and training that strengthen your professional identity.</p></div><button class="btn btn-secondary" id="addCertificationBtn" type="button">+ Add Certification</button></div>
+<div class="item-list" id="certificationsList"></div>
+<div class="inline-empty" id="certificationsEmpty">No certifications added yet.</div>
+</section>
+<section class="dashboard-section connections-card card" data-section="connections" hidden="" id="dash-connections">
+<div class="section-head"><div><h2>My Connections</h2><p class="subtle">People who voluntarily shared their information after tapping your TapID. Connection notes are private to you.</p></div><span class="badge" id="connectionCount">0</span></div>
+<div class="connections-list" id="connectionsList"></div>
+<div class="inline-empty" id="connectionsEmpty">No connections yet. When someone uses “Connect With You” on your public profile, they will appear here.</div>
+</section>
+<section class="dashboard-section card" data-section="career-fairs" hidden id="dash-career-fairs">
+  <div class="section-head"><div><div class="eyebrow">Opportunities</div><h2>Career Fairs</h2><p class="subtle">See companies currently registered for an event. If you miss a booth, you can send your public TapID as a connection request.</p></div></div>
+  <div id="careerFairMessage" class="message" hidden></div>
+  <div id="careerFairDirectory" class="career-fair-directory"><div class="empty-state compact"><p class="subtle">Loading registered employers…</p></div></div>
+</section>
+</div>
+<aside class="status-card dashboard-sidebar card"><nav aria-label="Dashboard sections" class="dashboard-section-nav">
+<div class="sidebar-label">Overview</div><button class="dashboard-nav-item active" data-target="home" type="button"><i class="fa-solid fa-house"></i><span>Home</span></button>
+<div class="sidebar-label sidebar-group-label">Your TapID</div><button class="dashboard-nav-item" data-target="profile" type="button"><i class="fa-solid fa-user"></i><span>Profile</span></button><button class="dashboard-nav-item" data-target="contact" type="button"><i class="fa-solid fa-address-card"></i><span>Contact</span></button><button class="dashboard-nav-item" data-target="resume" type="button"><i class="fa-solid fa-file-lines"></i><span>Résumé</span></button><button class="dashboard-nav-item" data-target="links" type="button"><i class="fa-solid fa-link"></i><span>Links</span></button>
+<div class="sidebar-label sidebar-group-label">Show What You've Done</div><button class="dashboard-nav-item" data-target="experience" type="button"><i class="fa-solid fa-briefcase"></i><span>Experience</span></button><button class="dashboard-nav-item" data-target="projects" type="button"><i class="fa-solid fa-diagram-project"></i><span>Projects</span></button><button class="dashboard-nav-item" data-target="skills" type="button"><i class="fa-solid fa-screwdriver-wrench"></i><span>Skills</span></button><button class="dashboard-nav-item" data-target="organizations" type="button"><i class="fa-solid fa-people-group"></i><span>Organizations</span></button><button class="dashboard-nav-item" data-target="certifications" type="button"><i class="fa-solid fa-certificate"></i><span>Certifications</span></button>
+<div class="sidebar-label sidebar-group-label">Your Network</div><button class="dashboard-nav-item" data-target="connections" type="button"><i class="fa-solid fa-user-group"></i><span>Connections</span></button><button class="dashboard-nav-item" data-target="career-fairs" type="button"><i class="fa-solid fa-building-columns"></i><span>Career Fairs</span></button>
+</nav><div class="sidebar-divider"></div>
+<h2>Card status</h2>
+<div class="status-badges"><span class="badge off" id="cardBadge">CARD NOT ACTIVATED</span><span class="badge off" id="activeBadge">PROFILE OFF</span></div>
+<div class="profile-summary"><strong id="summaryName">Loading…</strong><span class="subtle" id="summaryMajor"></span><span class="subtle" id="summarySchool"></span><span class="subtle" id="summaryUsername"></span></div>
+<a class="btn btn-gold btn-block" href="card.html" id="manageCardBtn">Manage Card &amp; QR</a>
+<a class="btn btn-secondary btn-block" href="#" id="publicBtnSide" rel="noopener" target="_blank">View Public Profile</a>
+<div class="divider"></div>
+<label style="font-weight:800;display:block;margin-bottom:8px;">Profile availability</label>
+<p class="subtle" id="availabilityHelp" style="margin-top:0;">Activate your TapID card before making the public profile available.</p>
+<button class="btn btn-danger btn-block" id="toggleActiveBtn" type="button">Activate TapID First</button>
+</aside>
+</div>
+</main>
+<dialog id="requestEmployerDialog" class="dialog-card">
+  <div class="section-head"><div><div class="eyebrow">Connection request</div><h2 id="requestEmployerName">Employer</h2><p id="requestEmployerEvent" class="subtle"></p></div><button id="closeRequestEmployer" class="icon-btn" type="button" aria-label="Close">×</button></div>
+  <p class="subtle">The employer will receive your public TapID profile and this message. You will not receive recruiter contact information unless they accept.</p>
+  <div class="field"><label for="requestEmployerMessage">Why would you like to connect?</label><textarea id="requestEmployerMessage" maxlength="500" rows="4" placeholder="I wanted to stop by your booth but did not get a chance. I am interested in..."></textarea><small class="subtle">Keep it short and specific. Maximum 500 characters.</small></div>
+  <div id="requestEmployerMessageBox" class="message" hidden></div>
+  <div class="dialog-actions"><button id="sendEmployerRequest" class="btn btn-primary" type="button">Send Request</button><button id="cancelEmployerRequest" class="btn btn-secondary" type="button">Cancel</button></div>
+</dialog>
+
+<dialog class="dialog-card" id="linkDialog">
+<form id="linkForm" method="dialog">
+<div class="section-head"><div><h2 id="linkDialogTitle">Add Link</h2><p class="subtle">In the dashboard this item edits the link; on the public profile it opens the link.</p></div><button aria-label="Close" class="icon-btn" id="closeLinkDialog" type="button">×</button></div>
+<input id="linkId" type="hidden"/>
+<div class="field"><label for="linkPlatform">Platform</label><select id="linkPlatform" required=""><option value="linkedin">LinkedIn</option><option value="instagram">Instagram</option><option value="github">GitHub</option><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="x">X</option><option value="facebook">Facebook</option><option value="portfolio">Portfolio</option><option value="website">Website</option><option value="other">Other</option></select></div>
+<div class="field"><label for="linkLabel">Label</label><input id="linkLabel" placeholder="Optional custom label"/></div>
+<div class="field"><label for="linkUrl">URL</label><input id="linkUrl" placeholder="https://..." required="" type="url"/></div>
+<label class="toggle-row field"><input checked="" id="linkPublic" type="checkbox"/><span>Show on public profile</span></label>
+<div class="form-actions"><button class="btn btn-primary" id="saveLinkBtn" type="submit">Save Link</button><button class="btn btn-danger" hidden="" id="deleteLinkDialogBtn" type="button">Delete Link</button></div>
+</form>
+</dialog>
+<dialog class="dialog-card dialog-wide" id="experienceDialog">
+<form id="experienceForm" method="dialog">
+<div class="section-head"><div><h2 id="experienceDialogTitle">Add Experience</h2><p class="subtle">Use the fields that add context beyond your résumé. Leave anything irrelevant blank.</p></div><button aria-label="Close" class="icon-btn" id="closeExperienceDialog" type="button">×</button></div>
+<input id="experienceId" type="hidden"/>
+<div class="form-grid"><div class="field"><label for="experienceTitle">Position / title</label><input id="experienceTitle" required=""/></div><div class="field"><label for="experienceCompany">Company / organization</label><input id="experienceCompany"/></div></div>
+<div class="form-grid"><div class="field"><label for="experienceLocation">Location</label><input id="experienceLocation"/></div><div class="field"><label for="experienceType">Experience type</label><select id="experienceType"><option value="Internship">Internship</option><option value="Job">Job</option><option value="Research">Research</option><option value="Volunteer">Volunteer</option><option value="Leadership">Leadership</option><option value="Other">Other</option></select></div></div>
+<div class="form-grid"><div class="field"><label for="experienceStart">Start date</label><input id="experienceStart" type="date"/></div><div class="field"><label for="experienceEnd">End date</label><input id="experienceEnd" type="date"/></div></div>
+<label class="toggle-row field"><input id="experienceCurrent" type="checkbox"/><span>I currently hold this position</span></label>
+<div class="field"><label for="experienceOverview">Overview</label><textarea id="experienceOverview" placeholder="What was this experience or project environment?"></textarea></div>
+<div class="field"><label for="experienceRole">My role</label><textarea id="experienceRole" placeholder="What were you responsible for?"></textarea></div>
+<div class="field"><label for="experienceWork">What I actually did</label><textarea id="experienceWork" placeholder="Describe the work in more depth than résumé bullets allow."></textarea></div>
+<div class="field"><label for="experienceProblems">Problems I helped solve</label><textarea id="experienceProblems" placeholder="Specific challenges, decisions, or problems you contributed to solving."></textarea></div>
+<div class="field"><label for="experienceAccomplishments">Accomplishments</label><textarea id="experienceAccomplishments" placeholder="Results, contributions, improvements, or outcomes."></textarea></div>
+<div class="field"><label for="experienceLessons">What I learned</label><textarea id="experienceLessons" placeholder="Technical or professional lessons you took away."></textarea></div>
+<label class="toggle-row field"><input checked="" id="experiencePublic" type="checkbox"/><span>Show this experience on my public profile</span></label>
+<label class="toggle-row field feature-toggle"><input id="experienceFeatured" type="checkbox"/><span><strong>Feature this experience</strong><small>Highlights this as the first experience recruiters see. Only one experience can be featured.</small></span></label>
+<div class="field"><label for="experienceMediaFiles">Photos / visual evidence</label><input accept="image/jpeg,image/png,image/webp" id="experienceMediaFiles" multiple="" type="file"/><p class="help">JPEG, PNG, or WebP. Up to 8 images per experience, 20 MB each.</p></div>
+<div class="media-manager" id="experienceMediaExisting"></div>
+<div class="form-actions"><button class="btn btn-primary" id="saveExperienceBtn" type="submit">Save Experience</button><button class="btn btn-danger" hidden="" id="deleteExperienceBtn" type="button">Delete Experience</button></div>
+</form>
+</dialog>
+<dialog class="dialog-card dialog-wide" id="projectDialog">
+<form id="projectForm" method="dialog">
+<div class="section-head"><div><h2 id="projectDialogTitle">Add Project</h2><p class="subtle">Show the problem, your contribution, the process, and the result.</p></div><button aria-label="Close" class="icon-btn" id="closeProjectDialog" type="button">×</button></div>
+<input id="projectId" type="hidden"/>
+<div class="form-grid"><div class="field"><label for="projectTitle">Project title</label><input id="projectTitle" required=""/></div><div class="field"><label for="projectCourseOrg">Course / organization</label><input id="projectCourseOrg"/></div></div>
+<div class="form-grid"><div class="field"><label for="projectStart">Start date</label><input id="projectStart" type="date"/></div><div class="field"><label for="projectEnd">End date</label><input id="projectEnd" type="date"/></div></div>
+<div class="field"><label for="projectTeamSize">Team size</label><input id="projectTeamSize" max="1000" min="1" type="number"/></div>
+<div class="field"><label for="projectProblem">The problem</label><textarea id="projectProblem" placeholder="What were you trying to solve, design, build, research, or improve?"></textarea></div>
+<div class="field"><label for="projectRole">My role</label><textarea id="projectRole" placeholder="What did you specifically contribute?"></textarea></div>
+<div class="field"><label for="projectProcess">Process</label><textarea id="projectProcess" placeholder="How did you approach the work?"></textarea></div>
+<div class="field"><label for="projectResult">Result</label><textarea id="projectResult" placeholder="What was the outcome or final deliverable?"></textarea></div>
+<div class="field"><label for="projectLessons">What I learned</label><textarea id="projectLessons"></textarea></div>
+<div class="field"><label for="projectUrl">External project link</label><input id="projectUrl" inputmode="url" placeholder="https://..."/></div>
+<label class="toggle-row field"><input checked="" id="projectPublic" type="checkbox"/><span>Show this project on my public profile</span></label>
+<label class="toggle-row field feature-toggle"><input id="projectFeatured" type="checkbox"/><span><strong>Feature this project</strong><small>Highlights this as the first project recruiters see. Only one project can be featured.</small></span></label>
+<div class="field"><label for="projectMediaFiles">Photos / visual evidence</label><input accept="image/jpeg,image/png,image/webp" id="projectMediaFiles" multiple="" type="file"/><p class="help">JPEG, PNG, or WebP. Up to 8 images per project, 20 MB each.</p></div>
+<div class="media-manager" id="projectMediaExisting"></div>
+<div class="form-actions"><button class="btn btn-primary" id="saveProjectBtn" type="submit">Save Project</button><button class="btn btn-danger" hidden="" id="deleteProjectBtn" type="button">Delete Project</button></div>
+</form>
+</dialog>
+<dialog class="dialog-card dialog-wide" id="skillDialog">
+<form id="skillForm" method="dialog">
+<div class="section-head"><div><h2 id="skillDialogTitle">Add Skill</h2><p class="subtle">A skill is more useful when you can show where you demonstrated it.</p></div><button aria-label="Close" class="icon-btn" id="closeSkillDialog" type="button">×</button></div>
+<input id="skillId" type="hidden"/>
+<div class="form-grid"><div class="field"><label for="skillName">Skill</label><input id="skillName" placeholder="AutoCAD" required=""/></div><div class="field"><label for="skillCategory">Category</label><select id="skillCategory"><option value="Technical">Technical</option><option value="Software">Software</option><option value="Professional">Professional</option><option value="Language">Language</option><option value="Other">Other</option></select></div></div>
+<label class="toggle-row field"><input checked="" id="skillPublic" type="checkbox"/><span>Show this skill on my public profile</span></label>
+<div class="evidence-editor">
+<div><h3>Evidence from Experiences</h3><p class="help">Select the experiences where you used or demonstrated this skill.</p><div class="evidence-options" id="skillExperienceEvidence"></div></div>
+<div><h3>Evidence from Projects</h3><p class="help">Select the projects where you used or demonstrated this skill.</p><div class="evidence-options" id="skillProjectEvidence"></div></div>
+</div>
+<div class="form-actions"><button class="btn btn-primary" id="saveSkillBtn" type="submit">Save Skill</button><button class="btn btn-danger" hidden="" id="deleteSkillBtn" type="button">Delete Skill</button></div>
+</form>
+</dialog>
+<dialog class="dialog-card dialog-wide" id="organizationDialog">
+<form id="organizationForm" method="dialog">
+<div class="section-head"><div><h2 id="organizationDialogTitle">Add Organization</h2><p class="subtle">Show involvement, leadership, responsibilities, and accomplishments.</p></div><button aria-label="Close" class="icon-btn" id="closeOrganizationDialog" type="button">×</button></div>
+<input id="organizationId" type="hidden"/>
+<div class="form-grid"><div class="field"><label for="organizationName">Organization</label><input id="organizationName" required=""/></div><div class="field"><label for="organizationRole">Role</label><input id="organizationRole"/></div></div>
+<div class="form-grid"><div class="field"><label for="organizationStart">Start date</label><input id="organizationStart" type="date"/></div><div class="field"><label for="organizationEnd">End date</label><input id="organizationEnd" type="date"/></div></div>
+<label class="toggle-row field"><input id="organizationCurrent" type="checkbox"/><span>I am currently involved</span></label>
+<div class="field"><label for="organizationDescription">Description / responsibilities</label><textarea id="organizationDescription"></textarea></div>
+<div class="field"><label for="organizationAccomplishments">Accomplishments</label><textarea id="organizationAccomplishments"></textarea></div>
+<label class="toggle-row field"><input checked="" id="organizationPublic" type="checkbox"/><span>Show this organization on my public profile</span></label>
+<div class="form-actions"><button class="btn btn-primary" id="saveOrganizationBtn" type="submit">Save Organization</button><button class="btn btn-danger" hidden="" id="deleteOrganizationBtn" type="button">Delete Organization</button></div>
+</form>
+</dialog>
+<dialog class="dialog-card dialog-wide" id="certificationDialog">
+<form id="certificationForm" method="dialog">
+<div class="section-head"><div><h2 id="certificationDialogTitle">Add Certification</h2><p class="subtle">Document credentials, exams, and professional training.</p></div><button aria-label="Close" class="icon-btn" id="closeCertificationDialog" type="button">×</button></div>
+<input id="certificationId" type="hidden"/>
+<div class="form-grid"><div class="field"><label for="certificationName">Certification / training</label><input id="certificationName" required=""/></div><div class="field"><label for="certificationIssuer">Issuer</label><input id="certificationIssuer"/></div></div>
+<div class="form-grid"><div class="field"><label for="certificationIssueDate">Issue date</label><input id="certificationIssueDate" type="date"/></div><div class="field"><label for="certificationExpirationDate">Expiration date</label><input id="certificationExpirationDate" type="date"/></div></div>
+<div class="field"><label for="certificationCredentialId">Credential ID</label><input id="certificationCredentialId"/></div>
+<div class="field"><label for="certificationUrl">Credential URL</label><input id="certificationUrl" inputmode="url" placeholder="https://..."/></div>
+<div class="field"><label for="certificationDocument">Certificate document</label><input accept="image/jpeg,image/png,image/webp,application/pdf" id="certificationDocument" type="file"/><small class="subtle">Upload one signed certificate as JPG, PNG, WebP, or PDF. Uploading a new file replaces the current document.</small></div>
+<div class="media-manager" id="certificationMediaExisting"></div>
+<label class="toggle-row field"><input checked="" id="certificationPublic" type="checkbox"/><span>Show this certification on my public profile</span></label>
+<div class="form-actions"><button class="btn btn-primary" id="saveCertificationBtn" type="submit">Save Certification</button><button class="btn btn-danger" hidden="" id="deleteCertificationBtn" type="button">Delete Certification</button></div>
+</form>
+</dialog>
+<dialog class="dialog-card dialog-wide" id="connectionDialog">
+<form id="connectionForm" method="dialog">
+<div class="section-head"><div><div class="eyebrow">Private connection</div><h2 id="connectionDialogTitle">Connection</h2><p class="subtle" id="connectionDialogSubtitle"></p></div><button aria-label="Close" class="icon-btn" id="closeConnectionDialog" type="button">×</button></div>
+<input id="connectionId" type="hidden"/>
+<div class="connection-details" id="connectionDetails"></div>
+<div class="field"><label for="connectionPrivateNotes">Private notes</label><textarea id="connectionPrivateNotes" maxlength="2000" placeholder="What did you discuss? What should you follow up on? These notes are only visible to you."></textarea><p class="help">These notes never appear on your public profile.</p></div>
+<div class="form-actions"><button class="btn btn-primary" id="saveConnectionNotesBtn" type="submit">Save Private Notes</button><button class="btn btn-danger" id="deleteConnectionBtn" type="button">Delete Connection</button></div>
+</form>
+</dialog>
+<script>
+    (function () {
+      const navItems = Array.from(document.querySelectorAll('.dashboard-nav-item'));
+      const sections = Array.from(document.querySelectorAll('.dashboard-section'));
+      function showSection(name, updateHash = true) {
+        const target = sections.find(section => section.dataset.section === name) || sections[0];
+        sections.forEach(section => { section.hidden = section !== target; });
+        navItems.forEach(item => item.classList.toggle('active', item.dataset.target === target.dataset.section));
+        if (updateHash && history.replaceState) history.replaceState(null, '', '#' + target.dataset.section);
+        if (window.innerWidth < 900) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      navItems.forEach(item => item.addEventListener('click', () => showSection(item.dataset.target)));
+      document.addEventListener('click', event => { const jump = event.target.closest('[data-jump]'); if (jump) showSection(jump.dataset.jump); });
+      const initial = location.hash.replace('#', '');
+      if (initial && sections.some(section => section.dataset.section === initial)) showSection(initial, false);
+      window.addEventListener('hashchange', () => {
+        const value = location.hash.replace('#', '');
+        if (sections.some(section => section.dataset.section === value)) showSection(value, false);
+      });
+    })();
+</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+    let currentUser;
+    let currentProfile;
+    let currentContact = null;
+    let currentResume = null;
+    let currentLinks = [];
+    let currentExperiences = [];
+    let currentProjects = [];
+    let currentMedia = [];
+    let currentSkills = [];
+    let currentExperienceSkills = [];
+    let currentProjectSkills = [];
+    let currentOrganizations = [];
+    let currentCertifications = [];
+    let currentConnections = [];
+    let currentCareerFairDirectory = [];
+    let selectedEmployerRequest = null;
+
+    const message = document.getElementById('message');
+    const usernameInput = document.getElementById('username');
+    const linkDialog = document.getElementById('linkDialog');
+
+    usernameInput.addEventListener('input', () => { usernameInput.value = tapid.cleanUsername(usernameInput.value); });
+
+    function populateProfile(profile) {
+      currentProfile = profile;
+      setTimeout(updateDashboardHome, 0);
+      document.getElementById('firstName').value = profile.first_name || '';
+      document.getElementById('lastName').value = profile.last_name || '';
+      usernameInput.value = profile.username || '';
+      usernameInput.disabled = Boolean(profile.card_activated);
+      document.getElementById('usernameLockHelp').hidden = !profile.card_activated;
+      document.getElementById('school').value = profile.school || '';
+      document.getElementById('major').value = profile.major || '';
+      document.getElementById('schoolYear').value = profile.school_year || '';
+      document.getElementById('graduationYear').value = profile.graduation_year || '';
+      document.getElementById('bio').value = profile.bio || '';
+      const name = [profile.first_name, profile.last_name].filter(Boolean).join(' ') || 'Your TapID';
+      document.getElementById('welcome').textContent = `${name}'s TapID`;
+      document.getElementById('summaryName').textContent = name;
+      document.getElementById('summaryMajor').textContent = [profile.major, profile.school_year].filter(Boolean).join(' • ');
+      document.getElementById('summarySchool').textContent = profile.school || '';
+      document.getElementById('summaryUsername').textContent = `@${profile.username}`;
+      const url = tapid.profileUrl(profile.username);
+      document.getElementById('publicBtn').href = url;
+      document.getElementById('publicBtnSide').href = url;
+      const badge = document.getElementById('activeBadge');
+      const cardBadge = document.getElementById('cardBadge');
+      const toggle = document.getElementById('toggleActiveBtn');
+      const availabilityHelp = document.getElementById('availabilityHelp');
+      if (profile.card_activated) {
+        cardBadge.textContent = 'CARD ACTIVE';
+        cardBadge.className = 'badge';
+        if (profile.profile_active) {
+          badge.textContent = 'PROFILE LIVE';
+          badge.className = 'badge';
+          toggle.textContent = 'Pause Public Profile';
+          availabilityHelp.textContent = 'Your NFC/QR link is live. Pause it if the card is lost or you temporarily want the profile unavailable.';
+        } else {
+          badge.textContent = 'PROFILE PAUSED';
+          badge.className = 'badge off';
+          toggle.textContent = 'Reactivate Public Profile';
+          availabilityHelp.textContent = 'Your card is activated, but the public profile is paused. The same NFC/QR link will work again when reactivated.';
+        }
+      } else {
+        cardBadge.textContent = 'CARD NOT ACTIVATED';
+        cardBadge.className = 'badge off';
+        badge.textContent = 'PROFILE OFF';
+        badge.className = 'badge off';
+        toggle.textContent = 'Activate TapID First';
+        availabilityHelp.textContent = 'Finish card activation to make the permanent public URL and QR code live.';
+      }
+    }
+
+    function populateContact(contact) {
+      currentContact = contact;
+      document.getElementById('contactEmail').value = contact?.email || '';
+      document.getElementById('contactPhone').value = contact?.phone || '';
+      document.getElementById('contactWebsite').value = contact?.website || '';
+      document.getElementById('contactCity').value = contact?.city || '';
+      document.getElementById('contactState').value = contact?.state || '';
+      document.getElementById('showEmail').checked = Boolean(contact?.show_email);
+      document.getElementById('showPhone').checked = Boolean(contact?.show_phone);
+      document.getElementById('showWebsite').checked = contact ? Boolean(contact.show_website) : true;
+      document.getElementById('deleteContactBtn').hidden = !contact;
+    }
+
+    function populateResume(resume) {
+      currentResume = resume;
+      const status = document.getElementById('resumeStatus');
+      const action = document.getElementById('resumeActionBtn');
+      const del = document.getElementById('deleteResumeBtn');
+      if (resume?.file_url) {
+        status.textContent = `Uploaded: ${resume.file_name || 'resume.pdf'}`;
+        action.textContent = 'Replace Résumé';
+        del.hidden = false;
+      } else {
+        status.textContent = 'No résumé uploaded yet.';
+        action.textContent = 'Upload Résumé';
+        del.hidden = true;
+      }
+    }
+
+    function renderLinks() {
+      const list = document.getElementById('linksList');
+      const empty = document.getElementById('linksEmpty');
+      list.innerHTML = '';
+      empty.hidden = currentLinks.length > 0;
+      currentLinks.forEach(link => {
+        const meta = tapid.platformMeta(link.platform);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'editable-item';
+        button.innerHTML = `<span class="social-icon ${meta.className}"><i class="${meta.icon}"></i></span><span class="editable-copy"><strong>${escapeHtml(link.label || meta.label)}</strong><small>${escapeHtml(link.url)}</small></span><span class="item-state">${link.is_public ? 'Public' : 'Hidden'} · Edit</span>`;
+        button.addEventListener('click', () => openLinkDialog(link));
+        list.appendChild(button);
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+    }
+
+    function openLinkDialog(link = null) {
+      document.getElementById('linkDialogTitle').textContent = link ? `Edit ${link.label || tapid.platformMeta(link.platform).label}` : 'Add Link';
+      document.getElementById('linkId').value = link?.id || '';
+      document.getElementById('linkPlatform').value = link?.platform || 'linkedin';
+      document.getElementById('linkLabel').value = link?.label || '';
+      document.getElementById('linkUrl').value = link?.url || '';
+      document.getElementById('linkPublic').checked = link ? Boolean(link.is_public) : true;
+      document.getElementById('deleteLinkDialogBtn').hidden = !link;
+      linkDialog.showModal();
+    }
+
+    function formatDateRange(startDate, endDate, isCurrent = false) {
+      const fmt = value => {
+        if (!value) return '';
+        const date = new Date(`${value}T12:00:00`);
+        return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+      };
+      const start = fmt(startDate);
+      const end = isCurrent ? 'Present' : fmt(endDate);
+      if (start && end) return `${start} – ${end}`;
+      return start || end || 'Dates not listed';
+    }
+
+    function renderExperiences() {
+      const list = document.getElementById('experiencesList');
+      const empty = document.getElementById('experiencesEmpty');
+      list.innerHTML = '';
+      empty.hidden = currentExperiences.length > 0;
+      currentExperiences.forEach(item => {
+        const mediaCount = currentMedia.filter(m => m.experience_id === item.id).length;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'editable-item content-editable-item';
+        button.innerHTML = `<span class="content-icon"><i class="fa-solid fa-briefcase"></i></span><span class="editable-copy"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml([item.company, formatDateRange(item.start_date, item.end_date, item.is_current)].filter(Boolean).join(' · '))}</small><small>${mediaCount ? `${mediaCount} image${mediaCount === 1 ? '' : 's'}` : 'No media'}</small></span><span class="item-state">${item.is_featured ? 'Featured · ' : ''}${item.is_public ? 'Public' : 'Hidden'} · Edit</span>`;
+        button.addEventListener('click', () => openExperienceDialog(item));
+        list.appendChild(button);
+      });
+    }
+
+    function renderProjects() {
+      const list = document.getElementById('projectsList');
+      const empty = document.getElementById('projectsEmpty');
+      list.innerHTML = '';
+      empty.hidden = currentProjects.length > 0;
+      currentProjects.forEach(item => {
+        const mediaCount = currentMedia.filter(m => m.project_id === item.id).length;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'editable-item content-editable-item';
+        button.innerHTML = `<span class="content-icon"><i class="fa-solid fa-diagram-project"></i></span><span class="editable-copy"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml([item.course_or_org, formatDateRange(item.start_date, item.end_date)].filter(Boolean).join(' · '))}</small><small>${mediaCount ? `${mediaCount} image${mediaCount === 1 ? '' : 's'}` : 'No media'}</small></span><span class="item-state">${item.is_featured ? 'Featured · ' : ''}${item.is_public ? 'Public' : 'Hidden'} · Edit</span>`;
+        button.addEventListener('click', () => openProjectDialog(item));
+        list.appendChild(button);
+      });
+    }
+
+    function evidenceCount(skillId) {
+      return currentExperienceSkills.filter(x => x.skill_id === skillId).length + currentProjectSkills.filter(x => x.skill_id === skillId).length;
+    }
+
+    function renderSkills() {
+      const list = document.getElementById('skillsList');
+      const empty = document.getElementById('skillsEmpty');
+      list.innerHTML = '';
+      empty.hidden = currentSkills.length > 0;
+      currentSkills.forEach(item => {
+        const count = evidenceCount(item.id);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'editable-item content-editable-item';
+        button.innerHTML = `<span class="content-icon"><i class="fa-solid fa-bolt"></i></span><span class="editable-copy"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.category || 'Uncategorized')} · ${count} evidence link${count === 1 ? '' : 's'}</small></span><span class="item-state">${item.is_public ? 'Public' : 'Hidden'} · Edit</span>`;
+        button.addEventListener('click', () => openSkillDialog(item));
+        list.appendChild(button);
+      });
+    }
+
+    function renderOrganizations() {
+      const list = document.getElementById('organizationsList');
+      const empty = document.getElementById('organizationsEmpty');
+      list.innerHTML = '';
+      empty.hidden = currentOrganizations.length > 0;
+      currentOrganizations.forEach(item => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'editable-item content-editable-item';
+        button.innerHTML = `<span class="content-icon"><i class="fa-solid fa-people-group"></i></span><span class="editable-copy"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml([item.role, formatDateRange(item.start_date, item.end_date, item.is_current)].filter(Boolean).join(' · '))}</small></span><span class="item-state">${item.is_public ? 'Public' : 'Hidden'} · Edit</span>`;
+        button.addEventListener('click', () => openOrganizationDialog(item));
+        list.appendChild(button);
+      });
+    }
+
+    function renderCertifications() {
+      const list = document.getElementById('certificationsList');
+      const empty = document.getElementById('certificationsEmpty');
+      list.innerHTML = '';
+      empty.hidden = currentCertifications.length > 0;
+      currentCertifications.forEach(item => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'editable-item content-editable-item';
+        const issued = item.issue_date ? new Date(`${item.issue_date}T12:00:00`).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : '';
+        const hasDocument = currentMedia.some(m => m.certification_id === item.id);
+        button.innerHTML = `<span class="content-icon"><i class="fa-solid fa-certificate"></i></span><span class="editable-copy"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml([item.issuer, issued].filter(Boolean).join(' · '))}</small><small>${hasDocument ? 'Certificate document uploaded' : 'No certificate document'}</small></span><span class="item-state">${item.is_public ? 'Public' : 'Hidden'} · Edit</span>`;
+        button.addEventListener('click', () => openCertificationDialog(item));
+        list.appendChild(button);
+      });
+    }
+
+    function renderEvidenceOptions(containerId, items, type, selectedIds) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      if (!items.length) {
+        container.innerHTML = '<div class="evidence-empty">Add an experience or project first.</div>';
+        return;
+      }
+      items.forEach(item => {
+        const label = document.createElement('label');
+        label.className = 'evidence-option';
+        const checked = selectedIds.has(item.id) ? 'checked' : '';
+        const secondary = type === 'experience' ? (item.company || item.experience_type || '') : (item.course_or_org || '');
+        label.innerHTML = `<input type="checkbox" data-evidence-type="${type}" data-evidence-id="${item.id}" ${checked}><span><strong>${escapeHtml(item.title)}</strong>${secondary ? `<small>${escapeHtml(secondary)}</small>` : ''}</span>`;
+        container.appendChild(label);
+      });
+    }
+
+    function openSkillDialog(item = null) {
+      document.getElementById('skillDialogTitle').textContent = item ? 'Edit Skill' : 'Add Skill';
+      skillId.value = item?.id || '';
+      skillName.value = item?.name || '';
+      skillCategory.value = item?.category || 'Technical';
+      skillPublic.checked = item ? Boolean(item.is_public) : true;
+      const expSelected = new Set(item ? currentExperienceSkills.filter(x => x.skill_id === item.id).map(x => x.experience_id) : []);
+      const projSelected = new Set(item ? currentProjectSkills.filter(x => x.skill_id === item.id).map(x => x.project_id) : []);
+      renderEvidenceOptions('skillExperienceEvidence', currentExperiences, 'experience', expSelected);
+      renderEvidenceOptions('skillProjectEvidence', currentProjects, 'project', projSelected);
+      document.getElementById('deleteSkillBtn').hidden = !item;
+      document.getElementById('skillDialog').showModal();
+    }
+
+    function openOrganizationDialog(item = null) {
+      document.getElementById('organizationDialogTitle').textContent = item ? 'Edit Organization' : 'Add Organization';
+      organizationId.value = item?.id || '';
+      organizationName.value = item?.name || '';
+      organizationRole.value = item?.role || '';
+      organizationStart.value = item?.start_date || '';
+      organizationEnd.value = item?.end_date || '';
+      organizationCurrent.checked = Boolean(item?.is_current);
+      organizationEnd.disabled = organizationCurrent.checked;
+      organizationDescription.value = item?.description || '';
+      organizationAccomplishments.value = item?.accomplishments || '';
+      organizationPublic.checked = item ? Boolean(item.is_public) : true;
+      document.getElementById('deleteOrganizationBtn').hidden = !item;
+      document.getElementById('organizationDialog').showModal();
+    }
+
+    function openCertificationDialog(item = null) {
+      document.getElementById('certificationDialogTitle').textContent = item ? 'Edit Certification' : 'Add Certification';
+      certificationId.value = item?.id || '';
+      certificationName.value = item?.name || '';
+      certificationIssuer.value = item?.issuer || '';
+      certificationIssueDate.value = item?.issue_date || '';
+      certificationExpirationDate.value = item?.expiration_date || '';
+      certificationCredentialId.value = item?.credential_id || '';
+      certificationUrl.value = item?.credential_url || '';
+      certificationPublic.checked = item ? Boolean(item.is_public) : true;
+      resetFileInput('certificationDocument');
+      renderCertificationDocument(item?.id || null);
+      document.getElementById('deleteCertificationBtn').hidden = !item;
+      document.getElementById('certificationDialog').showModal();
+    }
+
+    function renderCertificationDocument(certificationIdValue) {
+      const container = document.getElementById('certificationMediaExisting');
+      container.innerHTML = '';
+      if (!certificationIdValue) return;
+      const media = currentMedia.find(m => m.certification_id === Number(certificationIdValue));
+      if (!media) return;
+      const label = document.createElement('div');
+      label.className = 'media-manager-title';
+      label.textContent = 'Current certificate document';
+      container.appendChild(label);
+      const item = document.createElement('div');
+      item.className = 'certificate-document-row';
+      const isPdf = media.media_type === 'pdf' || String(media.file_path || '').toLowerCase().endsWith('.pdf');
+      item.innerHTML = `${isPdf ? '<span class="certificate-file-icon"><i class="fa-solid fa-file-pdf"></i></span>' : `<img src="${escapeHtml(media.file_url)}" alt="Certificate document">`}<span class="certificate-file-copy"><strong>${isPdf ? 'PDF certificate' : 'Certificate image'}</strong><small>${escapeHtml(media.caption || 'Uploaded certificate document')}</small></span><a class="btn btn-secondary btn-small" href="${escapeHtml(media.file_url)}" target="_blank" rel="noopener">View</a><button type="button" class="btn btn-danger btn-small" id="deleteCertificationDocumentBtn">Delete file</button>`;
+      container.appendChild(item);
+      item.querySelector('#deleteCertificationDocumentBtn').addEventListener('click', async () => {
+        if (!confirm('Delete this certificate document?')) return;
+        try {
+          if (media.file_path) {
+            const { error: storageError } = await tapid.client.storage.from('media').remove([media.file_path]);
+            if (storageError) throw storageError;
+          }
+          const { error } = await tapid.client.from('media').delete().eq('id', media.id).eq('user_id', currentUser.id);
+          if (error) throw error;
+          await loadSprint3BData();
+          renderCertificationDocument(certificationIdValue);
+          renderCertifications();
+          tapid.setMessage(message, 'Certificate document deleted.', 'success');
+        } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      });
+    }
+
+    async function uploadCertificationDocument(certificationIdValue, file) {
+      if (!file) return null;
+      const allowed = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+      if (!allowed.includes(file.type)) throw new Error('Certificate document must be JPG, PNG, WebP, or PDF.');
+      if (file.size > 20 * 1024 * 1024) throw new Error('Certificate document must be 20 MB or smaller.');
+
+      const existing = currentMedia.filter(m => m.certification_id === Number(certificationIdValue));
+      const extension = file.type === 'application/pdf' ? 'pdf' : (file.name.split('.').pop() || 'jpg').toLowerCase();
+      const safeExtension = ['jpg','jpeg','png','webp','pdf'].includes(extension) ? extension : (file.type === 'application/pdf' ? 'pdf' : 'jpg');
+      const path = `${currentUser.id}/certifications/${certificationIdValue}/certificate-${Date.now()}.${safeExtension}`;
+      let uploaded = false;
+      try {
+        const { error: uploadError } = await tapid.client.storage.from('media').upload(path, file, { contentType: file.type, cacheControl: '3600', upsert: false });
+        if (uploadError) throw uploadError;
+        uploaded = true;
+        const { data: urlData } = tapid.client.storage.from('media').getPublicUrl(path);
+        const { data, error: dbError } = await tapid.client.from('media').insert({
+          user_id: currentUser.id,
+          certification_id: Number(certificationIdValue),
+          experience_id: null,
+          project_id: null,
+          file_url: urlData.publicUrl,
+          file_path: path,
+          media_type: file.type === 'application/pdf' ? 'pdf' : 'image',
+          caption: file.name,
+          sort_order: 0
+        }).select().single();
+        if (dbError) throw dbError;
+        data.file_url = await tapid.signedFileUrl('media', path);
+
+        if (existing.length) {
+          const oldPaths = existing.map(m => m.file_path).filter(Boolean);
+          if (oldPaths.length) {
+            const { error: oldStorageError } = await tapid.client.storage.from('media').remove(oldPaths);
+            if (oldStorageError) throw oldStorageError;
+          }
+          const { error: oldDbError } = await tapid.client.from('media').delete().in('id', existing.map(m => m.id)).eq('user_id', currentUser.id);
+          if (oldDbError) throw oldDbError;
+        }
+        return data;
+      } catch (error) {
+        if (uploaded) await tapid.client.storage.from('media').remove([path]);
+        throw error;
+      }
+    }
+
+    function resetFileInput(id) { document.getElementById(id).value = ''; }
+
+    function renderMediaManager(containerId, parentType, parentId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      if (!parentId) return;
+      const items = currentMedia.filter(m => parentType === 'experience' ? m.experience_id === parentId : m.project_id === parentId);
+      if (!items.length) return;
+      const label = document.createElement('div');
+      label.className = 'media-manager-title';
+      label.textContent = 'Saved media';
+      container.appendChild(label);
+      const grid = document.createElement('div');
+      grid.className = 'media-manager-grid';
+      items.forEach(media => {
+        const item = document.createElement('div');
+        item.className = 'media-manager-item';
+        item.innerHTML = `<img src="${escapeHtml(media.file_url)}" alt="${escapeHtml(media.caption || 'Uploaded media')}"><button type="button" class="media-delete" aria-label="Delete image"><i class="fa-solid fa-trash"></i></button>`;
+        item.querySelector('button').addEventListener('click', async () => {
+          if (!confirm('Delete this image?')) return;
+          try {
+            if (media.file_path) {
+              const { error: storageError } = await tapid.client.storage.from('media').remove([media.file_path]);
+              if (storageError) throw storageError;
+            }
+            const { error } = await tapid.client.from('media').delete().eq('id', media.id).eq('user_id', currentUser.id);
+            if (error) throw error;
+            await loadSprint3AData();
+            if (parentType === 'experience') renderMediaManager(containerId, parentType, parentId);
+            else renderMediaManager(containerId, parentType, parentId);
+            tapid.setMessage(message, 'Image deleted.', 'success');
+          } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+        });
+        grid.appendChild(item);
+      });
+      container.appendChild(grid);
+    }
+
+    function openExperienceDialog(item = null) {
+      document.getElementById('experienceDialogTitle').textContent = item ? 'Edit Experience' : 'Add Experience';
+      experienceId.value = item?.id || '';
+      experienceTitle.value = item?.title || '';
+      experienceCompany.value = item?.company || '';
+      experienceLocation.value = item?.location || '';
+      experienceType.value = item?.experience_type || 'Internship';
+      experienceStart.value = item?.start_date || '';
+      experienceEnd.value = item?.end_date || '';
+      experienceCurrent.checked = Boolean(item?.is_current);
+      experienceEnd.disabled = experienceCurrent.checked;
+      experienceOverview.value = item?.overview || '';
+      experienceRole.value = item?.role_description || '';
+      experienceWork.value = item?.work_description || '';
+      experienceProblems.value = item?.problems_solved || '';
+      experienceAccomplishments.value = item?.accomplishments || '';
+      experienceLessons.value = item?.lessons_learned || '';
+      experiencePublic.checked = item ? Boolean(item.is_public) : true;
+      experienceFeatured.checked = Boolean(item?.is_featured);
+      resetFileInput('experienceMediaFiles');
+      document.getElementById('deleteExperienceBtn').hidden = !item;
+      renderMediaManager('experienceMediaExisting', 'experience', item?.id || null);
+      document.getElementById('experienceDialog').showModal();
+    }
+
+    function openProjectDialog(item = null) {
+      document.getElementById('projectDialogTitle').textContent = item ? 'Edit Project' : 'Add Project';
+      projectId.value = item?.id || '';
+      projectTitle.value = item?.title || '';
+      projectCourseOrg.value = item?.course_or_org || '';
+      projectStart.value = item?.start_date || '';
+      projectEnd.value = item?.end_date || '';
+      projectTeamSize.value = item?.team_size || '';
+      projectProblem.value = item?.problem || '';
+      projectRole.value = item?.role_description || '';
+      projectProcess.value = item?.process || '';
+      projectResult.value = item?.result || '';
+      projectLessons.value = item?.lessons_learned || '';
+      projectUrl.value = item?.external_url || '';
+      projectPublic.checked = item ? Boolean(item.is_public) : true;
+      projectFeatured.checked = Boolean(item?.is_featured);
+      resetFileInput('projectMediaFiles');
+      document.getElementById('deleteProjectBtn').hidden = !item;
+      renderMediaManager('projectMediaExisting', 'project', item?.id || null);
+      document.getElementById('projectDialog').showModal();
+    }
+
+    function validateMediaFiles(files, existingCount) {
+      const list = Array.from(files || []);
+      if (existingCount + list.length > 8) throw new Error('Limit media to 8 images per experience or project.');
+      const allowed = new Set(['image/jpeg', 'image/png', 'image/webp']);
+      for (const file of list) {
+        if (!allowed.has(file.type)) throw new Error('Media must be JPEG, PNG, or WebP.');
+        if (file.size > 20 * 1024 * 1024) throw new Error(`${file.name} is larger than 20 MB.`);
+      }
+      return list;
+    }
+
+    async function uploadMediaFiles(parentType, parentId, files) {
+      const existing = currentMedia.filter(m => parentType === 'experience' ? m.experience_id === parentId : m.project_id === parentId);
+      const list = validateMediaFiles(files, existing.length);
+      const uploadedPaths = [];
+      const insertedIds = [];
+      try {
+        for (let index = 0; index < list.length; index += 1) {
+          const file = list[index];
+          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || (file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg');
+          const folder = parentType === 'experience' ? 'experiences' : 'projects';
+          const path = `${currentUser.id}/${folder}/${parentId}/${crypto.randomUUID()}.${ext}`;
+          const { error: uploadError } = await tapid.client.storage.from('media').upload(path, file, { contentType: file.type, cacheControl: '3600', upsert: false });
+          if (uploadError) throw uploadError;
+          uploadedPaths.push(path);
+          const { data: urlData } = tapid.client.storage.from('media').getPublicUrl(path);
+          const payload = {
+            user_id: currentUser.id,
+            experience_id: parentType === 'experience' ? parentId : null,
+            project_id: parentType === 'project' ? parentId : null,
+            file_url: urlData.publicUrl,
+            file_path: path,
+            media_type: 'image',
+            caption: file.name,
+            sort_order: existing.length + index
+          };
+          const { data, error: dbError } = await tapid.client.from('media').insert(payload).select('id').single();
+          if (dbError) throw dbError;
+          insertedIds.push(data.id);
+        }
+      } catch (error) {
+        if (insertedIds.length) await tapid.client.from('media').delete().in('id', insertedIds).eq('user_id', currentUser.id);
+        if (uploadedPaths.length) await tapid.client.storage.from('media').remove(uploadedPaths);
+        throw error;
+      }
+    }
+
+    async function deleteParentMedia(parentType, parentId) {
+      const items = currentMedia.filter(m => parentType === 'experience' ? m.experience_id === parentId : m.project_id === parentId);
+      const paths = items.map(m => m.file_path).filter(Boolean);
+      if (paths.length) {
+        const { error } = await tapid.client.storage.from('media').remove(paths);
+        if (error) throw error;
+      }
+    }
+
+    async function loadSprint3AData() {
+      const [experiencesResult, projectsResult, mediaResult] = await Promise.all([
+        tapid.client.from('experiences').select('*').eq('user_id', currentUser.id).order('sort_order').order('id'),
+        tapid.client.from('projects').select('*').eq('user_id', currentUser.id).order('sort_order').order('id'),
+        tapid.client.from('media').select('*').eq('user_id', currentUser.id).order('sort_order').order('id')
+      ]);
+      if (experiencesResult.error) throw experiencesResult.error;
+      if (projectsResult.error) throw projectsResult.error;
+      if (mediaResult.error) throw mediaResult.error;
+      currentExperiences = experiencesResult.data || [];
+      currentProjects = projectsResult.data || [];
+      currentMedia = mediaResult.data || [];
+      await Promise.all(currentMedia.map(async item => {
+        if (item.file_path) item.file_url = await tapid.signedFileUrl('media', item.file_path);
+      }));
+      renderExperiences();
+      renderProjects();
+    }
+
+    async function loadSprint3BData() {
+      const [skillsResult, expSkillsResult, projSkillsResult, orgsResult, certsResult] = await Promise.all([
+        tapid.client.from('skills').select('*').eq('user_id', currentUser.id).order('id'),
+        tapid.client.from('experience_skills').select('*'),
+        tapid.client.from('project_skills').select('*'),
+        tapid.client.from('organizations').select('*').eq('user_id', currentUser.id).order('sort_order').order('id'),
+        tapid.client.from('certifications').select('*').eq('user_id', currentUser.id).order('sort_order').order('id')
+      ]);
+      if (skillsResult.error) throw skillsResult.error;
+      if (expSkillsResult.error) throw expSkillsResult.error;
+      if (projSkillsResult.error) throw projSkillsResult.error;
+      if (orgsResult.error) throw orgsResult.error;
+      if (certsResult.error) throw certsResult.error;
+      currentSkills = skillsResult.data || [];
+      const ownSkillIds = new Set(currentSkills.map(x => x.id));
+      currentExperienceSkills = (expSkillsResult.data || []).filter(x => ownSkillIds.has(x.skill_id));
+      currentProjectSkills = (projSkillsResult.data || []).filter(x => ownSkillIds.has(x.skill_id));
+      currentOrganizations = orgsResult.data || [];
+      currentCertifications = certsResult.data || [];
+      renderSkills();
+      renderOrganizations();
+      renderCertifications();
+    }
+
+    function connectionDate(value) {
+      if (!value) return '';
+      return new Date(value).toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+
+    function renderConnections() {
+      const list = document.getElementById('connectionsList');
+      const empty = document.getElementById('connectionsEmpty');
+      list.innerHTML = '';
+      document.getElementById('connectionCount').textContent = String(currentConnections.length);
+      const summaryConnectionCount = document.getElementById('summaryConnectionCount');
+      if (summaryConnectionCount) summaryConnectionCount.textContent = String(currentConnections.length); const homeConnectionBig = document.getElementById('homeConnectionBig'); if (homeConnectionBig) homeConnectionBig.textContent = String(currentConnections.length);
+      empty.hidden = currentConnections.length > 0;
+      currentConnections.forEach(item => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'connection-item';
+        const context = [item.company, item.where_met].filter(Boolean).join(' · ');
+        button.innerHTML = `<span class="connection-avatar">${escapeHtml((item.visitor_name || '?').trim().charAt(0).toUpperCase())}</span><span class="editable-copy"><strong>${escapeHtml(item.visitor_name)}</strong><small>${escapeHtml(context || item.email)}</small><small>${escapeHtml(connectionDate(item.connected_at))}</small></span><span class="item-state">View</span>`;
+        button.addEventListener('click', () => openConnectionDialog(item));
+        list.appendChild(button);
+      });
+    }
+
+    function connectionDetailRow(label, value, href = null) {
+      if (!value) return '';
+      const safe = escapeHtml(value);
+      return `<div class="connection-detail-row"><span>${escapeHtml(label)}</span>${href ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${safe}</a>` : `<strong>${safe}</strong>`}</div>`;
+    }
+
+    function openConnectionDialog(item) {
+      connectionId.value = item.id;
+      document.getElementById('connectionDialogTitle').textContent = item.visitor_name || 'Connection';
+      document.getElementById('connectionDialogSubtitle').textContent = connectionDate(item.connected_at);
+      document.getElementById('connectionPrivateNotes').value = item.private_notes || '';
+      document.getElementById('connectionDetails').innerHTML = [
+        connectionDetailRow('Company / organization', item.company),
+        connectionDetailRow('Email', item.email, `mailto:${item.email}`),
+        connectionDetailRow('Phone', item.phone, item.phone ? `tel:${item.phone}` : null),
+        connectionDetailRow('Where we met', item.where_met),
+        connectionDetailRow('Their message', item.message)
+      ].join('');
+      document.getElementById('connectionDialog').showModal();
+    }
+
+    function requestStatusLabel(status) {
+      return ({pending:'Pending',accepted:'Connected',declined:'Declined'})[status] || '';
+    }
+
+    function renderCareerFairDirectory() {
+      const root = document.getElementById('careerFairDirectory');
+      if (!root) return;
+      root.innerHTML = '';
+      if (!currentCareerFairDirectory.length) {
+        root.innerHTML = '<div class="empty-state compact"><h3>No registered career fairs yet.</h3><p class="subtle">Employers appear here after they set their current TapID event.</p></div>';
+        return;
+      }
+      const grouped = new Map();
+      currentCareerFairDirectory.forEach(row => {
+        if (!grouped.has(row.event_name)) grouped.set(row.event_name, []);
+        grouped.get(row.event_name).push(row);
+      });
+      grouped.forEach((rows,eventName) => {
+        const block=document.createElement('div'); block.className='career-event-block';
+        block.innerHTML=`<div class="career-event-heading"><div><span class="eyebrow">Career fair</span><h3>${escapeHtml(eventName)}</h3></div><span class="badge">${rows.length} ${rows.length===1?'employer':'employers'}</span></div>`;
+        const list=document.createElement('div'); list.className='career-employer-list';
+        rows.forEach(row => {
+          const item=document.createElement('div'); item.className='career-employer-row';
+          const status=row.request_status;
+          item.innerHTML=`<div class="career-company-mark"><i class="fa-solid fa-building"></i></div><div class="editable-copy"><strong>${escapeHtml(row.company_name)}</strong><small>${status ? `Request: ${escapeHtml(requestStatusLabel(status))}` : 'Registered employer'}</small></div><div class="career-request-action"></div>`;
+          const action=item.querySelector('.career-request-action');
+          if (!status) {
+            const btn=document.createElement('button'); btn.type='button'; btn.className='btn btn-secondary btn-small'; btn.textContent='Request Connection';
+            btn.addEventListener('click',()=>openEmployerRequest(row));
+            action.appendChild(btn);
+          } else {
+            const pill=document.createElement('span'); pill.className=`request-status request-${status}`; pill.textContent=requestStatusLabel(status); action.appendChild(pill);
+          }
+          list.appendChild(item);
+        });
+        block.appendChild(list); root.appendChild(block);
+      });
+    }
+
+    async function loadCareerFairDirectory() {
+      const result = await tapid.client.rpc('student_event_employer_directory');
+      if (result.error) throw result.error;
+      currentCareerFairDirectory = result.data || [];
+      renderCareerFairDirectory();
+    }
+
+    function openEmployerRequest(row) {
+      selectedEmployerRequest = row;
+      document.getElementById('requestEmployerName').textContent = row.company_name;
+      document.getElementById('requestEmployerEvent').textContent = row.event_name;
+      document.getElementById('requestEmployerMessage').value = '';
+      tapid.setMessage(document.getElementById('requestEmployerMessageBox'),'');
+      document.getElementById('requestEmployerDialog').showModal();
+    }
+
+    async function sendEmployerRequest() {
+      if (!selectedEmployerRequest) return;
+      const btn=document.getElementById('sendEmployerRequest'), msg=document.getElementById('requestEmployerMessageBox');
+      const message=document.getElementById('requestEmployerMessage').value.trim();
+      if (!message) { tapid.setMessage(msg,'Add a short message before sending.','error'); return; }
+      tapid.setBusy(btn,true,'Sending…');
+      try {
+        const result=await tapid.client.rpc('request_employer_connection',{
+          p_company_id:selectedEmployerRequest.company_id,
+          p_event_name:selectedEmployerRequest.event_name,
+          p_message:message
+        });
+        if (result.error) throw result.error;
+        tapid.setMessage(msg,'Request sent. The employer can review your public TapID and choose whether to connect.','success');
+        await loadCareerFairDirectory();
+        setTimeout(()=>document.getElementById('requestEmployerDialog').close(),900);
+      } catch(error) {
+        tapid.setMessage(msg,error.message,'error');
+      } finally { tapid.setBusy(btn,false); }
+    }
+
+    async function loadConnections() {
+      const { data, error } = await tapid.client.from('connections').select('*').eq('profile_owner_id', currentUser.id).order('connected_at', { ascending: false });
+      if (error) throw error;
+      currentConnections = data || [];
+      renderConnections();
+    }
+
+    async function loadSprint2Data() {
+      const [contactResult, resumeResult, linksResult] = await Promise.all([
+        tapid.client.from('contacts').select('*').eq('user_id', currentUser.id).maybeSingle(),
+        tapid.client.from('resumes').select('*').eq('user_id', currentUser.id).maybeSingle(),
+        tapid.client.from('links').select('*').eq('user_id', currentUser.id).order('sort_order').order('id')
+      ]);
+      if (contactResult.error) throw contactResult.error;
+      if (resumeResult.error) throw resumeResult.error;
+      if (linksResult.error) throw linksResult.error;
+      populateContact(contactResult.data);
+      populateResume(resumeResult.data);
+      currentLinks = linksResult.data || [];
+      renderLinks();
+    }
+
+    function updateDashboardHome() {
+      if (!currentProfile) return;
+      const first = currentProfile.first_name || 'there';
+      const greeting = document.getElementById('homeGreeting');
+      if (greeting) greeting.textContent = `Welcome back, ${first}`;
+      const statusText = document.getElementById('homeStatusText');
+      const live = Boolean(currentProfile.card_activated && currentProfile.profile_active);
+      if (statusText) statusText.textContent = live ? 'Your TapID is live and ready to share.' : (currentProfile.card_activated ? 'Your public profile is paused. Your work is still saved.' : 'Finish card activation when you are ready to share your TapID.');
+      const badge = document.getElementById('homeLiveBadge');
+      if (badge) { badge.textContent = live ? 'PROFILE LIVE' : 'PROFILE OFF'; badge.classList.toggle('off', !live); }
+      const publicLink = tapid.profileUrl(currentProfile.username);
+      const hp = document.getElementById('homePublicBtn'); if (hp) hp.href = publicLink;
+      const set = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=String(val); };
+      set('homeExperienceCount', currentExperiences.length); set('homeProjectCount', currentProjects.length); set('homeSkillCount', currentSkills.length); set('homeCertificationCount', currentCertifications.length); set('homeConnectionBig', currentConnections.length); set('summaryConnectionCount', currentConnections.length);
+    }
+
+    async function init() {
+      currentUser = await tapid.requireUser();
+      if (!currentUser) return;
+      try {
+        const profile = await tapid.getProfileById(currentUser.id);
+        if (!profile) throw new Error('Your TapID profile record could not be found.');
+        if (!tapid.onboardingComplete(profile)) { window.location.replace('onboarding.html'); return; }
+        populateProfile(profile);
+        await loadSprint2Data();
+        await loadSprint3AData();
+        await loadSprint3BData();
+        await loadConnections();
+        await loadCareerFairDirectory();
+        updateDashboardHome();
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+    }
+
+    document.getElementById('sendEmployerRequest').addEventListener('click', sendEmployerRequest);
+    document.getElementById('closeRequestEmployer').addEventListener('click', ()=>document.getElementById('requestEmployerDialog').close());
+    document.getElementById('cancelEmployerRequest').addEventListener('click', ()=>document.getElementById('requestEmployerDialog').close());
+
+    document.getElementById('profileForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const btn = document.getElementById('saveProfileBtn');
+      tapid.setBusy(btn, true, 'Saving…');
+      try {
+        const payload = { first_name: firstName.value.trim(), last_name: lastName.value.trim(), username: currentProfile.card_activated ? currentProfile.username : tapid.cleanUsername(usernameInput.value), school: school.value.trim(), major: major.value.trim(), school_year: schoolYear.value, graduation_year: Number(graduationYear.value), bio: bio.value.trim() || null, updated_at: new Date().toISOString() };
+        if (payload.username.length < 3) throw new Error('Username must be at least 3 characters.');
+        const { data, error } = await tapid.client.from('profiles').update(payload).eq('id', currentUser.id).select().single();
+        if (error) throw error;
+        populateProfile(data);
+        tapid.setMessage(message, 'Profile saved.', 'success');
+      } catch (error) { tapid.setMessage(message, (error.message || '').toLowerCase().includes('duplicate') ? 'That username is already taken.' : error.message, 'error'); }
+      finally { tapid.setBusy(btn, false); }
+    });
+
+    document.getElementById('contactForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const btn = document.getElementById('saveContactBtn');
+      tapid.setBusy(btn, true, 'Saving…');
+      try {
+        const payload = { user_id: currentUser.id, email: contactEmail.value.trim() || null, phone: contactPhone.value.trim() || null, website: tapid.normalizeUrl(contactWebsite.value) || null, city: contactCity.value.trim() || null, state: contactState.value.trim() || null, show_email: showEmail.checked, show_phone: showPhone.checked, show_website: showWebsite.checked, updated_at: new Date().toISOString() };
+        const { data, error } = await tapid.client.from('contacts').upsert(payload, { onConflict: 'user_id' }).select().single();
+        if (error) throw error;
+        populateContact(data);
+        tapid.setMessage(message, 'Contact information saved.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      finally { tapid.setBusy(btn, false); }
+    });
+
+    document.getElementById('deleteContactBtn').addEventListener('click', async () => {
+      if (!currentContact || !confirm('Delete all saved contact information?')) return;
+      const { error } = await tapid.client.from('contacts').delete().eq('user_id', currentUser.id);
+      if (error) return tapid.setMessage(message, error.message, 'error');
+      populateContact(null);
+      tapid.setMessage(message, 'Contact information deleted.', 'success');
+    });
+
+    document.getElementById('resumeActionBtn').addEventListener('click', () => document.getElementById('resumeFile').click());
+    document.getElementById('resumeFile').addEventListener('change', async event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const action = document.getElementById('resumeActionBtn');
+      tapid.setBusy(action, true, 'Uploading…');
+      try {
+        if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) throw new Error('Résumé must be a PDF.');
+        if (file.size > 10 * 1024 * 1024) throw new Error('Résumé must be 10 MB or smaller.');
+        if (currentResume?.file_path) {
+          const { error: removeError } = await tapid.client.storage.from('resumes').remove([currentResume.file_path]);
+          if (removeError) throw removeError;
+        }
+        const path = `${currentUser.id}/resume.pdf`;
+        const { error: uploadError } = await tapid.client.storage.from('resumes').upload(path, file, { contentType: 'application/pdf', cacheControl: '3600', upsert: false });
+        if (uploadError) throw uploadError;
+        const { data: urlData } = tapid.client.storage.from('resumes').getPublicUrl(path);
+        const payload = { user_id: currentUser.id, file_url: urlData.publicUrl, file_path: path, file_name: file.name, is_public: true, uploaded_at: new Date().toISOString() };
+        const { data, error } = await tapid.client.from('resumes').upsert(payload, { onConflict: 'user_id' }).select().single();
+        if (error) {
+          await tapid.client.storage.from('resumes').remove([path]);
+          throw error;
+        }
+        populateResume(data);
+        tapid.setMessage(message, 'Résumé uploaded.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      finally { event.target.value = ''; tapid.setBusy(action, false); }
+    });
+
+    document.getElementById('deleteResumeBtn').addEventListener('click', async () => {
+      if (!currentResume || !confirm('Delete your résumé?')) return;
+      const path = currentResume.file_path;
+      const { error: dbError } = await tapid.client.from('resumes').delete().eq('user_id', currentUser.id);
+      if (dbError) return tapid.setMessage(message, dbError.message, 'error');
+      if (path) {
+        const { error: storageError } = await tapid.client.storage.from('resumes').remove([path]);
+        if (storageError) return tapid.setMessage(message, `Résumé record deleted, but the stored PDF could not be removed: ${storageError.message}`, 'error');
+      }
+      populateResume(null);
+      tapid.setMessage(message, 'Résumé deleted.', 'success');
+    });
+
+    document.getElementById('addLinkBtn').addEventListener('click', () => openLinkDialog());
+    document.getElementById('closeLinkDialog').addEventListener('click', () => linkDialog.close());
+    document.getElementById('linkForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const btn = document.getElementById('saveLinkBtn');
+      tapid.setBusy(btn, true, 'Saving…');
+      try {
+        const id = document.getElementById('linkId').value;
+        const platform = linkPlatform.value;
+        const payload = { user_id: currentUser.id, platform, label: linkLabel.value.trim() || tapid.platformMeta(platform).label, url: tapid.normalizeUrl(linkUrl.value), is_public: linkPublic.checked };
+        if (!payload.url) throw new Error('Enter a URL.');
+        let result;
+        if (id) result = await tapid.client.from('links').update(payload).eq('id', Number(id)).eq('user_id', currentUser.id).select().single();
+        else { payload.sort_order = currentLinks.length; result = await tapid.client.from('links').insert(payload).select().single(); }
+        if (result.error) throw result.error;
+        await loadSprint2Data();
+        linkDialog.close();
+        tapid.setMessage(message, id ? 'Link updated.' : 'Link added.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      finally { tapid.setBusy(btn, false); }
+    });
+
+    document.getElementById('deleteLinkDialogBtn').addEventListener('click', async () => {
+      const id = Number(document.getElementById('linkId').value);
+      if (!id || !confirm('Delete this link?')) return;
+      const { error } = await tapid.client.from('links').delete().eq('id', id).eq('user_id', currentUser.id);
+      if (error) return tapid.setMessage(message, error.message, 'error');
+      await loadSprint2Data();
+      linkDialog.close();
+      tapid.setMessage(message, 'Link deleted.', 'success');
+    });
+
+    document.getElementById('addExperienceBtn').addEventListener('click', () => openExperienceDialog());
+    document.getElementById('closeExperienceDialog').addEventListener('click', () => document.getElementById('experienceDialog').close());
+    experienceCurrent.addEventListener('change', () => { experienceEnd.disabled = experienceCurrent.checked; if (experienceCurrent.checked) experienceEnd.value = ''; });
+    experienceFeatured.addEventListener('change', () => { if (experienceFeatured.checked) experiencePublic.checked = true; });
+    document.getElementById('experienceForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const btn = document.getElementById('saveExperienceBtn');
+      tapid.setBusy(btn, true, 'Saving…');
+      try {
+        const id = Number(experienceId.value) || null;
+        const payload = {
+          user_id: currentUser.id,
+          title: experienceTitle.value.trim(), company: experienceCompany.value.trim() || null,
+          location: experienceLocation.value.trim() || null, experience_type: experienceType.value || null,
+          start_date: experienceStart.value || null, end_date: experienceCurrent.checked ? null : (experienceEnd.value || null),
+          is_current: experienceCurrent.checked, overview: experienceOverview.value.trim() || null,
+          role_description: experienceRole.value.trim() || null, work_description: experienceWork.value.trim() || null,
+          problems_solved: experienceProblems.value.trim() || null, accomplishments: experienceAccomplishments.value.trim() || null,
+          lessons_learned: experienceLessons.value.trim() || null, is_public: experiencePublic.checked,
+          is_featured: experienceFeatured.checked && experiencePublic.checked,
+          updated_at: new Date().toISOString()
+        };
+        if (!payload.title) throw new Error('Enter a position or experience title.');
+        if (payload.is_featured) {
+          let clearFeatured = tapid.client.from('experiences').update({ is_featured: false }).eq('user_id', currentUser.id).eq('is_featured', true);
+          if (id) clearFeatured = clearFeatured.neq('id', id);
+          const { error: featureError } = await clearFeatured;
+          if (featureError) throw featureError;
+        }
+        let result;
+        if (id) result = await tapid.client.from('experiences').update(payload).eq('id', id).eq('user_id', currentUser.id).select().single();
+        else { payload.sort_order = currentExperiences.length; delete payload.updated_at; result = await tapid.client.from('experiences').insert(payload).select().single(); }
+        if (result.error) throw result.error;
+        if (!id) experienceId.value = result.data.id;
+        try {
+          await uploadMediaFiles('experience', result.data.id, experienceMediaFiles.files);
+        } catch (uploadError) {
+          if (!id) await tapid.client.from('experiences').delete().eq('id', result.data.id).eq('user_id', currentUser.id);
+          throw uploadError;
+        }
+        await loadSprint3AData();
+        document.getElementById('experienceDialog').close();
+        tapid.setMessage(message, id ? 'Experience updated.' : 'Experience added.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      finally { tapid.setBusy(btn, false); }
+    });
+
+    document.getElementById('deleteExperienceBtn').addEventListener('click', async () => {
+      const id = Number(experienceId.value);
+      if (!id || !confirm('Delete this experience and all of its uploaded images?')) return;
+      try {
+        await deleteParentMedia('experience', id);
+        const { error } = await tapid.client.from('experiences').delete().eq('id', id).eq('user_id', currentUser.id);
+        if (error) throw error;
+        await loadSprint3AData();
+        document.getElementById('experienceDialog').close();
+        tapid.setMessage(message, 'Experience deleted.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+    });
+
+    document.getElementById('addProjectBtn').addEventListener('click', () => openProjectDialog());
+    document.getElementById('closeProjectDialog').addEventListener('click', () => document.getElementById('projectDialog').close());
+    projectFeatured.addEventListener('change', () => { if (projectFeatured.checked) projectPublic.checked = true; });
+    document.getElementById('projectForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const btn = document.getElementById('saveProjectBtn');
+      tapid.setBusy(btn, true, 'Saving…');
+      try {
+        const id = Number(projectId.value) || null;
+        const payload = {
+          user_id: currentUser.id, title: projectTitle.value.trim(), course_or_org: projectCourseOrg.value.trim() || null,
+          start_date: projectStart.value || null, end_date: projectEnd.value || null,
+          team_size: projectTeamSize.value ? Number(projectTeamSize.value) : null,
+          problem: projectProblem.value.trim() || null, role_description: projectRole.value.trim() || null,
+          process: projectProcess.value.trim() || null, result: projectResult.value.trim() || null,
+          lessons_learned: projectLessons.value.trim() || null, external_url: tapid.normalizeUrl(projectUrl.value) || null,
+          is_public: projectPublic.checked, is_featured: projectFeatured.checked && projectPublic.checked, updated_at: new Date().toISOString()
+        };
+        if (!payload.title) throw new Error('Enter a project title.');
+        if (payload.is_featured) {
+          let clearFeatured = tapid.client.from('projects').update({ is_featured: false }).eq('user_id', currentUser.id).eq('is_featured', true);
+          if (id) clearFeatured = clearFeatured.neq('id', id);
+          const { error: featureError } = await clearFeatured;
+          if (featureError) throw featureError;
+        }
+        let result;
+        if (id) result = await tapid.client.from('projects').update(payload).eq('id', id).eq('user_id', currentUser.id).select().single();
+        else { payload.sort_order = currentProjects.length; delete payload.updated_at; result = await tapid.client.from('projects').insert(payload).select().single(); }
+        if (result.error) throw result.error;
+        if (!id) projectId.value = result.data.id;
+        try {
+          await uploadMediaFiles('project', result.data.id, projectMediaFiles.files);
+        } catch (uploadError) {
+          if (!id) await tapid.client.from('projects').delete().eq('id', result.data.id).eq('user_id', currentUser.id);
+          throw uploadError;
+        }
+        await loadSprint3AData();
+        document.getElementById('projectDialog').close();
+        tapid.setMessage(message, id ? 'Project updated.' : 'Project added.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      finally { tapid.setBusy(btn, false); }
+    });
+
+    document.getElementById('deleteProjectBtn').addEventListener('click', async () => {
+      const id = Number(projectId.value);
+      if (!id || !confirm('Delete this project and all of its uploaded images?')) return;
+      try {
+        await deleteParentMedia('project', id);
+        const { error } = await tapid.client.from('projects').delete().eq('id', id).eq('user_id', currentUser.id);
+        if (error) throw error;
+        await loadSprint3AData();
+        document.getElementById('projectDialog').close();
+        tapid.setMessage(message, 'Project deleted.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+    });
+
+    document.getElementById('addSkillBtn').addEventListener('click', () => openSkillDialog());
+    document.getElementById('closeSkillDialog').addEventListener('click', () => document.getElementById('skillDialog').close());
+    document.getElementById('skillForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const btn = document.getElementById('saveSkillBtn');
+      tapid.setBusy(btn, true, 'Saving…');
+      try {
+        const existingId = Number(skillId.value) || null;
+        const payload = { user_id: currentUser.id, name: skillName.value.trim(), category: skillCategory.value || null, is_public: skillPublic.checked };
+        if (!payload.name) throw new Error('Enter a skill name.');
+        let result;
+        if (existingId) result = await tapid.client.from('skills').update(payload).eq('id', existingId).eq('user_id', currentUser.id).select().single();
+        else result = await tapid.client.from('skills').insert(payload).select().single();
+        if (result.error) throw result.error;
+        const savedId = result.data.id;
+        const selectedExp = [...document.querySelectorAll('#skillExperienceEvidence input:checked')].map(el => Number(el.dataset.evidenceId));
+        const selectedProj = [...document.querySelectorAll('#skillProjectEvidence input:checked')].map(el => Number(el.dataset.evidenceId));
+        let cleanup = await tapid.client.from('experience_skills').delete().eq('skill_id', savedId);
+        if (cleanup.error) throw cleanup.error;
+        cleanup = await tapid.client.from('project_skills').delete().eq('skill_id', savedId);
+        if (cleanup.error) throw cleanup.error;
+        if (selectedExp.length) {
+          const { error } = await tapid.client.from('experience_skills').insert(selectedExp.map(experience_id => ({ experience_id, skill_id: savedId })));
+          if (error) throw error;
+        }
+        if (selectedProj.length) {
+          const { error } = await tapid.client.from('project_skills').insert(selectedProj.map(project_id => ({ project_id, skill_id: savedId })));
+          if (error) throw error;
+        }
+        await loadSprint3BData();
+        document.getElementById('skillDialog').close();
+        tapid.setMessage(message, existingId ? 'Skill updated.' : 'Skill added.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      finally { tapid.setBusy(btn, false); }
+    });
+
+    document.getElementById('deleteSkillBtn').addEventListener('click', async () => {
+      const id = Number(skillId.value);
+      if (!id || !confirm('Delete this skill and all of its evidence links?')) return;
+      const { error } = await tapid.client.from('skills').delete().eq('id', id).eq('user_id', currentUser.id);
+      if (error) return tapid.setMessage(message, error.message, 'error');
+      await loadSprint3BData();
+      document.getElementById('skillDialog').close();
+      tapid.setMessage(message, 'Skill deleted.', 'success');
+    });
+
+    document.getElementById('addOrganizationBtn').addEventListener('click', () => openOrganizationDialog());
+    document.getElementById('closeOrganizationDialog').addEventListener('click', () => document.getElementById('organizationDialog').close());
+    organizationCurrent.addEventListener('change', () => { organizationEnd.disabled = organizationCurrent.checked; if (organizationCurrent.checked) organizationEnd.value = ''; });
+    document.getElementById('organizationForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const btn = document.getElementById('saveOrganizationBtn');
+      tapid.setBusy(btn, true, 'Saving…');
+      try {
+        const id = Number(organizationId.value) || null;
+        const payload = {
+          user_id: currentUser.id, name: organizationName.value.trim(), role: organizationRole.value.trim() || null,
+          start_date: organizationStart.value || null, end_date: organizationCurrent.checked ? null : (organizationEnd.value || null),
+          is_current: organizationCurrent.checked, description: organizationDescription.value.trim() || null,
+          accomplishments: organizationAccomplishments.value.trim() || null, is_public: organizationPublic.checked,
+          updated_at: new Date().toISOString()
+        };
+        if (!payload.name) throw new Error('Enter an organization name.');
+        let result;
+        if (id) result = await tapid.client.from('organizations').update(payload).eq('id', id).eq('user_id', currentUser.id).select().single();
+        else { payload.sort_order = currentOrganizations.length; delete payload.updated_at; result = await tapid.client.from('organizations').insert(payload).select().single(); }
+        if (result.error) throw result.error;
+        await loadSprint3BData();
+        document.getElementById('organizationDialog').close();
+        tapid.setMessage(message, id ? 'Organization updated.' : 'Organization added.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      finally { tapid.setBusy(btn, false); }
+    });
+
+    document.getElementById('deleteOrganizationBtn').addEventListener('click', async () => {
+      const id = Number(organizationId.value);
+      if (!id || !confirm('Delete this organization?')) return;
+      const { error } = await tapid.client.from('organizations').delete().eq('id', id).eq('user_id', currentUser.id);
+      if (error) return tapid.setMessage(message, error.message, 'error');
+      await loadSprint3BData();
+      document.getElementById('organizationDialog').close();
+      tapid.setMessage(message, 'Organization deleted.', 'success');
+    });
+
+    document.getElementById('addCertificationBtn').addEventListener('click', () => openCertificationDialog());
+    document.getElementById('closeCertificationDialog').addEventListener('click', () => document.getElementById('certificationDialog').close());
+    document.getElementById('certificationForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const btn = document.getElementById('saveCertificationBtn');
+      tapid.setBusy(btn, true, 'Saving…');
+      try {
+        const id = Number(certificationId.value) || null;
+        const payload = {
+          user_id: currentUser.id, name: certificationName.value.trim(), issuer: certificationIssuer.value.trim() || null,
+          issue_date: certificationIssueDate.value || null, expiration_date: certificationExpirationDate.value || null,
+          credential_id: certificationCredentialId.value.trim() || null,
+          credential_url: tapid.normalizeUrl(certificationUrl.value) || null, is_public: certificationPublic.checked
+        };
+        if (!payload.name) throw new Error('Enter a certification or training name.');
+        let result;
+        if (id) result = await tapid.client.from('certifications').update(payload).eq('id', id).eq('user_id', currentUser.id).select().single();
+        else { payload.sort_order = currentCertifications.length; result = await tapid.client.from('certifications').insert(payload).select().single(); }
+        if (result.error) throw result.error;
+        const savedCertification = result.data;
+        const certificateFile = document.getElementById('certificationDocument').files[0];
+        if (certificateFile) {
+          await uploadCertificationDocument(savedCertification.id, certificateFile);
+        }
+        await loadSprint3BData();
+        document.getElementById('certificationDialog').close();
+        tapid.setMessage(message, id ? 'Certification updated.' : 'Certification added.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      finally { tapid.setBusy(btn, false); }
+    });
+
+    document.getElementById('deleteCertificationBtn').addEventListener('click', async () => {
+      const id = Number(certificationId.value);
+      if (!id || !confirm('Delete this certification?')) return;
+      const certMedia = currentMedia.filter(m => m.certification_id === id);
+      const certPaths = certMedia.map(m => m.file_path).filter(Boolean);
+      if (certPaths.length) {
+        const { error: storageError } = await tapid.client.storage.from('media').remove(certPaths);
+        if (storageError) return tapid.setMessage(message, storageError.message, 'error');
+      }
+      const { error } = await tapid.client.from('certifications').delete().eq('id', id).eq('user_id', currentUser.id);
+      if (error) return tapid.setMessage(message, error.message, 'error');
+      await loadSprint3BData();
+      document.getElementById('certificationDialog').close();
+      tapid.setMessage(message, 'Certification deleted.', 'success');
+    });
+
+    document.getElementById('closeConnectionDialog').addEventListener('click', () => document.getElementById('connectionDialog').close());
+
+    document.getElementById('connectionForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const id = Number(connectionId.value);
+      if (!id) return;
+      const btn = document.getElementById('saveConnectionNotesBtn');
+      tapid.setBusy(btn, true, 'Saving…');
+      try {
+        const { error } = await tapid.client.from('connections').update({ private_notes: document.getElementById('connectionPrivateNotes').value.trim() || null }).eq('id', id).eq('profile_owner_id', currentUser.id);
+        if (error) throw error;
+        await loadConnections();
+        document.getElementById('connectionDialog').close();
+        tapid.setMessage(message, 'Private connection notes saved.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      finally { tapid.setBusy(btn, false); }
+    });
+
+    document.getElementById('deleteConnectionBtn').addEventListener('click', async () => {
+      const id = Number(connectionId.value);
+      if (!id || !confirm('Delete this connection? This cannot be undone.')) return;
+      const { error } = await tapid.client.from('connections').delete().eq('id', id).eq('profile_owner_id', currentUser.id);
+      if (error) return tapid.setMessage(message, error.message, 'error');
+      await loadConnections();
+      document.getElementById('connectionDialog').close();
+      tapid.setMessage(message, 'Connection deleted.', 'success');
+    });
+
+    document.getElementById('toggleActiveBtn').addEventListener('click', async () => {
+      if (!currentProfile.card_activated) {
+        window.location.href = 'card.html';
+        return;
+      }
+      const nextState = !currentProfile.profile_active;
+      const { data, error } = await tapid.client.from('profiles').update({ profile_active: nextState, updated_at: new Date().toISOString() }).eq('id', currentUser.id).select().single();
+      if (error) return tapid.setMessage(message, error.message, 'error');
+      populateProfile(data);
+      tapid.setMessage(message, nextState ? 'Public profile reactivated. Your NFC and QR links are live again.' : 'Public profile paused. Your NFC and QR links now lead to an unavailable profile.', 'success');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => { await tapid.client.auth.signOut(); window.location.replace('login.html'); });
+    init();
+  </script>
+</body>
+</html>
