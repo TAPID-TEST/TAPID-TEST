@@ -24,6 +24,11 @@
 <div class="home-grid"><div class="card home-panel home-readiness"><div class="home-panel-heading"><div><div class="eyebrow">Profile snapshot</div><h2>Your professional profile</h2></div><button class="text-action" data-jump="profile" type="button">Edit profile <i class="fa-solid fa-arrow-right"></i></button></div><p class="subtle">A quick check of the information employers can use when you share your TapID.</p><div class="profile-progress-copy"><strong id="homeProfileProgressLabel">Profile setup</strong><span id="homeProfileProgressValue">0%</span></div><div class="profile-progress"><span id="homeProfileProgressBar"></span></div><div class="readiness-rows"><button class="readiness-row" data-jump="resume" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-file-lines"></i></span><span><strong>Résumé</strong><small id="homeResumeState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="contact" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-address-card"></i></span><span><strong>Contact information</strong><small id="homeContactState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="links" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-link"></i></span><span><strong>Professional links</strong><small id="homeLinkState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="projects" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-layer-group"></i></span><span><strong>Portfolio content</strong><small id="homePortfolioState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button></div></div><div class="card home-panel home-network"><div class="eyebrow">Your network</div><h2>Connection activity</h2><p class="subtle">Career-fair requests stay separate until an employer accepts.</p><div class="network-number"><strong id="homeConnectionBig">0</strong><span>accepted and direct connections</span></div><div class="connection-progress" aria-label="Career fair request status"><span class="accepted" id="homeAcceptedBar"></span><span class="pending" id="homePendingBar"></span><span class="declined" id="homeDeclinedBar"></span></div><div class="network-status-list"><span><i class="accepted"></i><strong id="homeAcceptedRequestCount">0</strong> Accepted</span><span><i class="pending"></i><strong id="homePendingRequestCount">0</strong> Pending</span><span><i class="declined"></i><strong id="homeDeclinedRequestCount">0</strong> Declined</span></div><button class="btn btn-primary btn-block" data-jump="connections" type="button">Manage Connections</button><button class="text-action centered" data-jump="career-fairs" type="button">Explore career fairs <i class="fa-solid fa-arrow-right"></i></button></div></div>
 <div class="card home-panel home-fairs"><div class="home-panel-heading"><div><div class="eyebrow">Upcoming opportunities</div><h2>Career fairs</h2></div><button class="text-action" data-jump="career-fairs" type="button">View all <i class="fa-solid fa-arrow-right"></i></button></div><div id="homeUpcomingFairs" class="home-fair-list"><div class="inline-empty">Loading upcoming career fairs…</div></div></div>
 </section>
+<section class="dashboard-section card" data-section="notifications" hidden id="dash-notifications">
+<div class="section-head"><div><h2>Notifications</h2><p class="subtle">Updates about your connections, verified outcomes, career fairs, and TapID card.</p></div><button class="btn btn-secondary" id="markNotificationsRead" type="button">Mark All Read</button></div>
+<div class="notification-list" id="notificationList"></div><div class="inline-empty" id="notificationEmpty">You have no notifications yet.</div>
+<div class="notification-settings"><h3>Notification preferences</h3><div class="visibility-grid privacy-grid"><label class="toggle-row"><input id="notifyConnections" type="checkbox"><span>Connection updates</span></label><label class="toggle-row"><input id="notifyOutcomes" type="checkbox"><span>Verified outcomes</span></label><label class="toggle-row"><input id="notifyFairs" type="checkbox"><span>Career-fair announcements</span></label><label class="toggle-row"><input id="notifyCard" type="checkbox"><span>Card updates</span></label><label class="toggle-row"><input id="notifyEmail" type="checkbox"><span>Email notifications</span></label></div><p class="help">In-app notifications work immediately. Email delivery begins after production SMTP is configured.</p><button class="btn btn-primary" id="saveNotificationPreferences" type="button">Save Preferences</button></div>
+</section>
 <section class="dashboard-section card" data-section="profile" hidden id="dash-profile">
 <div class="section-head"><div><h2>Basic Profile</h2><p class="subtle">Your academic and professional introduction.</p></div></div>
 <div class="profile-photo-editor"><img id="avatarPreview" class="avatar-preview" alt="Profile photo preview" hidden><div><h3>Profile photo</h3><p class="subtle">Optional. JPG, PNG, or WebP up to 5 MB.</p><input id="avatarFile" type="file" accept="image/jpeg,image/png,image/webp"><label class="toggle-row"><input id="avatarPublic" type="checkbox"><span>Show photo publicly</span></label><div class="form-actions"><button id="uploadAvatar" class="btn btn-secondary" type="button">Upload Photo</button><button id="deleteAvatar" class="btn btn-danger" type="button">Remove Photo</button></div></div></div>
@@ -37,6 +42,10 @@
 <div class="field"><label for="bio">Short bio</label><textarea id="bio" maxlength="700"></textarea></div>
 <div class="form-actions"><button class="btn btn-primary" id="saveProfileBtn" type="submit">Save Profile</button></div>
 </form>
+</section>
+<section class="dashboard-section card" data-section="opportunities" hidden id="dash-opportunities">
+<div class="section-head"><div><h2>Opportunity Preferences</h2><p class="subtle">Tell employers what you are looking for without exposing private account information.</p></div></div>
+<form id="opportunityForm"><div class="field"><label>What are you open to?</label><div class="choice-grid"><label class="toggle-row"><input name="opportunityType" value="Internship" type="checkbox"><span>Internship</span></label><label class="toggle-row"><input name="opportunityType" value="Full-time" type="checkbox"><span>Full-time</span></label><label class="toggle-row"><input name="opportunityType" value="Research" type="checkbox"><span>Research</span></label><label class="toggle-row"><input name="opportunityType" value="Networking" type="checkbox"><span>Networking</span></label></div></div><div class="field"><label for="desiredRoles">Desired roles</label><input id="desiredRoles" placeholder="Project engineer, field engineer, sales engineer"><div class="help">Separate multiple entries with commas.</div></div><div class="field"><label for="preferredIndustries">Preferred industries</label><input id="preferredIndustries" placeholder="Construction, infrastructure, renewable energy"></div><div class="field"><label for="preferredLocations">Preferred locations</label><input id="preferredLocations" placeholder="California, Seattle, open to remote"></div><div class="form-grid"><div class="field"><label for="availableStartDate">Available start date</label><input id="availableStartDate" type="date"></div><label class="toggle-row field"><input id="willingToRelocate" type="checkbox"><span>Willing to relocate</span></label></div><label class="toggle-row field"><input id="opportunitiesPublic" type="checkbox"><span>Show these preferences on my public profile</span></label><button class="btn btn-primary" id="saveOpportunities" type="submit">Save Opportunity Preferences</button></form>
 </section>
 <section class="dashboard-section card" data-section="contact" hidden="" id="dash-contact">
 <div class="section-head"><div><h2>Contact Information</h2><p class="subtle">You control exactly which details appear publicly. Save Contact uses only the information you make public.</p></div></div>
@@ -100,8 +109,8 @@
 </section>
 </div>
 <aside class="status-card dashboard-sidebar card"><nav aria-label="Dashboard sections" class="dashboard-section-nav">
-<div class="sidebar-label">Overview</div><button class="dashboard-nav-item active" data-target="home" type="button"><i class="fa-solid fa-house"></i><span>Home</span></button>
-<div class="sidebar-label sidebar-group-label">Your TapID</div><button class="dashboard-nav-item" data-target="profile" type="button"><i class="fa-solid fa-user"></i><span>Profile</span></button><button class="dashboard-nav-item" data-target="contact" type="button"><i class="fa-solid fa-address-card"></i><span>Contact</span></button><button class="dashboard-nav-item" data-target="resume" type="button"><i class="fa-solid fa-file-lines"></i><span>Résumé</span></button><button class="dashboard-nav-item" data-target="links" type="button"><i class="fa-solid fa-link"></i><span>Links</span></button>
+<div class="sidebar-label">Overview</div><button class="dashboard-nav-item active" data-target="home" type="button"><i class="fa-solid fa-house"></i><span>Home</span></button><button class="dashboard-nav-item" data-target="notifications" type="button"><i class="fa-solid fa-bell"></i><span>Notifications</span><b class="nav-count" id="notificationNavCount" hidden>0</b></button>
+<div class="sidebar-label sidebar-group-label">Your TapID</div><button class="dashboard-nav-item" data-target="profile" type="button"><i class="fa-solid fa-user"></i><span>Profile</span></button><button class="dashboard-nav-item" data-target="opportunities" type="button"><i class="fa-solid fa-compass"></i><span>Opportunities</span></button><button class="dashboard-nav-item" data-target="contact" type="button"><i class="fa-solid fa-address-card"></i><span>Contact</span></button><button class="dashboard-nav-item" data-target="resume" type="button"><i class="fa-solid fa-file-lines"></i><span>Résumé</span></button><button class="dashboard-nav-item" data-target="links" type="button"><i class="fa-solid fa-link"></i><span>Links</span></button>
 <div class="sidebar-label sidebar-group-label">Show What You've Done</div><button class="dashboard-nav-item" data-target="experience" type="button"><i class="fa-solid fa-briefcase"></i><span>Experience</span></button><button class="dashboard-nav-item" data-target="projects" type="button"><i class="fa-solid fa-diagram-project"></i><span>Projects</span></button><button class="dashboard-nav-item" data-target="skills" type="button"><i class="fa-solid fa-screwdriver-wrench"></i><span>Skills</span></button><button class="dashboard-nav-item" data-target="organizations" type="button"><i class="fa-solid fa-people-group"></i><span>Organizations</span></button><button class="dashboard-nav-item" data-target="certifications" type="button"><i class="fa-solid fa-certificate"></i><span>Certifications</span></button><a class="dashboard-nav-item" href="journey.html#recommendations"><i class="fa-solid fa-comment-dots"></i><span>Recommendations</span></a>
 <div class="sidebar-label sidebar-group-label">Your Network</div><button class="dashboard-nav-item" data-target="connections" type="button"><i class="fa-solid fa-user-group"></i><span>Connections</span></button><button class="dashboard-nav-item" data-target="career-fairs" type="button"><i class="fa-solid fa-building-columns"></i><span>Career Fairs</span></button><a class="dashboard-nav-item" href="journey.html#outcomes"><i class="fa-solid fa-bullseye"></i><span>Outcomes</span></a>
 </nav><div class="sidebar-divider"></div>
@@ -109,7 +118,7 @@
 <div class="status-badges"><span class="badge off" id="cardBadge">CARD NOT ACTIVATED</span><span class="badge off" id="activeBadge">PROFILE OFF</span></div>
 <div class="profile-summary"><strong id="summaryName">Loading…</strong><span class="subtle" id="summaryMajor"></span><span class="subtle" id="summarySchool"></span><span class="subtle" id="summaryUsername"></span></div>
 <a class="btn btn-gold btn-block" href="card.html" id="manageCardBtn">Manage Card &amp; QR</a>
-<a class="btn btn-secondary btn-block" href="#" id="publicBtnSide" rel="noopener" target="_blank">View Public Profile</a>
+<a class="btn btn-secondary btn-block" href="#" id="publicBtnSide">Preview Public Profile</a>
 <div class="divider"></div>
 <label style="font-weight:800;display:block;margin-bottom:8px;">Profile availability</label>
 <p class="subtle" id="availabilityHelp" style="margin-top:0;">Activate your TapID card before making the public profile available.</p>
@@ -117,6 +126,8 @@
 </aside>
 </div>
 </main>
+<dialog class="dialog-card dialog-wide preview-dialog" id="profilePreviewDialog"><div class="section-head"><div><div class="eyebrow">Read-only preview</div><h2>What employers see</h2><p class="subtle">This preview contains no editing controls.</p></div><button class="icon-btn" id="closeProfilePreview" type="button" aria-label="Close">×</button></div><iframe id="profilePreviewFrame" title="Public TapID profile preview"></iframe><div class="dialog-actions"><a class="btn btn-secondary" id="openProfilePreview" target="_blank" rel="noopener">Open Full Page</a><button class="btn btn-primary" id="closeProfilePreviewBottom" type="button">Done</button></div></dialog>
+<dialog class="dialog-card" id="readinessDialog"><div class="section-head"><div><div class="eyebrow">Profile readiness</div><h2>Your setup checklist</h2><p class="subtle">Complete the sections that help employers understand your work.</p></div><button class="icon-btn" id="closeReadiness" type="button" aria-label="Close">×</button></div><div class="readiness-checklist" id="readinessChecklist"></div><button class="btn btn-primary btn-block" id="closeReadinessBottom" type="button">Done</button></dialog>
 <dialog id="requestEmployerDialog" class="dialog-card">
   <div class="section-head"><div><div class="eyebrow">Connection request</div><h2 id="requestEmployerName">Employer</h2><p id="requestEmployerEvent" class="subtle"></p></div><button id="closeRequestEmployer" class="icon-btn" type="button" aria-label="Close">×</button></div>
   <p class="subtle">The employer will receive your public TapID profile and this message. You will not receive recruiter contact information unless they accept.</p>
@@ -266,6 +277,10 @@
     let currentConnections = [];
     let currentCareerFairDirectory = [];
     let currentCareerFairs = [];
+    let currentCareerFairPlans = [];
+    let currentOpportunityPreferences = null;
+    let currentNotifications = [];
+    let currentNotificationPreferences = null;
     let selectedEmployerRequest = null;
 
     const message = document.getElementById('message');
@@ -887,7 +902,9 @@
       });
       grouped.forEach((rows,eventName) => {
         const block=document.createElement('div'); block.className='career-event-block';
-        block.innerHTML=`<div class="career-event-heading"><div><span class="eyebrow">Career fair</span><h3>${escapeHtml(eventName)}</h3></div><span class="badge">${rows.length} ${rows.length===1?'employer':'employers'}</span></div>`;
+        const fair=currentCareerFairs.find(item=>item.name===eventName);
+        const fairWhen=fair?.starts_at?new Date(fair.starts_at).toLocaleString(undefined,{month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}):'Date to be announced';
+        block.innerHTML=`<div class="career-event-heading"><div><span class="eyebrow">Career fair</span><h3>${escapeHtml(eventName)}</h3><p class="career-event-meta"><i class="fa-regular fa-calendar"></i> ${escapeHtml(fairWhen)}${fair?.location?` <span>·</span> <i class="fa-solid fa-location-dot"></i> ${escapeHtml(fair.location)}`:''}</p>${fair?.description?`<p class="subtle">${escapeHtml(fair.description)}</p>`:''}</div><span class="badge">${rows.length} ${rows.length===1?'employer':'employers'}</span></div>`;
         const list=document.createElement('div'); list.className='career-employer-list';
         rows.forEach(row => {
           const item=document.createElement('div'); item.className='career-employer-row';
@@ -901,6 +918,13 @@
           } else {
             const pill=document.createElement('span'); pill.className=`request-status request-${status}`; pill.textContent=requestStatusLabel(status); action.appendChild(pill);
           }
+          if(fair){
+            const plan=currentCareerFairPlans.find(p=>p.career_fair_id===fair.id&&p.company_id===row.company_id);
+            const planBtn=document.createElement('button');planBtn.type='button';planBtn.className='btn btn-small '+(plan?'btn-primary':'btn-secondary');
+            planBtn.textContent=plan?.plan_status==='visited'?'Visited ✓':plan?'Mark Visited':'Save Employer';
+            planBtn.addEventListener('click',()=>saveCareerFairPlan(fair,row,plan));action.appendChild(planBtn);
+            if(plan){const removeBtn=document.createElement('button');removeBtn.type='button';removeBtn.className='text-button';removeBtn.textContent='Remove';removeBtn.addEventListener('click',()=>removeCareerFairPlan(plan));action.appendChild(removeBtn);}
+          }
           list.appendChild(item);
         });
         block.appendChild(list); root.appendChild(block);
@@ -908,14 +932,29 @@
     }
 
     async function loadCareerFairDirectory() {
-      const [result, fairResult] = await Promise.all([
+      const [result, fairResult, planResult] = await Promise.all([
         tapid.client.rpc('student_event_employer_directory'),
-        tapid.client.from('career_fairs').select('id,name,starts_at,ends_at,location,description').eq('is_published', true).eq('school_name', currentProfile.school).order('starts_at', { ascending: true })
+        tapid.client.from('career_fairs').select('id,name,starts_at,ends_at,location,description').eq('is_published', true).eq('school_name', currentProfile.school).order('starts_at', { ascending: true }),
+        tapid.client.from('career_fair_student_plans').select('*').eq('student_user_id',currentUser.id)
       ]);
       if (result.error) throw result.error;
       currentCareerFairDirectory = result.data || [];
       currentCareerFairs = fairResult.error ? [] : (fairResult.data || []);
+      currentCareerFairPlans = planResult.error ? [] : (planResult.data || []);
       renderCareerFairDirectory();
+    }
+
+    async function saveCareerFairPlan(fair,row,plan){
+      const payload={student_user_id:currentUser.id,career_fair_id:fair.id,company_id:row.company_id,plan_status:plan?'visited':'saved',updated_at:new Date().toISOString()};
+      const result=await tapid.client.from('career_fair_student_plans').upsert(payload,{onConflict:'student_user_id,career_fair_id,company_id'}).select().single();
+      if(result.error)return tapid.setMessage(message,result.error.message,'error');
+      const index=currentCareerFairPlans.findIndex(p=>p.id===result.data.id);if(index>=0)currentCareerFairPlans[index]=result.data;else currentCareerFairPlans.push(result.data);
+      renderCareerFairDirectory();tapid.setMessage(message,plan?'Employer marked as visited.':'Employer saved to your fair plan.','success');
+    }
+
+    async function removeCareerFairPlan(plan){
+      const result=await tapid.client.from('career_fair_student_plans').delete().eq('id',plan.id).eq('student_user_id',currentUser.id);if(result.error)return tapid.setMessage(message,result.error.message,'error');
+      currentCareerFairPlans=currentCareerFairPlans.filter(p=>p.id!==plan.id);renderCareerFairDirectory();tapid.setMessage(message,'Employer removed from your fair plan.','success');
     }
 
     function openEmployerRequest(row) {
@@ -970,6 +1009,34 @@
       renderLinks();
     }
 
+    const csvValues=value=>String(value||'').split(',').map(item=>item.trim()).filter(Boolean);
+
+    function populateOpportunityPreferences(data){
+      currentOpportunityPreferences=data;
+      const selected=new Set(data?.opportunity_types||[]);document.querySelectorAll('[name="opportunityType"]').forEach(input=>input.checked=selected.has(input.value));
+      document.getElementById('desiredRoles').value=(data?.desired_roles||[]).join(', ');document.getElementById('preferredIndustries').value=(data?.industries||[]).join(', ');document.getElementById('preferredLocations').value=(data?.preferred_locations||[]).join(', ');document.getElementById('availableStartDate').value=data?.available_start_date||'';document.getElementById('willingToRelocate').checked=Boolean(data?.willing_to_relocate);document.getElementById('opportunitiesPublic').checked=Boolean(data?.is_public);
+    }
+
+    function renderNotifications(){
+      const root=document.getElementById('notificationList'),empty=document.getElementById('notificationEmpty');root.innerHTML='';empty.hidden=currentNotifications.length>0;
+      currentNotifications.forEach(item=>{const row=document.createElement(item.href?'a':'div');row.className='notification-item'+(item.read_at?'':' unread');if(item.href)row.href=item.href;const icon={connection:'fa-user-group',outcome:'fa-bullseye',career_fair:'fa-calendar-days',card:'fa-id-card',profile:'fa-user-shield'}[item.notification_type]||'fa-bell';row.innerHTML=`<span class="notification-icon"><i class="fa-solid ${icon}"></i></span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.body)}</small><time>${escapeHtml(connectionDate(item.created_at))}</time></span>${item.read_at?'':'<i class="notification-dot"></i>'}`;root.appendChild(row);});
+      const unread=currentNotifications.filter(item=>!item.read_at).length,badge=document.getElementById('notificationNavCount');badge.textContent=String(unread);badge.hidden=!unread;
+    }
+
+    function populateNotificationPreferences(data){
+      currentNotificationPreferences=data||{};document.getElementById('notifyConnections').checked=data?.connection_updates!==false;document.getElementById('notifyOutcomes').checked=data?.verified_outcomes!==false;document.getElementById('notifyFairs').checked=data?.career_fair_updates!==false;document.getElementById('notifyCard').checked=data?.card_updates!==false;document.getElementById('notifyEmail').checked=Boolean(data?.email_enabled);
+    }
+
+    async function loadStudentExperienceData(){
+      const [opportunities,notifications,preferences]=await Promise.all([
+        tapid.client.from('student_opportunity_preferences').select('*').eq('student_user_id',currentUser.id).maybeSingle(),
+        tapid.client.from('student_notifications').select('*').eq('student_user_id',currentUser.id).order('created_at',{ascending:false}).limit(50),
+        tapid.client.from('notification_preferences').select('*').eq('student_user_id',currentUser.id).maybeSingle()
+      ]);
+      for(const result of [opportunities,notifications,preferences])if(result.error)throw result.error;
+      populateOpportunityPreferences(opportunities.data);currentNotifications=notifications.data||[];renderNotifications();populateNotificationPreferences(preferences.data);
+    }
+
     function updateDashboardHome() {
       if (!currentProfile) return;
       const first = currentProfile.first_name || 'there';
@@ -1006,10 +1073,20 @@
       document.getElementById('homePendingBar').style.width = width(pendingRequests);
       document.getElementById('homeDeclinedBar').style.width = width(declinedRequests);
 
-      const readiness = [Boolean(currentProfile.bio), Boolean(currentProfile.avatar_path), Boolean(currentResume?.file_url), contactValues > 0, publicLinks > 0, publicPortfolio > 0, currentSkills.length > 0, currentCertifications.length > 0];
-      const progress = Math.round(readiness.filter(Boolean).length / readiness.length * 100);
+      const readinessItems = [
+        {label:'Professional bio',complete:Boolean(currentProfile.bio),target:'profile'},
+        {label:'Profile photo',complete:Boolean(currentProfile.avatar_path),target:'profile'},
+        {label:'Résumé',complete:Boolean(currentResume?.file_url),target:'resume'},
+        {label:'Contact information',complete:contactValues>0,target:'contact'},
+        {label:'Professional link',complete:publicLinks>0,target:'links'},
+        {label:'Public project or experience',complete:publicPortfolio>0,target:'projects'},
+        {label:'Skills with evidence',complete:currentSkills.length>0,target:'skills'},
+        {label:'Opportunity preferences',complete:Boolean(currentOpportunityPreferences?.opportunity_types?.length),target:'opportunities'}
+      ];
+      const progress = Math.round(readinessItems.filter(item=>item.complete).length / readinessItems.length * 100);
       set('homeProfileProgressValue', `${progress}%`);
       document.getElementById('homeProfileProgressBar').style.width = `${progress}%`;
+      const checklist=document.getElementById('readinessChecklist');checklist.innerHTML='';readinessItems.forEach(item=>{const button=document.createElement('button');button.type='button';button.className='readiness-check '+(item.complete?'complete':'');button.dataset.jump=item.target;button.innerHTML=`<span>${item.complete?'✓':'○'}</span><strong>${escapeHtml(item.label)}</strong><small>${item.complete?'Complete':'Needs attention'}</small>`;button.addEventListener('click',()=>document.getElementById('readinessDialog').close());checklist.appendChild(button);});
 
       const fairRoot = document.getElementById('homeUpcomingFairs');
       fairRoot.innerHTML = '';
@@ -1021,7 +1098,8 @@
           row.type = 'button'; row.className = 'home-fair-row'; row.dataset.jump = 'career-fairs';
           const dateLabel = fair.starts_at ? new Date(fair.starts_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Date to be announced';
           const employers = currentCareerFairDirectory.filter(item => item.event_name === fair.name).length;
-          row.innerHTML = `<span class="fair-date"><i class="fa-regular fa-calendar"></i>${escapeHtml(dateLabel)}</span><span><strong>${escapeHtml(fair.name)}</strong><small>${escapeHtml(fair.location || 'Location to be announced')} · ${employers} ${employers === 1 ? 'employer' : 'employers'}</small></span><i class="fa-solid fa-chevron-right"></i>`;
+          const saved=currentCareerFairPlans.filter(item=>item.career_fair_id===fair.id).length;
+          row.innerHTML = `<span class="fair-date"><i class="fa-regular fa-calendar"></i>${escapeHtml(dateLabel)}</span><span><strong>${escapeHtml(fair.name)}</strong><small>${escapeHtml(fair.location || 'Location to be announced')} · ${employers} ${employers === 1 ? 'employer' : 'employers'}${saved?` · ${saved} saved`:''}</small></span><i class="fa-solid fa-chevron-right"></i>`;
           fairRoot.appendChild(row);
         });
       }
@@ -1040,6 +1118,7 @@
         await loadSprint3BData();
         await loadConnections();
         await loadCareerFairDirectory();
+        await loadStudentExperienceData();
         updateDashboardHome();
       } catch (error) { tapid.setMessage(message, error.message, 'error'); }
     }
@@ -1047,6 +1126,23 @@
     document.getElementById('sendEmployerRequest').addEventListener('click', sendEmployerRequest);
     document.getElementById('closeRequestEmployer').addEventListener('click', ()=>document.getElementById('requestEmployerDialog').close());
     document.getElementById('cancelEmployerRequest').addEventListener('click', ()=>document.getElementById('requestEmployerDialog').close());
+
+    document.getElementById('opportunityForm').addEventListener('submit',async event=>{
+      event.preventDefault();const button=document.getElementById('saveOpportunities');tapid.setBusy(button,true,'Saving…');
+      try{const payload={student_user_id:currentUser.id,opportunity_types:[...document.querySelectorAll('[name="opportunityType"]:checked')].map(input=>input.value),desired_roles:csvValues(document.getElementById('desiredRoles').value),industries:csvValues(document.getElementById('preferredIndustries').value),preferred_locations:csvValues(document.getElementById('preferredLocations').value),available_start_date:document.getElementById('availableStartDate').value||null,willing_to_relocate:document.getElementById('willingToRelocate').checked,is_public:document.getElementById('opportunitiesPublic').checked,updated_at:new Date().toISOString()};const result=await tapid.client.from('student_opportunity_preferences').upsert(payload,{onConflict:'student_user_id'}).select().single();if(result.error)throw result.error;populateOpportunityPreferences(result.data);updateDashboardHome();tapid.setMessage(message,'Opportunity preferences saved.','success');}catch(error){tapid.setMessage(message,error.message,'error');}finally{tapid.setBusy(button,false);}
+    });
+
+    document.getElementById('saveNotificationPreferences').addEventListener('click',async()=>{
+      const button=document.getElementById('saveNotificationPreferences');tapid.setBusy(button,true,'Saving…');const payload={student_user_id:currentUser.id,connection_updates:document.getElementById('notifyConnections').checked,verified_outcomes:document.getElementById('notifyOutcomes').checked,career_fair_updates:document.getElementById('notifyFairs').checked,card_updates:document.getElementById('notifyCard').checked,email_enabled:document.getElementById('notifyEmail').checked,updated_at:new Date().toISOString()};const result=await tapid.client.from('notification_preferences').upsert(payload,{onConflict:'student_user_id'}).select().single();tapid.setBusy(button,false);if(result.error)return tapid.setMessage(message,result.error.message,'error');populateNotificationPreferences(result.data);tapid.setMessage(message,'Notification preferences saved.','success');
+    });
+
+    document.getElementById('markNotificationsRead').addEventListener('click',async()=>{const result=await tapid.client.from('student_notifications').update({read_at:new Date().toISOString()}).eq('student_user_id',currentUser.id).is('read_at',null);if(result.error)return tapid.setMessage(message,result.error.message,'error');currentNotifications.forEach(item=>item.read_at=item.read_at||new Date().toISOString());renderNotifications();});
+
+    const previewDialog=document.getElementById('profilePreviewDialog');
+    document.getElementById('publicBtnSide').addEventListener('click',event=>{event.preventDefault();const url=tapid.profileUrl(currentProfile.username);document.getElementById('profilePreviewFrame').src=url;document.getElementById('openProfilePreview').href=url;previewDialog.showModal();});
+    const closePreview=()=>{previewDialog.close();document.getElementById('profilePreviewFrame').removeAttribute('src');};document.getElementById('closeProfilePreview').addEventListener('click',closePreview);document.getElementById('closeProfilePreviewBottom').addEventListener('click',closePreview);
+
+    const readinessDialog=document.getElementById('readinessDialog'),progressBar=document.querySelector('.profile-progress'),progressCopy=document.querySelector('.profile-progress-copy');[progressBar,progressCopy].forEach(control=>{control.setAttribute('role','button');control.setAttribute('tabindex','0');control.setAttribute('aria-label','Open profile readiness checklist');control.addEventListener('click',()=>readinessDialog.showModal());control.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();readinessDialog.showModal();}});});document.getElementById('closeReadiness').addEventListener('click',()=>readinessDialog.close());document.getElementById('closeReadinessBottom').addEventListener('click',()=>readinessDialog.close());
 
     document.getElementById('uploadAvatar').addEventListener('click', async () => {
       const file = document.getElementById('avatarFile').files?.[0];

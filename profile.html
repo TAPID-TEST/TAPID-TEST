@@ -19,6 +19,7 @@
         <div class="eyebrow">Professional identity</div>
         <h1 id="name"></h1>
         <div class="public-meta"><span id="major"></span><span id="schoolYear"></span><span id="school"></span><span id="gradYear"></span></div>
+        <div class="verified-school-badge" id="verifiedSchoolBadge" hidden><i class="fa-solid fa-circle-check"></i><span id="verifiedSchoolText"></span></div>
         <p id="bio" class="public-bio"></p>
       </section>
 
@@ -38,6 +39,8 @@
         <div class="eyebrow">Quick snapshot</div><h2>At a glance</h2>
         <div id="snapshotGrid" class="snapshot-grid"></div>
       </section>
+
+      <section id="opportunitiesSection" class="card public-section" hidden><div class="eyebrow">Open to opportunities</div><h2>What I’m Looking For</h2><div id="publicOpportunities" class="opportunity-public-grid"></div></section>
 
       <section id="featuredExperienceSection" class="card public-section feature-section" hidden>
         <div class="eyebrow">Professional experience</div><h2>Featured Experience</h2>
@@ -120,6 +123,8 @@
     let certificationsData = [];
     let recommendationsData = [];
     let outcomesData = [];
+    let opportunityData = null;
+    let verificationData = null;
     let employerRecruiterData = null;
     let employerCompanyData = null;
 
@@ -287,11 +292,13 @@
     }
 
     function renderPublicOutcomes() {
-      const labels={interview:'Interview',internship:'Internship',offer:'Offer',accepted_offer:'Accepted Offer',job:'Job'};
+      const labels={interview:'Interview',internship:'Internship',offer:'Offer',accepted_offer:'Accepted Offer',job:'Hired'};
       const container=document.getElementById('publicOutcomes');container.innerHTML='';
       outcomesData.forEach(item=>{const block=document.createElement('article');block.className='public-entry';const meta=[item.company_name,item.title,item.outcome_date?new Date(item.outcome_date+'T00:00:00').toLocaleDateString():null].filter(Boolean).join(' · ');block.innerHTML=`<div class="eyebrow">${escapeHtml(labels[item.outcome_type]||item.outcome_type)}</div><h3>${escapeHtml(meta)}</h3>${item.notes?`<p>${escapeHtml(item.notes)}</p>`:''}<small class="subtle">${item.verification_status==='verified'?'Verified outcome':'Student reported'}</small>`;container.appendChild(block);});
       document.getElementById('outcomesSection').hidden=!outcomesData.length;
     }
+
+    function renderPublicOpportunities(){const section=document.getElementById('opportunitiesSection'),root=document.getElementById('publicOpportunities');root.innerHTML='';if(!opportunityData){section.hidden=true;return;}const blocks=[['Opportunities',opportunityData.opportunity_types],['Desired roles',opportunityData.desired_roles],['Industries',opportunityData.industries],['Preferred locations',opportunityData.preferred_locations]];blocks.forEach(([label,values])=>{if(!values?.length)return;const block=document.createElement('div');block.className='opportunity-public-block';block.innerHTML=`<strong>${escapeHtml(label)}</strong><div>${values.map(value=>`<span>${escapeHtml(value)}</span>`).join('')}</div>`;root.appendChild(block);});if(opportunityData.available_start_date){const block=document.createElement('div');block.className='opportunity-public-block';block.innerHTML=`<strong>Availability</strong><div><span>${escapeHtml(new Date(opportunityData.available_start_date+'T12:00:00').toLocaleDateString(undefined,{month:'long',year:'numeric'}))}</span>${opportunityData.willing_to_relocate?'<span>Willing to relocate</span>':''}</div>`;root.appendChild(block);}section.hidden=!root.children.length;}
 
     function resetConnectForm() {
       document.getElementById('connectForm').reset();
@@ -332,7 +339,7 @@
         if (!profile || profile.profile_active !== true || profile.card_activated !== true) throw new Error('unavailable');
         profileData = profile;
 
-        const [resumeResult, contactResult, linksResult, experiencesResult, projectsResult, skillsResult, organizationsResult, certificationsResult, recommendationsResult, outcomesResult] = await Promise.all([
+        const [resumeResult, contactResult, linksResult, experiencesResult, projectsResult, skillsResult, organizationsResult, certificationsResult, recommendationsResult, outcomesResult, opportunityResult, verificationResult] = await Promise.all([
           tapid.client.from('resumes').select('*').eq('user_id', profile.id).eq('is_public', true).maybeSingle(),
           tapid.client.from('public_contacts').select('*').eq('user_id', profile.id).maybeSingle(),
           tapid.client.from('links').select('*').eq('user_id', profile.id).eq('is_public', true).order('sort_order').order('id'),
@@ -342,7 +349,9 @@
           tapid.client.from('organizations').select('*').eq('user_id', profile.id).eq('is_public', true).order('sort_order').order('id'),
           tapid.client.from('certifications').select('*').eq('user_id', profile.id).eq('is_public', true).order('sort_order').order('id'),
           tapid.client.from('recommendations').select('*').eq('student_user_id',profile.id).eq('is_public',true).eq('status','submitted').order('updated_at',{ascending:false}),
-          tapid.client.from('career_outcomes').select('*').eq('student_user_id',profile.id).eq('is_public',true).order('outcome_date',{ascending:false})
+          tapid.client.from('career_outcomes').select('*').eq('student_user_id',profile.id).eq('is_public',true).eq('verification_status','verified').order('outcome_date',{ascending:false}),
+          tapid.client.from('student_opportunity_preferences').select('*').eq('student_user_id',profile.id).eq('is_public',true).maybeSingle(),
+          tapid.client.rpc('public_profile_verification',{p_username:username})
         ]);
         if (resumeResult.error) throw resumeResult.error;
         if (contactResult.error) throw contactResult.error;
@@ -354,6 +363,8 @@
         if (certificationsResult.error) throw certificationsResult.error;
         if (recommendationsResult.error) throw recommendationsResult.error;
         if (outcomesResult.error) throw outcomesResult.error;
+        if (opportunityResult.error) throw opportunityResult.error;
+        if (verificationResult.error) throw verificationResult.error;
         contactData = contactResult.data;
         linksData = linksResult.data || [];
         experiencesData = experiencesResult.data || [];
@@ -363,6 +374,8 @@
         certificationsData = certificationsResult.data || [];
         recommendationsData = recommendationsResult.data || [];
         outcomesData = outcomesResult.data || [];
+        opportunityData = opportunityResult.data;
+        verificationData = (verificationResult.data || [])[0] || null;
 
         // Render the public-profile contract consistently even when the profile
         // owner is signed in. Owner RLS access may return private records, but a
@@ -410,6 +423,7 @@
           : (profile.school_year || 'Year not listed');
         document.getElementById('school').textContent = profile.school || 'University not listed';
         document.getElementById('gradYear').textContent = profile.graduation_year ? `Class of ${profile.graduation_year}` : 'Graduation year not listed';
+        if(verificationData){const badge=document.getElementById('verifiedSchoolBadge');document.getElementById('verifiedSchoolText').textContent=`${verificationData.verification_label} · ${verificationData.school_name}`;badge.hidden=false;}
         const bio = document.getElementById('bio'); bio.textContent = profile.bio || ''; bio.hidden = !profile.bio;
 
         if (profile.avatar_path && profile.avatar_is_public) { const avatar=document.getElementById('publicAvatar'); avatar.src=await tapid.signedFileUrl('avatars',profile.avatar_path); avatar.hidden=false; }
@@ -444,6 +458,7 @@
         if(profile.show_certifications!==false)renderPublicCertifications();
         if(profile.show_recommendations!==false)renderPublicRecommendations();
         if(profile.show_outcomes===true)renderPublicOutcomes();
+        renderPublicOpportunities();
         renderSnapshot();
 
         document.getElementById('saveContactBtn').addEventListener('click', () => tapid.downloadVCard(profileData, contactData, linksData));
