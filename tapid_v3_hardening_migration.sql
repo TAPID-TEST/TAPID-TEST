@@ -55,7 +55,7 @@ begin
     raise exception 'Recruiter email must match the signed-in account';
   end if;
 
-  v_normalized := lower(regexp_replace(trim(p_company_name), '\\s+', ' ', 'g'));
+  v_normalized := lower(regexp_replace(trim(p_company_name), '\s+', ' ', 'g'));
   if v_normalized = '' or trim(coalesce(p_recruiter_name, '')) = '' then
     raise exception 'Company and recruiter name are required';
   end if;

@@ -52,4 +52,12 @@ These items cannot be completed by repository code alone:
 1. Configure production SMTP in Supabase.
 2. Add a custom TapID domain and update the Supabase URL allowlist.
 3. Test real NFC cards and QR codes on current iOS and Android devices.
-4. Complete the live role-to-role matrix in `TESTING.md` with dedicated accounts.
+4. Complete the remaining deferred checks recorded in `LIVE_TEST_RESULTS.md`.
+
+## Live acceptance status
+
+The student, Kiewit employer, Granite employer, and Cal Poly administrator
+workflows were exercised against the deployed site on September 29, 2026. Core
+role, privacy, request, acceptance, decline, analytics, account-lifecycle, PDF,
+and QR flows passed. See `LIVE_TEST_RESULTS.md` for the exact coverage and the
+small set of external checks intentionally deferred.
