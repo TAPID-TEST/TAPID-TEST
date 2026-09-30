@@ -9,7 +9,7 @@
 <link href="styles.css" rel="stylesheet"/>
 </head>
 <body class="dashboard-page">
-<header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a><div class="nav-actions"><a class="btn btn-secondary" href="journey.html">Recommendations &amp; Outcomes</a><a class="btn btn-secondary" href="account.html">Account &amp; Privacy</a><button class="btn btn-secondary" id="logoutBtn" type="button">Log Out</button></div></header>
+<header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a><div class="nav-actions"><a class="btn btn-secondary" href="account.html">Account &amp; Privacy</a><button class="btn btn-secondary" id="logoutBtn" type="button">Log Out</button></div></header>
 <main class="dashboard-shell dashboard shell">
 <div class="dashboard-hero dash-head">
 <div><div class="eyebrow">Your professional workspace</div><h1 id="welcome">Your TapID</h1><p class="subtle">Keep your professional identity current as you learn, build, and connect.</p></div>
@@ -20,12 +20,13 @@
 <div class="dashboard-main">
 <section class="dashboard-section dashboard-home" data-section="home" id="dash-home">
 <div class="home-intro"><div><div class="eyebrow">Today at a glance</div><h2 id="homeGreeting">Welcome back</h2><p class="subtle" id="homeStatusText">Here is what is happening across your TapID.</p></div><span class="home-date" id="homeDate"></span></div>
-<div class="home-metrics" aria-label="Profile totals"><button class="home-metric" data-jump="experience" type="button"><span class="metric-icon"><i class="fa-solid fa-briefcase"></i></span><span class="metric-copy"><strong id="homeExperienceCount">0</strong><small>Experiences</small></span></button><button class="home-metric" data-jump="projects" type="button"><span class="metric-icon"><i class="fa-solid fa-diagram-project"></i></span><span class="metric-copy"><strong id="homeProjectCount">0</strong><small>Projects</small></span></button><button class="home-metric" data-jump="skills" type="button"><span class="metric-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span><span class="metric-copy"><strong id="homeSkillCount">0</strong><small>Skills</small></span></button><button class="home-metric" data-jump="certifications" type="button"><span class="metric-icon"><i class="fa-solid fa-certificate"></i></span><span class="metric-copy"><strong id="homeCertificationCount">0</strong><small>Certifications</small></span></button><button class="home-metric" data-jump="connections" type="button"><span class="metric-icon"><i class="fa-solid fa-user-group"></i></span><span class="metric-copy"><strong id="summaryConnectionCount">0</strong><small>Connections</small></span></button></div>
-<div class="home-grid"><div class="card home-panel home-readiness"><div class="home-panel-heading"><div><div class="eyebrow">Profile snapshot</div><h2>Your professional profile</h2></div><button class="text-action" data-jump="profile" type="button">Edit profile <i class="fa-solid fa-arrow-right"></i></button></div><p class="subtle">A quick check of the information recruiters can use when you share your TapID.</p><div class="readiness-rows"><button class="readiness-row" data-jump="resume" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-file-lines"></i></span><span><strong>Résumé</strong><small id="homeResumeState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="contact" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-address-card"></i></span><span><strong>Contact information</strong><small id="homeContactState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="links" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-link"></i></span><span><strong>Professional links</strong><small id="homeLinkState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="projects" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-layer-group"></i></span><span><strong>Portfolio content</strong><small id="homePortfolioState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button></div></div><div class="card home-panel home-network"><div class="eyebrow">Your network</div><h2>Connections</h2><p class="subtle">Keep track of the people and employers you meet.</p><div class="network-number"><strong id="homeConnectionBig">0</strong><span>saved connections</span></div><div class="network-split"><div><strong id="homePendingRequestCount">0</strong><span>Pending requests</span></div><div><strong id="homeCareerFairCount">0</strong><span>Career fairs</span></div></div><button class="btn btn-primary btn-block" data-jump="connections" type="button">Manage Connections</button><button class="text-action centered" data-jump="career-fairs" type="button">Explore career fairs <i class="fa-solid fa-arrow-right"></i></button></div></div>
-<div class="card home-panel home-next"><div class="home-panel-heading"><div><div class="eyebrow">Keep moving</div><h2>Recommended next steps</h2></div></div><div class="home-actions" id="homeNextSteps"></div></div>
+<div class="home-metrics" aria-label="Student overview"><button class="home-metric" data-jump="connections" type="button"><span class="metric-icon"><i class="fa-solid fa-user-group"></i></span><span class="metric-copy"><strong id="summaryConnectionCount">0</strong><small>Connections</small></span></button><button class="home-metric" data-jump="career-fairs" type="button"><span class="metric-icon"><i class="fa-solid fa-paper-plane"></i></span><span class="metric-copy"><strong id="homePendingMetric">0</strong><small>Pending requests</small></span></button><button class="home-metric" data-jump="career-fairs" type="button"><span class="metric-icon"><i class="fa-solid fa-calendar-days"></i></span><span class="metric-copy"><strong id="homeUpcomingFairMetric">0</strong><small>Upcoming fairs</small></span></button><button class="home-metric" data-jump="experience" type="button"><span class="metric-icon"><i class="fa-solid fa-briefcase"></i></span><span class="metric-copy"><strong id="homeExperienceCount">0</strong><small>Experiences</small></span></button><button class="home-metric" data-jump="projects" type="button"><span class="metric-icon"><i class="fa-solid fa-diagram-project"></i></span><span class="metric-copy"><strong id="homeProjectCount">0</strong><small>Projects</small></span></button></div>
+<div class="home-grid"><div class="card home-panel home-readiness"><div class="home-panel-heading"><div><div class="eyebrow">Profile snapshot</div><h2>Your professional profile</h2></div><button class="text-action" data-jump="profile" type="button">Edit profile <i class="fa-solid fa-arrow-right"></i></button></div><p class="subtle">A quick check of the information employers can use when you share your TapID.</p><div class="profile-progress-copy"><strong id="homeProfileProgressLabel">Profile setup</strong><span id="homeProfileProgressValue">0%</span></div><div class="profile-progress"><span id="homeProfileProgressBar"></span></div><div class="readiness-rows"><button class="readiness-row" data-jump="resume" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-file-lines"></i></span><span><strong>Résumé</strong><small id="homeResumeState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="contact" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-address-card"></i></span><span><strong>Contact information</strong><small id="homeContactState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="links" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-link"></i></span><span><strong>Professional links</strong><small id="homeLinkState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="projects" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-layer-group"></i></span><span><strong>Portfolio content</strong><small id="homePortfolioState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button></div></div><div class="card home-panel home-network"><div class="eyebrow">Your network</div><h2>Connection activity</h2><p class="subtle">Career-fair requests stay separate until an employer accepts.</p><div class="network-number"><strong id="homeConnectionBig">0</strong><span>accepted and direct connections</span></div><div class="connection-progress" aria-label="Career fair request status"><span class="accepted" id="homeAcceptedBar"></span><span class="pending" id="homePendingBar"></span><span class="declined" id="homeDeclinedBar"></span></div><div class="network-status-list"><span><i class="accepted"></i><strong id="homeAcceptedRequestCount">0</strong> Accepted</span><span><i class="pending"></i><strong id="homePendingRequestCount">0</strong> Pending</span><span><i class="declined"></i><strong id="homeDeclinedRequestCount">0</strong> Declined</span></div><button class="btn btn-primary btn-block" data-jump="connections" type="button">Manage Connections</button><button class="text-action centered" data-jump="career-fairs" type="button">Explore career fairs <i class="fa-solid fa-arrow-right"></i></button></div></div>
+<div class="card home-panel home-fairs"><div class="home-panel-heading"><div><div class="eyebrow">Upcoming opportunities</div><h2>Career fairs</h2></div><button class="text-action" data-jump="career-fairs" type="button">View all <i class="fa-solid fa-arrow-right"></i></button></div><div id="homeUpcomingFairs" class="home-fair-list"><div class="inline-empty">Loading upcoming career fairs…</div></div></div>
 </section>
 <section class="dashboard-section card" data-section="profile" hidden id="dash-profile">
 <div class="section-head"><div><h2>Basic Profile</h2><p class="subtle">Your academic and professional introduction.</p></div></div>
+<div class="profile-photo-editor"><img id="avatarPreview" class="avatar-preview" alt="Profile photo preview" hidden><div><h3>Profile photo</h3><p class="subtle">Optional. JPG, PNG, or WebP up to 5 MB.</p><input id="avatarFile" type="file" accept="image/jpeg,image/png,image/webp"><label class="toggle-row"><input id="avatarPublic" type="checkbox"><span>Show photo publicly</span></label><div class="form-actions"><button id="uploadAvatar" class="btn btn-secondary" type="button">Upload Photo</button><button id="deleteAvatar" class="btn btn-danger" type="button">Remove Photo</button></div></div></div>
 <form id="profileForm">
 <div class="form-grid"><div class="field"><label for="firstName">First name</label><input id="firstName" required=""/></div><div class="field"><label for="lastName">Last name</label><input id="lastName" required=""/></div></div>
 <div class="field"><label for="username">TapID username</label><input autocapitalize="none" id="username" required="" spellcheck="false"/><div class="help" hidden="" id="usernameLockHelp">Locked after card activation so the NFC/QR URL stays permanent.</div></div>
@@ -54,7 +55,7 @@
 <section class="dashboard-section card" data-section="resume" hidden="" id="dash-resume">
 <div class="section-head"><div><h2>Résumé</h2><p class="subtle" id="resumeStatus">Checking résumé…</p></div></div>
 <input accept="application/pdf,.pdf" class="hidden-input" id="resumeFile" type="file"/>
-<div class="action-row"><button class="btn btn-primary" id="resumeActionBtn" type="button">Upload Résumé</button><button class="btn btn-danger" hidden="" id="deleteResumeBtn" type="button">Delete Résumé</button></div>
+<div class="action-row"><button class="btn btn-primary" id="resumeActionBtn" type="button">Upload Résumé</button><button class="btn btn-secondary" hidden id="viewResumeBtn" type="button">View Résumé</button><button class="btn btn-danger" hidden="" id="deleteResumeBtn" type="button">Delete Résumé</button></div>
 <p class="help">PDF only. The public profile shows “Résumé not available” until one is uploaded.</p>
 </section>
 <section class="dashboard-section card" data-section="links" hidden="" id="dash-links">
@@ -101,8 +102,8 @@
 <aside class="status-card dashboard-sidebar card"><nav aria-label="Dashboard sections" class="dashboard-section-nav">
 <div class="sidebar-label">Overview</div><button class="dashboard-nav-item active" data-target="home" type="button"><i class="fa-solid fa-house"></i><span>Home</span></button>
 <div class="sidebar-label sidebar-group-label">Your TapID</div><button class="dashboard-nav-item" data-target="profile" type="button"><i class="fa-solid fa-user"></i><span>Profile</span></button><button class="dashboard-nav-item" data-target="contact" type="button"><i class="fa-solid fa-address-card"></i><span>Contact</span></button><button class="dashboard-nav-item" data-target="resume" type="button"><i class="fa-solid fa-file-lines"></i><span>Résumé</span></button><button class="dashboard-nav-item" data-target="links" type="button"><i class="fa-solid fa-link"></i><span>Links</span></button>
-<div class="sidebar-label sidebar-group-label">Show What You've Done</div><button class="dashboard-nav-item" data-target="experience" type="button"><i class="fa-solid fa-briefcase"></i><span>Experience</span></button><button class="dashboard-nav-item" data-target="projects" type="button"><i class="fa-solid fa-diagram-project"></i><span>Projects</span></button><button class="dashboard-nav-item" data-target="skills" type="button"><i class="fa-solid fa-screwdriver-wrench"></i><span>Skills</span></button><button class="dashboard-nav-item" data-target="organizations" type="button"><i class="fa-solid fa-people-group"></i><span>Organizations</span></button><button class="dashboard-nav-item" data-target="certifications" type="button"><i class="fa-solid fa-certificate"></i><span>Certifications</span></button>
-<div class="sidebar-label sidebar-group-label">Your Network</div><button class="dashboard-nav-item" data-target="connections" type="button"><i class="fa-solid fa-user-group"></i><span>Connections</span></button><button class="dashboard-nav-item" data-target="career-fairs" type="button"><i class="fa-solid fa-building-columns"></i><span>Career Fairs</span></button>
+<div class="sidebar-label sidebar-group-label">Show What You've Done</div><button class="dashboard-nav-item" data-target="experience" type="button"><i class="fa-solid fa-briefcase"></i><span>Experience</span></button><button class="dashboard-nav-item" data-target="projects" type="button"><i class="fa-solid fa-diagram-project"></i><span>Projects</span></button><button class="dashboard-nav-item" data-target="skills" type="button"><i class="fa-solid fa-screwdriver-wrench"></i><span>Skills</span></button><button class="dashboard-nav-item" data-target="organizations" type="button"><i class="fa-solid fa-people-group"></i><span>Organizations</span></button><button class="dashboard-nav-item" data-target="certifications" type="button"><i class="fa-solid fa-certificate"></i><span>Certifications</span></button><a class="dashboard-nav-item" href="journey.html#recommendations"><i class="fa-solid fa-comment-dots"></i><span>Recommendations</span></a>
+<div class="sidebar-label sidebar-group-label">Your Network</div><button class="dashboard-nav-item" data-target="connections" type="button"><i class="fa-solid fa-user-group"></i><span>Connections</span></button><button class="dashboard-nav-item" data-target="career-fairs" type="button"><i class="fa-solid fa-building-columns"></i><span>Career Fairs</span></button><a class="dashboard-nav-item" href="journey.html#outcomes"><i class="fa-solid fa-bullseye"></i><span>Outcomes</span></a>
 </nav><div class="sidebar-divider"></div>
 <h2>Card status</h2>
 <div class="status-badges"><span class="badge off" id="cardBadge">CARD NOT ACTIVATED</span><span class="badge off" id="activeBadge">PROFILE OFF</span></div>
@@ -264,6 +265,7 @@
     let currentCertifications = [];
     let currentConnections = [];
     let currentCareerFairDirectory = [];
+    let currentCareerFairs = [];
     let selectedEmployerRequest = null;
 
     const message = document.getElementById('message');
@@ -326,6 +328,15 @@
         toggle.textContent = 'Activate TapID First';
         availabilityHelp.textContent = 'Finish card activation to make the permanent public URL and QR code live.';
       }
+      document.getElementById('avatarPublic').checked = profile.avatar_is_public !== false;
+      renderAvatar();
+    }
+
+    async function renderAvatar() {
+      const img = document.getElementById('avatarPreview');
+      if (!currentProfile?.avatar_path) { img.hidden = true; img.removeAttribute('src'); return; }
+      try { img.src = await tapid.signedFileUrl('avatars', currentProfile.avatar_path); img.hidden = false; }
+      catch { img.hidden = true; }
     }
 
     function populateContact(contact) {
@@ -346,14 +357,17 @@
       const status = document.getElementById('resumeStatus');
       const action = document.getElementById('resumeActionBtn');
       const del = document.getElementById('deleteResumeBtn');
+      const view = document.getElementById('viewResumeBtn');
       if (resume?.file_url) {
         status.textContent = `Uploaded: ${resume.file_name || 'resume.pdf'}`;
         action.textContent = 'Replace Résumé';
         del.hidden = false;
+        view.hidden = false;
       } else {
         status.textContent = 'No résumé uploaded yet.';
         action.textContent = 'Upload Résumé';
         del.hidden = true;
+        view.hidden = true;
       }
     }
 
@@ -894,9 +908,13 @@
     }
 
     async function loadCareerFairDirectory() {
-      const result = await tapid.client.rpc('student_event_employer_directory');
+      const [result, fairResult] = await Promise.all([
+        tapid.client.rpc('student_event_employer_directory'),
+        tapid.client.from('career_fairs').select('id,name,starts_at,ends_at,location,description').eq('is_published', true).eq('school_name', currentProfile.school).order('starts_at', { ascending: true })
+      ]);
       if (result.error) throw result.error;
       currentCareerFairDirectory = result.data || [];
+      currentCareerFairs = fairResult.error ? [] : (fairResult.data || []);
       renderCareerFairDirectory();
     }
 
@@ -973,27 +991,38 @@
       set('homePortfolioState', publicPortfolio ? `${publicPortfolio} public ${publicPortfolio === 1 ? 'item' : 'items'}` : 'No public work added');
 
       const pendingRequests = currentCareerFairDirectory.filter(item => item.request_status === 'pending').length;
-      const fairCount = new Set(currentCareerFairDirectory.map(item => item.event_name).filter(Boolean)).size;
+      const acceptedRequests = currentCareerFairDirectory.filter(item => item.request_status === 'accepted').length;
+      const declinedRequests = currentCareerFairDirectory.filter(item => item.request_status === 'declined').length;
+      const now = Date.now();
+      const upcomingFairs = currentCareerFairs.filter(item => !item.ends_at || new Date(item.ends_at).getTime() >= now);
       set('homePendingRequestCount', pendingRequests);
-      set('homeCareerFairCount', fairCount);
+      set('homeAcceptedRequestCount', acceptedRequests);
+      set('homeDeclinedRequestCount', declinedRequests);
+      set('homePendingMetric', pendingRequests);
+      set('homeUpcomingFairMetric', upcomingFairs.length);
+      const requestTotal = acceptedRequests + pendingRequests + declinedRequests;
+      const width = value => requestTotal ? `${(value / requestTotal) * 100}%` : '0%';
+      document.getElementById('homeAcceptedBar').style.width = width(acceptedRequests);
+      document.getElementById('homePendingBar').style.width = width(pendingRequests);
+      document.getElementById('homeDeclinedBar').style.width = width(declinedRequests);
 
-      const nextSteps = [];
-      if (!currentResume?.file_url) nextSteps.push({ target: 'resume', icon: 'fa-file-arrow-up', title: 'Upload your résumé', detail: 'Give employers a familiar summary of your experience.' });
-      if (!currentProjects.length) nextSteps.push({ target: 'projects', icon: 'fa-diagram-project', title: 'Add your first project', detail: 'Show how you applied your skills to real work.' });
-      if (!currentExperiences.length) nextSteps.push({ target: 'experience', icon: 'fa-briefcase', title: 'Add an experience', detail: 'Explain your responsibilities and accomplishments.' });
-      if (!currentSkills.length) nextSteps.push({ target: 'skills', icon: 'fa-screwdriver-wrench', title: 'Add skills with evidence', detail: 'Connect skills to the work where you used them.' });
-      if (!publicLinks) nextSteps.push({ target: 'links', icon: 'fa-link', title: 'Add a professional link', detail: 'Connect LinkedIn, GitHub, or your portfolio.' });
-      if (!contactValues) nextSteps.push({ target: 'contact', icon: 'fa-address-card', title: 'Add contact information', detail: 'Choose how employers can reach you.' });
-      if (nextSteps.length < 3) nextSteps.push({ target: 'projects', icon: 'fa-pen-to-square', title: 'Refresh your strongest project', detail: 'Keep the details, images, and results current.' });
-      if (nextSteps.length < 3) nextSteps.push({ target: 'career-fairs', icon: 'fa-building-columns', title: 'Explore career fairs', detail: 'Find employers and request connections.' });
-      const root = document.getElementById('homeNextSteps');
-      if (root) {
-        root.innerHTML = '';
-        nextSteps.slice(0, 3).forEach(step => {
-          const button = document.createElement('button');
-          button.className = 'home-action'; button.type = 'button'; button.dataset.jump = step.target;
-          button.innerHTML = `<i class="fa-solid ${step.icon}"></i><span><strong>${step.title}</strong><small>${step.detail}</small></span><i class="fa-solid fa-chevron-right"></i>`;
-          root.appendChild(button);
+      const readiness = [Boolean(currentProfile.bio), Boolean(currentProfile.avatar_path), Boolean(currentResume?.file_url), contactValues > 0, publicLinks > 0, publicPortfolio > 0, currentSkills.length > 0, currentCertifications.length > 0];
+      const progress = Math.round(readiness.filter(Boolean).length / readiness.length * 100);
+      set('homeProfileProgressValue', `${progress}%`);
+      document.getElementById('homeProfileProgressBar').style.width = `${progress}%`;
+
+      const fairRoot = document.getElementById('homeUpcomingFairs');
+      fairRoot.innerHTML = '';
+      if (!upcomingFairs.length) {
+        fairRoot.innerHTML = '<div class="inline-empty">No upcoming career fairs have been published yet.</div>';
+      } else {
+        upcomingFairs.slice(0, 3).forEach(fair => {
+          const row = document.createElement('button');
+          row.type = 'button'; row.className = 'home-fair-row'; row.dataset.jump = 'career-fairs';
+          const dateLabel = fair.starts_at ? new Date(fair.starts_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Date to be announced';
+          const employers = currentCareerFairDirectory.filter(item => item.event_name === fair.name).length;
+          row.innerHTML = `<span class="fair-date"><i class="fa-regular fa-calendar"></i>${escapeHtml(dateLabel)}</span><span><strong>${escapeHtml(fair.name)}</strong><small>${escapeHtml(fair.location || 'Location to be announced')} · ${employers} ${employers === 1 ? 'employer' : 'employers'}</small></span><i class="fa-solid fa-chevron-right"></i>`;
+          fairRoot.appendChild(row);
         });
       }
     }
@@ -1018,6 +1047,43 @@
     document.getElementById('sendEmployerRequest').addEventListener('click', sendEmployerRequest);
     document.getElementById('closeRequestEmployer').addEventListener('click', ()=>document.getElementById('requestEmployerDialog').close());
     document.getElementById('cancelEmployerRequest').addEventListener('click', ()=>document.getElementById('requestEmployerDialog').close());
+
+    document.getElementById('uploadAvatar').addEventListener('click', async () => {
+      const file = document.getElementById('avatarFile').files?.[0];
+      if (!file) return tapid.setMessage(message, 'Choose an image first.', 'error');
+      if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) return tapid.setMessage(message, 'Use a JPG, PNG, or WebP image no larger than 5 MB.', 'error');
+      const button = document.getElementById('uploadAvatar');
+      tapid.setBusy(button, true, 'Uploading…');
+      try {
+        const ext = file.name.split('.').pop().toLowerCase();
+        const path = `${currentUser.id}/avatar.${ext}`;
+        if (currentProfile.avatar_path) await tapid.client.storage.from('avatars').remove([currentProfile.avatar_path]);
+        const up = await tapid.client.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
+        if (up.error) throw up.error;
+        const saved = await tapid.client.from('profiles').update({ avatar_path: path, avatar_is_public: document.getElementById('avatarPublic').checked, updated_at: new Date().toISOString() }).eq('id', currentUser.id).select().single();
+        if (saved.error) throw saved.error;
+        currentProfile = saved.data; await renderAvatar(); updateDashboardHome();
+        document.getElementById('avatarFile').value = '';
+        tapid.setMessage(message, 'Profile photo saved.', 'success');
+      } catch (error) { tapid.setMessage(message, error.message, 'error'); }
+      finally { tapid.setBusy(button, false); }
+    });
+
+    document.getElementById('avatarPublic').addEventListener('change', async event => {
+      const saved = await tapid.client.from('profiles').update({ avatar_is_public: event.target.checked, updated_at: new Date().toISOString() }).eq('id', currentUser.id).select().single();
+      if (saved.error) { event.target.checked = !event.target.checked; return tapid.setMessage(message, saved.error.message, 'error'); }
+      currentProfile = saved.data; tapid.setMessage(message, 'Photo visibility saved.', 'success');
+    });
+
+    document.getElementById('deleteAvatar').addEventListener('click', async () => {
+      if (!currentProfile.avatar_path || !confirm('Remove your profile photo?')) return;
+      const path = currentProfile.avatar_path;
+      const result = await tapid.client.from('profiles').update({ avatar_path: null, updated_at: new Date().toISOString() }).eq('id', currentUser.id).select().single();
+      if (result.error) return tapid.setMessage(message, result.error.message, 'error');
+      await tapid.client.storage.from('avatars').remove([path]);
+      currentProfile = result.data; await renderAvatar(); updateDashboardHome();
+      tapid.setMessage(message, 'Profile photo removed.', 'success');
+    });
 
     document.getElementById('profileForm').addEventListener('submit', async event => {
       event.preventDefault();
@@ -1058,6 +1124,12 @@
     });
 
     document.getElementById('resumeActionBtn').addEventListener('click', () => document.getElementById('resumeFile').click());
+    document.getElementById('viewResumeBtn').addEventListener('click', async () => {
+      if (!currentResume?.file_path) return;
+      const viewer = window.open('about:blank', '_blank');
+      try { viewer.location = await tapid.signedFileUrl('resumes', currentResume.file_path); }
+      catch (error) { if (viewer) viewer.close(); tapid.setMessage(message, error.message, 'error'); }
+    });
     document.getElementById('resumeFile').addEventListener('change', async event => {
       const file = event.target.files?.[0];
       if (!file) return;
