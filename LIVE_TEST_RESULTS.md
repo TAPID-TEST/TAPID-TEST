@@ -33,6 +33,10 @@ No passwords or secret/service-role credentials are stored in this repository.
 - Password recovery, in-account password change, email change, and permanent
   deletion using disposable accounts
 - Real-phone QR scan to the permanent public profile URL
+- Physical NFC-card programming and signed-out phone tap to Taylor Mustang's
+  permanent public profile URL
+- Public/hidden profile-photo states and experience/project image upload,
+  display, removal, and privacy behavior
 - Private PDF delivery for résumé, certificate, and recommendation letter, plus
   recommendation/file deletion
 - Alumni-since display without changing the permanent profile URL
@@ -49,9 +53,7 @@ No passwords or secret/service-role credentials are stored in this repository.
 
 ## Deferred external checks
 
-- Public/hidden profile-photo states
-- Experience/project image upload and removal
-- Physical NFC-tag programming and iPhone/Android NFC tap testing
+- Cross-platform NFC tap testing on both iPhone and Android hardware
 - Custom production domain
 - Production SMTP provider configuration and delivery monitoring
 

@@ -13,15 +13,16 @@
 <main class="dashboard-shell dashboard shell">
 <div class="dashboard-hero dash-head">
 <div><div class="eyebrow">Your professional workspace</div><h1 id="welcome">Your TapID</h1><p class="subtle">Keep your professional identity current as you learn, build, and connect.</p></div>
-<a class="btn btn-gold" href="#" id="publicBtn" rel="noopener" target="_blank">View Public Profile ↗</a>
+<a hidden href="#" id="publicBtn" rel="noopener" target="_blank">View Public Profile</a>
 </div>
 <div class="message" hidden="" id="message"></div>
 <div class="dashboard-grid">
 <div class="dashboard-main">
 <section class="dashboard-section dashboard-home" data-section="home" id="dash-home">
-<div class="home-welcome card"><div><div class="eyebrow">Your TapID</div><h2 id="homeGreeting">Welcome back</h2><p class="subtle" id="homeStatusText">Your professional identity is ready to grow.</p></div><div class="home-status-actions"><span class="badge off" id="homeLiveBadge">PROFILE OFF</span><a class="btn btn-primary" href="#" id="homePublicBtn" rel="noopener" target="_blank">View Public Profile ↗</a></div></div>
-<div class="home-metrics"><button class="home-metric" data-jump="experience" type="button"><strong id="homeExperienceCount">0</strong><span>Experiences</span></button><button class="home-metric" data-jump="projects" type="button"><strong id="homeProjectCount">0</strong><span>Projects</span></button><button class="home-metric" data-jump="skills" type="button"><strong id="homeSkillCount">0</strong><span>Skills</span></button><button class="home-metric" data-jump="certifications" type="button"><strong id="homeCertificationCount">0</strong><span>Certifications</span></button><button class="home-metric" data-jump="connections" type="button"><strong id="summaryConnectionCount">0</strong><span>Connections</span></button></div>
-<div class="home-grid"><div class="card home-panel"><div class="section-head"><div><h2>Continue building</h2><p class="subtle">Small updates keep your TapID useful when opportunities appear.</p></div></div><div class="home-actions"><button class="home-action" data-jump="projects" type="button"><i class="fa-solid fa-diagram-project"></i><span><strong>Add or update a project</strong><small>Capture work while the details are fresh.</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="home-action" data-jump="experience" type="button"><i class="fa-solid fa-briefcase"></i><span><strong>Update your experience</strong><small>Document what you did beyond résumé bullets.</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="home-action" data-jump="resume" type="button"><i class="fa-solid fa-file-lines"></i><span><strong>Keep your résumé current</strong><small>Replace your PDF whenever it changes.</small></span><i class="fa-solid fa-chevron-right"></i></button></div></div><div class="card home-panel"><div class="section-head"><div><h2>Your network</h2><p class="subtle">People you chose to keep from real-world conversations.</p></div></div><div class="network-home"><strong id="homeConnectionBig">0</strong><span>connections</span><button class="btn btn-secondary" data-jump="connections" type="button">Open My Connections</button></div></div></div>
+<div class="home-intro"><div><div class="eyebrow">Today at a glance</div><h2 id="homeGreeting">Welcome back</h2><p class="subtle" id="homeStatusText">Here is what is happening across your TapID.</p></div><span class="home-date" id="homeDate"></span></div>
+<div class="home-metrics" aria-label="Profile totals"><button class="home-metric" data-jump="experience" type="button"><span class="metric-icon"><i class="fa-solid fa-briefcase"></i></span><span class="metric-copy"><strong id="homeExperienceCount">0</strong><small>Experiences</small></span></button><button class="home-metric" data-jump="projects" type="button"><span class="metric-icon"><i class="fa-solid fa-diagram-project"></i></span><span class="metric-copy"><strong id="homeProjectCount">0</strong><small>Projects</small></span></button><button class="home-metric" data-jump="skills" type="button"><span class="metric-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span><span class="metric-copy"><strong id="homeSkillCount">0</strong><small>Skills</small></span></button><button class="home-metric" data-jump="certifications" type="button"><span class="metric-icon"><i class="fa-solid fa-certificate"></i></span><span class="metric-copy"><strong id="homeCertificationCount">0</strong><small>Certifications</small></span></button><button class="home-metric" data-jump="connections" type="button"><span class="metric-icon"><i class="fa-solid fa-user-group"></i></span><span class="metric-copy"><strong id="summaryConnectionCount">0</strong><small>Connections</small></span></button></div>
+<div class="home-grid"><div class="card home-panel home-readiness"><div class="home-panel-heading"><div><div class="eyebrow">Profile snapshot</div><h2>Your professional profile</h2></div><button class="text-action" data-jump="profile" type="button">Edit profile <i class="fa-solid fa-arrow-right"></i></button></div><p class="subtle">A quick check of the information recruiters can use when you share your TapID.</p><div class="readiness-rows"><button class="readiness-row" data-jump="resume" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-file-lines"></i></span><span><strong>Résumé</strong><small id="homeResumeState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="contact" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-address-card"></i></span><span><strong>Contact information</strong><small id="homeContactState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="links" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-link"></i></span><span><strong>Professional links</strong><small id="homeLinkState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button><button class="readiness-row" data-jump="projects" type="button"><span class="readiness-row-icon"><i class="fa-solid fa-layer-group"></i></span><span><strong>Portfolio content</strong><small id="homePortfolioState">Checking…</small></span><i class="fa-solid fa-chevron-right"></i></button></div></div><div class="card home-panel home-network"><div class="eyebrow">Your network</div><h2>Connections</h2><p class="subtle">Keep track of the people and employers you meet.</p><div class="network-number"><strong id="homeConnectionBig">0</strong><span>saved connections</span></div><div class="network-split"><div><strong id="homePendingRequestCount">0</strong><span>Pending requests</span></div><div><strong id="homeCareerFairCount">0</strong><span>Career fairs</span></div></div><button class="btn btn-primary btn-block" data-jump="connections" type="button">Manage Connections</button><button class="text-action centered" data-jump="career-fairs" type="button">Explore career fairs <i class="fa-solid fa-arrow-right"></i></button></div></div>
+<div class="card home-panel home-next"><div class="home-panel-heading"><div><div class="eyebrow">Keep moving</div><h2>Recommended next steps</h2></div></div><div class="home-actions" id="homeNextSteps"></div></div>
 </section>
 <section class="dashboard-section card" data-section="profile" hidden id="dash-profile">
 <div class="section-head"><div><h2>Basic Profile</h2><p class="subtle">Your academic and professional introduction.</p></div></div>
@@ -957,14 +958,44 @@
       const greeting = document.getElementById('homeGreeting');
       if (greeting) greeting.textContent = `Welcome back, ${first}`;
       const statusText = document.getElementById('homeStatusText');
-      const live = Boolean(currentProfile.card_activated && currentProfile.profile_active);
-      if (statusText) statusText.textContent = live ? 'Your TapID is live and ready to share.' : (currentProfile.card_activated ? 'Your public profile is paused. Your work is still saved.' : 'Finish card activation when you are ready to share your TapID.');
-      const badge = document.getElementById('homeLiveBadge');
-      if (badge) { badge.textContent = live ? 'PROFILE LIVE' : 'PROFILE OFF'; badge.classList.toggle('off', !live); }
-      const publicLink = tapid.profileUrl(currentProfile.username);
-      const hp = document.getElementById('homePublicBtn'); if (hp) hp.href = publicLink;
+      if (statusText) statusText.textContent = 'Here is a clear look at your profile, portfolio, and network.';
+      const date = document.getElementById('homeDate');
+      if (date) date.textContent = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
       const set = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=String(val); };
       set('homeExperienceCount', currentExperiences.length); set('homeProjectCount', currentProjects.length); set('homeSkillCount', currentSkills.length); set('homeCertificationCount', currentCertifications.length); set('homeConnectionBig', currentConnections.length); set('summaryConnectionCount', currentConnections.length);
+
+      const contactValues = currentContact ? [currentContact.email, currentContact.phone, currentContact.website].filter(Boolean).length : 0;
+      const publicLinks = currentLinks.filter(item => item.is_public).length;
+      const publicPortfolio = currentExperiences.filter(item => item.is_public).length + currentProjects.filter(item => item.is_public).length;
+      set('homeResumeState', currentResume?.file_url ? 'Uploaded and ready to share' : 'No résumé uploaded');
+      set('homeContactState', contactValues ? `${contactValues} contact ${contactValues === 1 ? 'detail' : 'details'} added` : 'No contact details added');
+      set('homeLinkState', publicLinks ? `${publicLinks} public ${publicLinks === 1 ? 'link' : 'links'}` : 'No public links added');
+      set('homePortfolioState', publicPortfolio ? `${publicPortfolio} public ${publicPortfolio === 1 ? 'item' : 'items'}` : 'No public work added');
+
+      const pendingRequests = currentCareerFairDirectory.filter(item => item.request_status === 'pending').length;
+      const fairCount = new Set(currentCareerFairDirectory.map(item => item.event_name).filter(Boolean)).size;
+      set('homePendingRequestCount', pendingRequests);
+      set('homeCareerFairCount', fairCount);
+
+      const nextSteps = [];
+      if (!currentResume?.file_url) nextSteps.push({ target: 'resume', icon: 'fa-file-arrow-up', title: 'Upload your résumé', detail: 'Give employers a familiar summary of your experience.' });
+      if (!currentProjects.length) nextSteps.push({ target: 'projects', icon: 'fa-diagram-project', title: 'Add your first project', detail: 'Show how you applied your skills to real work.' });
+      if (!currentExperiences.length) nextSteps.push({ target: 'experience', icon: 'fa-briefcase', title: 'Add an experience', detail: 'Explain your responsibilities and accomplishments.' });
+      if (!currentSkills.length) nextSteps.push({ target: 'skills', icon: 'fa-screwdriver-wrench', title: 'Add skills with evidence', detail: 'Connect skills to the work where you used them.' });
+      if (!publicLinks) nextSteps.push({ target: 'links', icon: 'fa-link', title: 'Add a professional link', detail: 'Connect LinkedIn, GitHub, or your portfolio.' });
+      if (!contactValues) nextSteps.push({ target: 'contact', icon: 'fa-address-card', title: 'Add contact information', detail: 'Choose how employers can reach you.' });
+      if (nextSteps.length < 3) nextSteps.push({ target: 'projects', icon: 'fa-pen-to-square', title: 'Refresh your strongest project', detail: 'Keep the details, images, and results current.' });
+      if (nextSteps.length < 3) nextSteps.push({ target: 'career-fairs', icon: 'fa-building-columns', title: 'Explore career fairs', detail: 'Find employers and request connections.' });
+      const root = document.getElementById('homeNextSteps');
+      if (root) {
+        root.innerHTML = '';
+        nextSteps.slice(0, 3).forEach(step => {
+          const button = document.createElement('button');
+          button.className = 'home-action'; button.type = 'button'; button.dataset.jump = step.target;
+          button.innerHTML = `<i class="fa-solid ${step.icon}"></i><span><strong>${step.title}</strong><small>${step.detail}</small></span><i class="fa-solid fa-chevron-right"></i>`;
+          root.appendChild(button);
+        });
+      }
     }
 
     async function init() {
