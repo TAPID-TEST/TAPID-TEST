@@ -27,6 +27,12 @@
 <div class="section-head"><div><h2>Notifications</h2><p class="subtle">Updates about your connections, verified outcomes, career fairs, and TapID card.</p></div><button class="btn btn-secondary" id="markNotificationsRead" type="button">Mark All Read</button></div>
 <div class="notification-list" id="notificationList"></div><div class="inline-empty" id="notificationEmpty"><strong>You’re all caught up.</strong><br>Connection, career-fair, verified-outcome, and card updates will appear here.</div>
 </section>
+<section class="dashboard-section card share-center" data-section="share" hidden id="dash-share">
+<div class="section-head"><div><div class="eyebrow">Your digital introduction</div><h2>Preview &amp; Share Your TapID</h2><p class="subtle">When someone asks for your résumé, share your TapID instead—your résumé, work, skills, and contact choices stay together in one live profile.</p></div></div>
+<div class="share-url-card"><div><small>Your permanent TapID link</small><strong id="shareProfileUrl">Loading…</strong></div><button class="btn btn-secondary" id="copyProfileUrl" type="button"><i class="fa-solid fa-copy"></i> Copy Link</button></div>
+<div class="share-action-grid"><a class="share-action-card" id="shareOpenProfile" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i><span><strong>Preview Public Profile</strong><small>See exactly what employers see</small></span></a><a class="share-action-card" href="card.html"><i class="fa-solid fa-qrcode"></i><span><strong>QR &amp; NFC Card</strong><small>Open your card sharing controls</small></span></a><button class="share-action-card" id="nativeShareProfile" type="button"><i class="fa-solid fa-share-nodes"></i><span><strong>Share TapID</strong><small>Send your link from this device</small></span></button></div>
+<div class="profile-ready-state"><span><i class="fa-solid fa-circle-check"></i></span><div><strong>One link stays current</strong><small>Update your profile or résumé anytime without changing the link printed on your card or QR code.</small></div></div>
+</section>
 <section class="dashboard-section card" data-section="profile" hidden id="dash-profile">
 <div class="section-head"><div><h2>Basic Profile</h2><p class="subtle">Your academic and professional introduction.</p></div></div>
 <div class="profile-photo-editor"><img id="avatarPreview" class="avatar-preview" alt="Profile photo preview" hidden><div><h3>Profile photo</h3><p class="subtle">Optional. JPG, PNG, or WebP up to 5 MB.</p><input id="avatarFile" type="file" accept="image/jpeg,image/png,image/webp"><label class="toggle-row"><input id="avatarPublic" type="checkbox"><span>Show photo publicly</span></label><div class="form-actions"><button id="uploadAvatar" class="btn btn-secondary" type="button">Upload Photo</button><button id="deleteAvatar" class="btn btn-danger" type="button">Remove Photo</button></div></div></div>
@@ -101,6 +107,7 @@
 <div class="connections-list" id="connectionsList"></div>
 <div class="inline-empty" id="connectionsEmpty"><strong>No connections yet.</strong><br>Share your TapID at a career fair or networking event. Accepted employer requests and people who connect through your public profile will appear here.</div>
 </section>
+<section class="dashboard-section card" data-section="messages" hidden id="dash-messages"><div class="section-head"><div><h2>Employer Messages</h2><p class="subtle">Continue conversations with employers after you connect. Messages stay private between you and the connected company.</p></div></div><div class="messaging-layout"><div><div id="studentConversationList" class="conversation-list"></div><div id="studentConversationEmpty" class="inline-empty"><strong>No employer conversations yet.</strong><br>Messaging becomes available after an employer accepts your connection.</div></div><div id="studentThreadPanel" class="message-thread-panel"><div class="empty-state compact" id="studentThreadPlaceholder"><h3>Select a company</h3><p class="subtle">Choose a connected employer to read or send messages.</p></div><div id="studentThreadContent" hidden><div class="thread-heading"><div><h3 id="studentThreadCompany">Company</h3><small id="studentThreadMeta" class="subtle"></small></div></div><div id="studentMessageThread" class="message-thread"></div><form id="studentMessageForm" class="message-composer"><textarea id="studentMessageBody" maxlength="2000" rows="3" placeholder="Write a message…" required></textarea><button class="btn btn-primary" type="submit">Send Message</button></form></div></div></div></section>
 <section class="dashboard-section card" data-section="outcomes" hidden id="dash-outcomes"><div class="section-head"><div><h2>Employer Activity &amp; Outcomes</h2><p class="subtle">These private milestones appear automatically when an employer connects, follows up, interviews, or advances your candidacy. Aggregate totals are reported to your university; individual student histories remain private.</p></div></div><div id="dashboardOutcomeList" class="item-list"></div><div id="dashboardOutcomeEmpty" class="inline-empty"><strong>No employer-reported outcomes yet.</strong><br>Interview, internship, offer, and hiring milestones will appear automatically.</div></section>
 <section class="dashboard-section card" data-section="career-fairs" hidden id="dash-career-fairs">
   <div class="section-head"><div><div class="eyebrow">Opportunities</div><h2>Career Fairs</h2><p class="subtle">See companies currently registered for an event. If you miss a booth, you can send your public TapID as a connection request.</p></div></div>
@@ -110,16 +117,16 @@
 </section>
 </div>
 <aside class="status-card dashboard-sidebar card"><nav aria-label="Dashboard sections" class="dashboard-section-nav">
-<div class="sidebar-label">Overview</div><button class="dashboard-nav-item active" data-target="home" type="button"><i class="fa-solid fa-house"></i><span>Home</span></button><button class="dashboard-nav-item" data-target="notifications" type="button"><i class="fa-solid fa-bell"></i><span>Notifications</span><b class="nav-count" id="notificationNavCount" hidden>0</b></button>
+<div class="sidebar-label">Overview</div><button class="dashboard-nav-item active" data-target="home" type="button"><i class="fa-solid fa-house"></i><span>Home</span></button><button class="dashboard-nav-item" data-target="share" type="button"><i class="fa-solid fa-share-nodes"></i><span>Preview &amp; Share</span></button><button class="dashboard-nav-item" data-target="notifications" type="button"><i class="fa-solid fa-bell"></i><span>Notifications</span><b class="nav-count" id="notificationNavCount" hidden>0</b></button>
 <div class="sidebar-label sidebar-group-label">Your TapID</div><button class="dashboard-nav-item" data-target="profile" type="button"><i class="fa-solid fa-user"></i><span>Profile</span></button><button class="dashboard-nav-item" data-target="opportunities" type="button"><i class="fa-solid fa-compass"></i><span>Opportunities</span></button><button class="dashboard-nav-item" data-target="contact" type="button"><i class="fa-solid fa-address-card"></i><span>Contact</span></button><button class="dashboard-nav-item" data-target="resume" type="button"><i class="fa-solid fa-file-lines"></i><span>Résumé</span></button><button class="dashboard-nav-item" data-target="links" type="button"><i class="fa-solid fa-link"></i><span>Links</span></button>
 <div class="sidebar-label sidebar-group-label">Show What You've Done</div><button class="dashboard-nav-item" data-target="experience" type="button"><i class="fa-solid fa-briefcase"></i><span>Experience</span></button><button class="dashboard-nav-item" data-target="projects" type="button"><i class="fa-solid fa-diagram-project"></i><span>Projects</span></button><button class="dashboard-nav-item" data-target="skills" type="button"><i class="fa-solid fa-screwdriver-wrench"></i><span>Skills</span></button><button class="dashboard-nav-item" data-target="organizations" type="button"><i class="fa-solid fa-people-group"></i><span>Organizations</span></button><button class="dashboard-nav-item" data-target="certifications" type="button"><i class="fa-solid fa-certificate"></i><span>Certifications</span></button><button class="dashboard-nav-item" data-target="recommendations" type="button"><i class="fa-solid fa-comment-dots"></i><span>Recommendations</span></button>
-<div class="sidebar-label sidebar-group-label">Your Network</div><button class="dashboard-nav-item" data-target="connections" type="button"><i class="fa-solid fa-user-group"></i><span>Connections</span></button><button class="dashboard-nav-item" data-target="career-fairs" type="button"><i class="fa-solid fa-building-columns"></i><span>Career Fairs</span></button><button class="dashboard-nav-item" data-target="outcomes" type="button"><i class="fa-solid fa-bullseye"></i><span>Outcomes</span></button>
+<div class="sidebar-label sidebar-group-label">Your Network</div><button class="dashboard-nav-item" data-target="connections" type="button"><i class="fa-solid fa-user-group"></i><span>Connections</span></button><button class="dashboard-nav-item" data-target="messages" type="button"><i class="fa-solid fa-message"></i><span>Messages</span><b class="nav-count" id="messageNavCount" hidden>0</b></button><button class="dashboard-nav-item" data-target="career-fairs" type="button"><i class="fa-solid fa-building-columns"></i><span>Career Fairs</span></button><button class="dashboard-nav-item" data-target="outcomes" type="button"><i class="fa-solid fa-bullseye"></i><span>Outcomes</span></button>
 </nav><div class="sidebar-divider"></div>
 <h2>Card status</h2>
 <div class="status-badges"><span class="badge off" id="cardBadge">CARD NOT ACTIVATED</span><span class="badge off" id="activeBadge">PROFILE OFF</span></div>
 <div class="profile-summary"><strong id="summaryName">Loading…</strong><span class="subtle" id="summaryMajor"></span><span class="subtle" id="summarySchool"></span><span class="subtle" id="summaryUsername"></span></div>
 <a class="btn btn-gold btn-block" href="card.html" id="manageCardBtn">Manage Card &amp; QR</a>
-<a class="btn btn-secondary btn-block" href="#" id="publicBtnSide" target="_blank" rel="noopener">Open PDF Preview</a>
+<a class="btn btn-secondary btn-block" href="#" id="publicBtnSide" target="_blank" rel="noopener">View Public Profile</a>
 <div class="divider"></div>
 <label style="font-weight:800;display:block;margin-bottom:8px;">Profile availability</label>
 <p class="subtle" id="availabilityHelp" style="margin-top:0;">Activate your TapID card before making the public profile available.</p>
@@ -135,6 +142,7 @@
   <div id="requestEmployerMessageBox" class="message" hidden></div>
   <div class="dialog-actions"><button id="sendEmployerRequest" class="btn btn-primary" type="button">Send Request</button><button id="cancelEmployerRequest" class="btn btn-secondary" type="button">Cancel</button></div>
 </dialog>
+<dialog id="companyPreviewDialog" class="dialog-card dialog-wide"><div class="section-head"><div><div class="eyebrow">Employer profile</div><h2 id="companyPreviewName">Company</h2><p id="companyPreviewIndustries" class="subtle"></p></div><button id="closeCompanyPreview" class="icon-btn" type="button">×</button></div><p id="companyPreviewDescription"></p><div id="companyPreviewDetails" class="connection-details"></div><div class="candidate-actions"><a id="companyPreviewWebsite" class="btn btn-secondary" target="_blank" rel="noopener" hidden>Visit Website ↗</a></div></dialog>
 
 <dialog class="dialog-card" id="linkDialog">
 <form id="linkForm" method="dialog">
@@ -278,10 +286,15 @@
     let currentCareerFairDirectory = [];
     let currentCareerFairs = [];
     let currentCareerFairPlans = [];
+    let currentCareerCompanies = new Map();
     let currentOpportunityPreferences = null;
     let currentNotifications = [];
     let currentRecommendations = [];
     let currentOutcomes = [];
+    let currentEmployerConnections = [];
+    let currentMessageCompanies = new Map();
+    let currentStudentMessages = [];
+    let selectedMessageCompanyId = null;
     let selectedEmployerRequest = null;
 
     const message = document.getElementById('message');
@@ -318,6 +331,8 @@
       const url = tapid.profileUrl(profile.username);
       document.getElementById('publicBtn').href = url;
       document.getElementById('publicBtnSide').href = url;
+      document.getElementById('shareOpenProfile').href = url;
+      document.getElementById('shareProfileUrl').textContent = url;
       const badge = document.getElementById('activeBadge');
       const cardBadge = document.getElementById('cardBadge');
       const toggle = document.getElementById('toggleActiveBtn');
@@ -914,7 +929,8 @@
         rows.forEach(row => {
           const item=document.createElement('div'); item.className='career-employer-row';
           const status=row.request_status;
-          item.innerHTML=`<div class="career-company-mark"><i class="fa-solid fa-building"></i></div><div class="editable-copy"><strong>${escapeHtml(row.company_name)}</strong><small>${status ? `Request: ${escapeHtml(requestStatusLabel(status))}` : 'Registered employer'}</small></div><div class="career-request-action"></div>`;
+          item.innerHTML=`<div class="career-company-mark"><i class="fa-solid fa-building"></i></div><button class="editable-copy company-profile-link" type="button"><strong>${escapeHtml(row.company_name)}</strong><small>${status ? `Request: ${escapeHtml(requestStatusLabel(status))}` : 'Registered employer'} · View company</small></button><div class="career-request-action"></div>`;
+          item.querySelector('.company-profile-link').addEventListener('click',()=>openCompanyPreview(row.company_id));
           const action=item.querySelector('.career-request-action');
           if (!status) {
             const btn=document.createElement('button'); btn.type='button'; btn.className='btn btn-secondary btn-small'; btn.textContent='Request Connection';
@@ -943,8 +959,11 @@
       currentCareerFairDirectory = result.data || [];
       currentCareerFairs = fairResult.error ? [] : (fairResult.data || []);
       currentCareerFairPlans = planResult.error ? [] : (planResult.data || []);
+      const companyIds=[...new Set(currentCareerFairDirectory.map(row=>row.company_id))];currentCareerCompanies=new Map();if(companyIds.length){const companies=await tapid.client.from('companies').select('id,name,description,website,industries,locations,recruiting_majors,opportunities').in('id',companyIds);if(!companies.error)(companies.data||[]).forEach(item=>currentCareerCompanies.set(item.id,item));}
       renderCareerFairDirectory();
     }
+
+    function openCompanyPreview(companyId){const company=currentCareerCompanies.get(companyId);if(!company)return;document.getElementById('companyPreviewName').textContent=company.name;document.getElementById('companyPreviewIndustries').textContent=(company.industries||[]).join(' · ');document.getElementById('companyPreviewDescription').textContent=company.description||'This employer has not added a description yet.';document.getElementById('companyPreviewDetails').innerHTML=[connectionDetailRow('Locations',(company.locations||[]).join(', ')),connectionDetailRow('Majors recruited',(company.recruiting_majors||[]).join(', ')),connectionDetailRow('Opportunities',(company.opportunities||[]).join(', '))].join('');const link=document.getElementById('companyPreviewWebsite');link.hidden=!company.website;if(company.website)link.href=company.website;document.getElementById('companyPreviewDialog').showModal();}
 
     async function toggleCareerFairFavorite(fair,row,plan){
       if(plan){const result=await tapid.client.from('career_fair_student_plans').delete().eq('id',plan.id).eq('student_user_id',currentUser.id);if(result.error)return tapid.setMessage(message,result.error.message,'error');currentCareerFairPlans=currentCareerFairPlans.filter(item=>item.id!==plan.id);renderCareerFairDirectory();updateDashboardHome();return tapid.setMessage(message,`${row.company_name} removed from favorites.`,'success');}
@@ -1116,6 +1135,40 @@
       const select=document.getElementById('dashboardRecommendationParent');select.innerHTML='<option value="">General professional recommendation</option>'+currentExperiences.map(item=>`<option value="experience:${item.id}">Experience: ${escapeHtml(item.title)}</option>`).join('')+currentProjects.map(item=>`<option value="project:${item.id}">Project: ${escapeHtml(item.title)}</option>`).join('');renderJourneySections();
     }
 
+    async function loadStudentMessages(){
+      const connectionsResult=await tapid.client.from('employer_connections').select('id,company_id,event_name,connected_at').eq('student_user_id',currentUser.id).order('connected_at',{ascending:false});
+      if(connectionsResult.error)throw connectionsResult.error;
+      currentEmployerConnections=connectionsResult.data||[];
+      const companyIds=[...new Set(currentEmployerConnections.map(item=>item.company_id))];
+      currentMessageCompanies=new Map();currentStudentMessages=[];
+      if(companyIds.length){
+        const [companiesResult,messagesResult]=await Promise.all([tapid.client.from('companies').select('id,name').in('id',companyIds),tapid.client.from('connection_messages').select('*').eq('student_user_id',currentUser.id).order('created_at')]);
+        if(companiesResult.error)throw companiesResult.error;if(messagesResult.error)throw messagesResult.error;
+        (companiesResult.data||[]).forEach(item=>currentMessageCompanies.set(item.id,item));currentStudentMessages=messagesResult.data||[];
+      }
+      renderStudentConversations();
+    }
+
+    function renderStudentConversations(){
+      const list=document.getElementById('studentConversationList'),empty=document.getElementById('studentConversationEmpty');list.innerHTML='';empty.hidden=currentEmployerConnections.length>0;
+      let unread=0;
+      currentEmployerConnections.forEach(connection=>{
+        const company=currentMessageCompanies.get(connection.company_id),messages=currentStudentMessages.filter(item=>item.company_id===connection.company_id),last=messages[messages.length-1],companyUnread=messages.filter(item=>item.sender_role==='employer'&&!item.read_at).length;unread+=companyUnread;
+        const button=document.createElement('button');button.type='button';button.className='conversation-item'+(selectedMessageCompanyId===connection.company_id?' active':'');button.innerHTML=`<span class="connection-avatar">${escapeHtml((company?.name||'E').charAt(0))}</span><span><strong>${escapeHtml(company?.name||'Employer')}</strong><small>${escapeHtml(last?.body||connection.event_name||'Connected employer')}</small></span>${companyUnread?`<b>${companyUnread}</b>`:''}`;button.addEventListener('click',()=>openStudentThread(connection.company_id));list.appendChild(button);
+      });
+      const badge=document.getElementById('messageNavCount');badge.textContent=String(unread);badge.hidden=!unread;
+      if(selectedMessageCompanyId)renderStudentThread();
+    }
+
+    async function openStudentThread(companyId){
+      selectedMessageCompanyId=companyId;document.getElementById('studentThreadPlaceholder').hidden=true;document.getElementById('studentThreadContent').hidden=false;renderStudentConversations();renderStudentThread();
+      const unread=currentStudentMessages.filter(item=>item.company_id===companyId&&item.sender_role==='employer'&&!item.read_at);if(unread.length){const result=await tapid.client.from('connection_messages').update({read_at:new Date().toISOString()}).in('id',unread.map(item=>item.id));if(!result.error){unread.forEach(item=>item.read_at=new Date().toISOString());renderStudentConversations();}}
+    }
+
+    function renderStudentThread(){
+      const company=currentMessageCompanies.get(selectedMessageCompanyId),connection=currentEmployerConnections.find(item=>item.company_id===selectedMessageCompanyId);document.getElementById('studentThreadCompany').textContent=company?.name||'Employer';document.getElementById('studentThreadMeta').textContent=connection?.event_name||'TapID connection';const root=document.getElementById('studentMessageThread');root.innerHTML='';currentStudentMessages.filter(item=>item.company_id===selectedMessageCompanyId).forEach(item=>{const bubble=document.createElement('div');bubble.className='message-bubble '+(item.sender_user_id===currentUser.id?'mine':'theirs');bubble.innerHTML=`<p>${escapeHtml(item.body)}</p><small>${escapeHtml(connectionDate(item.created_at))}</small>`;root.appendChild(bubble);});if(!root.children.length)root.innerHTML='<div class="inline-empty">Start the conversation with this employer.</div>';root.scrollTop=root.scrollHeight;
+    }
+
     async function deleteDashboardRecommendation(item){if(!confirm('Delete this recommendation?'))return;const media=await tapid.client.from('media').select('file_path').eq('recommendation_id',item.id);if(!media.error&&media.data?.length)await tapid.client.storage.from('media').remove(media.data.map(entry=>entry.file_path));const result=await tapid.client.from('recommendations').delete().eq('id',item.id).eq('student_user_id',currentUser.id);if(result.error)return tapid.setMessage(message,result.error.message,'error');await loadJourneySections();tapid.setMessage(message,'Recommendation deleted.','success');}
 
 
@@ -1134,6 +1187,7 @@
         await loadCareerFairDirectory();
         await loadStudentExperienceData();
         await loadJourneySections();
+        await loadStudentMessages();
         updateDashboardHome();
       } catch (error) { tapid.setMessage(message, error.message, 'error'); }
     }
@@ -1142,6 +1196,7 @@
     document.getElementById('careerFairEmployerSearch').addEventListener('input',renderCareerFairDirectory);
     document.getElementById('closeRequestEmployer').addEventListener('click', ()=>document.getElementById('requestEmployerDialog').close());
     document.getElementById('cancelEmployerRequest').addEventListener('click', ()=>document.getElementById('requestEmployerDialog').close());
+    document.getElementById('closeCompanyPreview').addEventListener('click',()=>document.getElementById('companyPreviewDialog').close());
 
     document.getElementById('opportunityForm').addEventListener('submit',async event=>{
       event.preventDefault();const button=document.getElementById('saveOpportunities');tapid.setBusy(button,true,'Saving…');
@@ -1152,7 +1207,9 @@
 
     document.getElementById('markNotificationsRead').addEventListener('click',async()=>{const result=await tapid.client.from('student_notifications').update({read_at:new Date().toISOString()}).eq('student_user_id',currentUser.id).is('read_at',null);if(result.error)return tapid.setMessage(message,result.error.message,'error');currentNotifications.forEach(item=>item.read_at=item.read_at||new Date().toISOString());renderNotifications();});
 
-    document.getElementById('publicBtnSide').addEventListener('click',event=>{event.preventDefault();window.open(`${tapid.profileUrl(currentProfile.username)}&pdf=1`,'_blank','noopener');});
+    document.getElementById('copyProfileUrl').addEventListener('click',async()=>{const url=tapid.profileUrl(currentProfile.username);await navigator.clipboard.writeText(url);tapid.setMessage(message,'TapID link copied.','success');});
+    document.getElementById('nativeShareProfile').addEventListener('click',async()=>{const url=tapid.profileUrl(currentProfile.username),data={title:`${currentProfile.first_name||''} ${currentProfile.last_name||''} — TapID`.trim(),text:'View my TapID professional profile.',url};if(navigator.share){try{await navigator.share(data);}catch(error){if(error.name!=='AbortError')tapid.setMessage(message,error.message,'error');}}else{await navigator.clipboard.writeText(url);tapid.setMessage(message,'TapID link copied.','success');}});
+    document.getElementById('studentMessageForm').addEventListener('submit',async event=>{event.preventDefault();if(!selectedMessageCompanyId)return;const body=document.getElementById('studentMessageBody').value.trim();if(!body)return;const button=event.submitter;tapid.setBusy(button,true,'Sending…');try{const result=await tapid.client.from('connection_messages').insert({student_user_id:currentUser.id,company_id:selectedMessageCompanyId,sender_user_id:currentUser.id,sender_role:'student',body}).select().single();if(result.error)throw result.error;currentStudentMessages.push(result.data);document.getElementById('studentMessageBody').value='';renderStudentConversations();}catch(error){tapid.setMessage(message,error.message,'error');}finally{tapid.setBusy(button,false);}});
 
     const readinessDialog=document.getElementById('readinessDialog'),progressBar=document.querySelector('.profile-progress'),progressCopy=document.querySelector('.profile-progress-copy');[progressBar,progressCopy].forEach(control=>{control.setAttribute('role','button');control.setAttribute('tabindex','0');control.setAttribute('aria-label','Open profile readiness checklist');control.addEventListener('click',()=>readinessDialog.showModal());control.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();readinessDialog.showModal();}});});document.getElementById('closeReadiness').addEventListener('click',()=>readinessDialog.close());document.getElementById('closeReadinessBottom').addEventListener('click',()=>readinessDialog.close());
 

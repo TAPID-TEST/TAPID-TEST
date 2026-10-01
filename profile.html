@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="public-profile-page">
-  <div class="pdf-preview-toolbar" id="pdfPreviewToolbar" hidden><span><strong>PDF preview</strong><small>Choose “Save as PDF” in the print window.</small></span><button class="btn btn-primary" id="saveProfilePdf" type="button"><i class="fa-solid fa-file-pdf"></i> Save as PDF</button></div>
   <header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a></header>
   <main class="shell public-page">
     <div id="loading" class="card empty-state"><div class="eyebrow">TapID</div><h2>Loading profile…</h2></div>
@@ -332,7 +331,7 @@
     }
 
     async function init() {
-      const params=new URLSearchParams(window.location.search),pdfMode=params.get('pdf')==='1';
+      const params=new URLSearchParams(window.location.search);
       const username = tapid.cleanUsername(params.get('u'));
       const loading = document.getElementById('loading');
       const unavailable = document.getElementById('unavailable');
@@ -484,7 +483,6 @@
         }
         loading.hidden = true;
         document.getElementById('publicContent').hidden = false;
-        if(pdfMode){document.body.classList.add('pdf-preview-mode');document.getElementById('pdfPreviewToolbar').hidden=false;document.querySelectorAll('#publicContent details').forEach(item=>item.open=true);setTimeout(()=>window.print(),700);}
         document.title = `${document.getElementById('name').textContent} — TapID`;
       } catch (error) {
         console.error(error);
@@ -541,7 +539,6 @@
       } finally { tapid.setBusy(btn, false); }
     });
 
-    document.getElementById('saveProfilePdf').addEventListener('click',()=>window.print());
     init();
   </script>
 </body>
