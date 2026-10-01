@@ -7,17 +7,17 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="auth-page">
-  <header class="auth-nav auth-shell">
-    <a class="brand auth-brand" href="index.html">Tap<span>ID</span></a>
-    <a class="auth-nav-link" href="signup.html">Create account</a>
-  </header>
+  <header class="auth-nav auth-shell"><a class="brand auth-brand" href="index.html">Tap<span>ID</span></a><a class="auth-nav-link" href="index.html">Back home</a></header>
 
   <main class="auth-main auth-shell">
-    <section class="auth-panel" aria-labelledby="loginTitle">
+    <div class="role-login-layout">
+    <section class="login-card-showcase" aria-label="TapID digital student card preview"><div class="login-demo-card"><div class="demo-card-name">Jordan Lee</div><div class="demo-card-line"></div><div class="demo-card-major">Engineering</div><div class="demo-card-nfc"><i></i><i></i><i></i></div></div><div class="login-showcase-copy"><span class="eyebrow">One identity. Real opportunity.</span><h2>Your professional story, ready to tap.</h2><p>Build a verified profile, meet employers, and carry your work beyond a one-page résumé.</p></div></section>
+    <section class="auth-panel role-auth-panel" aria-labelledby="loginTitle">
+      <nav class="role-selector" aria-label="Choose account type"><a class="active" href="login.html"><strong>Student</strong><small>Profile &amp; TapID card</small></a><a href="employer-login.html"><strong>Employer</strong><small>Recruiter workspace</small></a><a href="university-login.html"><strong>University</strong><small>Career services</small></a></nav>
       <div class="auth-heading">
-        <div class="eyebrow">Welcome back</div>
-        <h1 id="loginTitle">Log in to TapID.</h1>
-        <p>Manage your profile, connections, and card from one place.</p>
+        <div class="eyebrow">Student access</div>
+        <h1 id="loginTitle">Student log in.</h1>
+        <p>Manage your professional profile, connections, and TapID card.</p>
       </div>
 
       <div id="message" class="message" hidden></div>
@@ -38,13 +38,12 @@
 
       <p class="auth-switch"><a href="forgot-password.html">Forgot your password?</a></p>
 
-      <p class="auth-switch">New to TapID? <a href="signup.html">Create your account</a></p>
+      <p class="auth-switch">New student? <a href="signup.html">Create student account</a></p>
     </section>
+    </div>
   </main>
 
-  <footer class="auth-footer auth-shell">
-    <a href="employer-login.html">Employer sign in</a>
-  </footer>
+  <footer class="auth-footer auth-shell"><span>Choose the account type above to enter the correct TapID workspace.</span></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
@@ -63,6 +62,12 @@
         const password = document.getElementById('password').value;
         const { data, error } = await tapid.client.auth.signInWithPassword({ email, password });
         if (error) throw error;
+
+        const accountType=data.user.user_metadata?.user_type;
+        if(accountType==='employer'||accountType==='university'){
+          await tapid.client.auth.signOut();
+          throw new Error(`This is ${accountType==='employer'?'an employer':'a university'} account. Choose the ${accountType==='employer'?'Employer':'University'} login above.`);
+        }
 
         const profile = await tapid.getProfileById(data.user.id);
         if (!profile) throw new Error('Your TapID profile record could not be found.');

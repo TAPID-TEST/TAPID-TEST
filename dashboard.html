@@ -26,7 +26,6 @@
 <section class="dashboard-section card" data-section="notifications" hidden id="dash-notifications">
 <div class="section-head"><div><h2>Notifications</h2><p class="subtle">Updates about your connections, verified outcomes, career fairs, and TapID card.</p></div><button class="btn btn-secondary" id="markNotificationsRead" type="button">Mark All Read</button></div>
 <div class="notification-list" id="notificationList"></div><div class="inline-empty" id="notificationEmpty"><strong>You’re all caught up.</strong><br>Connection, career-fair, verified-outcome, and card updates will appear here.</div>
-<div class="notification-settings"><h3>Notification preferences</h3><div class="visibility-grid privacy-grid"><label class="toggle-row"><input id="notifyConnections" type="checkbox"><span>Connection updates</span></label><label class="toggle-row"><input id="notifyOutcomes" type="checkbox"><span>Verified outcomes</span></label><label class="toggle-row"><input id="notifyFairs" type="checkbox"><span>Career-fair announcements</span></label><label class="toggle-row"><input id="notifyCard" type="checkbox"><span>Card updates</span></label><label class="toggle-row"><input id="notifyEmail" type="checkbox"><span>Email notifications</span></label></div><p class="help">In-app notifications work immediately. Email delivery begins after production SMTP is configured.</p><button class="btn btn-primary" id="saveNotificationPreferences" type="button">Save Preferences</button></div>
 </section>
 <section class="dashboard-section card" data-section="profile" hidden id="dash-profile">
 <div class="section-head"><div><h2>Basic Profile</h2><p class="subtle">Your academic and professional introduction.</p></div></div>
@@ -102,7 +101,7 @@
 <div class="connections-list" id="connectionsList"></div>
 <div class="inline-empty" id="connectionsEmpty"><strong>No connections yet.</strong><br>Share your TapID at a career fair or networking event. Accepted employer requests and people who connect through your public profile will appear here.</div>
 </section>
-<section class="dashboard-section card" data-section="outcomes" hidden id="dash-outcomes"><div class="section-head"><div><h2>Outcomes</h2><p class="subtle">Career milestones appear automatically when a connected employer updates your candidate status. You control whether each verified outcome is public.</p></div></div><div id="dashboardOutcomeList" class="item-list"></div><div id="dashboardOutcomeEmpty" class="inline-empty">No employer-verified outcomes yet.</div></section>
+<section class="dashboard-section card" data-section="outcomes" hidden id="dash-outcomes"><div class="section-head"><div><h2>Employer Activity &amp; Outcomes</h2><p class="subtle">These private milestones appear automatically when an employer connects, follows up, interviews, or advances your candidacy. Aggregate totals are reported to your university; individual student histories remain private.</p></div></div><div id="dashboardOutcomeList" class="item-list"></div><div id="dashboardOutcomeEmpty" class="inline-empty"><strong>No employer-reported outcomes yet.</strong><br>Interview, internship, offer, and hiring milestones will appear automatically.</div></section>
 <section class="dashboard-section card" data-section="career-fairs" hidden id="dash-career-fairs">
   <div class="section-head"><div><div class="eyebrow">Opportunities</div><h2>Career Fairs</h2><p class="subtle">See companies currently registered for an event. If you miss a booth, you can send your public TapID as a connection request.</p></div></div>
   <div class="career-fair-tools"><label class="candidate-search-wrap" for="careerFairEmployerSearch"><i class="fa-solid fa-magnifying-glass"></i><input id="careerFairEmployerSearch" type="search" placeholder="Search employers across career fairs…"></label><span class="subtle"><i class="fa-solid fa-star"></i> Favorites appear first</span></div>
@@ -281,7 +280,6 @@
     let currentCareerFairPlans = [];
     let currentOpportunityPreferences = null;
     let currentNotifications = [];
-    let currentNotificationPreferences = null;
     let currentRecommendations = [];
     let currentOutcomes = [];
     let selectedEmployerRequest = null;
@@ -1023,18 +1021,13 @@
       const unread=currentNotifications.filter(item=>!item.read_at).length,badge=document.getElementById('notificationNavCount');badge.textContent=String(unread);badge.hidden=!unread;document.getElementById('markNotificationsRead').hidden=!unread;
     }
 
-    function populateNotificationPreferences(data){
-      currentNotificationPreferences=data||{};document.getElementById('notifyConnections').checked=data?.connection_updates!==false;document.getElementById('notifyOutcomes').checked=data?.verified_outcomes!==false;document.getElementById('notifyFairs').checked=data?.career_fair_updates!==false;document.getElementById('notifyCard').checked=data?.card_updates!==false;document.getElementById('notifyEmail').checked=Boolean(data?.email_enabled);
-    }
-
     async function loadStudentExperienceData(){
-      const [opportunities,notifications,preferences]=await Promise.all([
+      const [opportunities,notifications]=await Promise.all([
         tapid.client.from('student_opportunity_preferences').select('*').eq('student_user_id',currentUser.id).maybeSingle(),
-        tapid.client.from('student_notifications').select('*').eq('student_user_id',currentUser.id).order('created_at',{ascending:false}).limit(50),
-        tapid.client.from('notification_preferences').select('*').eq('student_user_id',currentUser.id).maybeSingle()
+        tapid.client.from('student_notifications').select('*').eq('student_user_id',currentUser.id).order('created_at',{ascending:false}).limit(50)
       ]);
-      for(const result of [opportunities,notifications,preferences])if(result.error)throw result.error;
-      populateOpportunityPreferences(opportunities.data);currentNotifications=notifications.data||[];renderNotifications();populateNotificationPreferences(preferences.data);
+      for(const result of [opportunities,notifications])if(result.error)throw result.error;
+      populateOpportunityPreferences(opportunities.data);currentNotifications=notifications.data||[];renderNotifications();
     }
 
     function updateDashboardHome() {
@@ -1114,7 +1107,7 @@
       const recommendationList=document.getElementById('dashboardRecommendationList');recommendationList.innerHTML='';document.getElementById('dashboardRecommendationEmpty').hidden=currentRecommendations.length>0;
       currentRecommendations.forEach(item=>{const row=document.createElement('div');row.className='connection-item';row.innerHTML=`<span class="editable-copy"><strong>${escapeHtml(item.author_name)}</strong><small>${escapeHtml([item.author_title,item.author_organization].filter(Boolean).join(' · '))}</small><small>${escapeHtml(item.writer_email||'No contact email')} · ${item.is_public?'Public':'Private'} · PDF letter</small></span><span class="item-action-group">${item.letter_path?'<button class="btn btn-secondary btn-small view-letter" type="button">View Letter</button>':''}<button class="btn btn-danger btn-small delete-letter" type="button">Delete</button></span>`;row.querySelector('.view-letter')?.addEventListener('click',async()=>{const url=await tapid.signedFileUrl('media',item.letter_path);window.open(url,'_blank','noopener');});row.querySelector('.delete-letter').addEventListener('click',()=>deleteDashboardRecommendation(item));recommendationList.appendChild(row);});
       const outcomeList=document.getElementById('dashboardOutcomeList'),labels={interview:'Interview',internship:'Internship',offer:'Offer',accepted_offer:'Accepted Offer',job:'Hired'};outcomeList.innerHTML='';document.getElementById('dashboardOutcomeEmpty').hidden=currentOutcomes.length>0;
-      currentOutcomes.forEach(item=>{const row=document.createElement('div');row.className='connection-item verified-outcome-item';row.innerHTML=`<span class="outcome-verified-icon">✓</span><span class="editable-copy"><strong>${escapeHtml(labels[item.outcome_type]||item.outcome_type)} · ${escapeHtml(item.company_name)}</strong><small>${item.outcome_date?escapeHtml(item.outcome_date):''}${item.notes?' · '+escapeHtml(item.notes):''}</small><small>Employer verified</small></span><label class="toggle-row outcome-visibility"><input type="checkbox" ${item.is_public?'checked':''}><span>Show publicly</span></label>`;row.querySelector('input').addEventListener('change',event=>setDashboardOutcomeVisibility(item,event.target));outcomeList.appendChild(row);});
+      currentOutcomes.forEach(item=>{const row=document.createElement('div');row.className='connection-item verified-outcome-item';row.innerHTML=`<span class="outcome-verified-icon">✓</span><span class="editable-copy"><strong>${escapeHtml(labels[item.outcome_type]||item.outcome_type)} · ${escapeHtml(item.company_name)}</strong><small>${item.outcome_date?escapeHtml(item.outcome_date):''}${item.notes?' · '+escapeHtml(item.notes):''}</small><small>Employer reported · Private to you</small></span>`;outcomeList.appendChild(row);});
     }
 
     async function loadJourneySections(){
@@ -1125,7 +1118,6 @@
 
     async function deleteDashboardRecommendation(item){if(!confirm('Delete this recommendation?'))return;const media=await tapid.client.from('media').select('file_path').eq('recommendation_id',item.id);if(!media.error&&media.data?.length)await tapid.client.storage.from('media').remove(media.data.map(entry=>entry.file_path));const result=await tapid.client.from('recommendations').delete().eq('id',item.id).eq('student_user_id',currentUser.id);if(result.error)return tapid.setMessage(message,result.error.message,'error');await loadJourneySections();tapid.setMessage(message,'Recommendation deleted.','success');}
 
-    async function setDashboardOutcomeVisibility(item,input){const value=input.checked;const result=await tapid.client.from('career_outcomes').update({is_public:value,updated_at:new Date().toISOString()}).eq('id',item.id).eq('student_user_id',currentUser.id);if(result.error){input.checked=!value;return tapid.setMessage(message,result.error.message,'error');}item.is_public=value;tapid.setMessage(message,value?'Verified outcome is now public.':'Verified outcome is now private.','success');}
 
     async function init() {
       currentUser = await tapid.requireUser();
@@ -1157,10 +1149,6 @@
     });
 
     document.getElementById('dashboardRecommendationForm').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter;let createdId=null,uploadedPath=null;tapid.setBusy(button,true,'Uploading…');try{const file=document.getElementById('dashboardRecommendationLetter').files?.[0],writerEmail=document.getElementById('dashboardAuthorEmail').value.trim();if(!file)throw new Error('Choose the PDF recommendation letter.');if(file.type!=='application/pdf'||file.size>10*1024*1024)throw new Error('Recommendation letters must be PDFs no larger than 10 MB.');const payload={student_user_id:currentUser.id,author_name:document.getElementById('dashboardAuthorName').value.trim(),author_email:null,author_title:document.getElementById('dashboardAuthorTitle').value.trim(),author_organization:document.getElementById('dashboardAuthorOrganization').value.trim()||null,relationship:document.getElementById('dashboardRelationship').value.trim()||null,recommendation_text:null,is_public:document.getElementById('dashboardRecommendationPublic').checked,status:'submitted',...recommendationParentPayload()};const saved=await tapid.client.from('recommendations').insert(payload).select().single();if(saved.error)throw saved.error;createdId=saved.data.id;const contact=await tapid.client.from('recommendation_contacts').insert({recommendation_id:createdId,student_user_id:currentUser.id,writer_email:writerEmail});if(contact.error)throw contact.error;uploadedPath=`${currentUser.id}/recommendations/${createdId}.pdf`;const upload=await tapid.client.storage.from('media').upload(uploadedPath,file,{contentType:'application/pdf'});if(upload.error)throw upload.error;const media=await tapid.client.from('media').insert({user_id:currentUser.id,recommendation_id:createdId,file_path:uploadedPath,file_url:'',media_type:'pdf',caption:'Recommendation letter',sort_order:0});if(media.error)throw media.error;const update=await tapid.client.from('recommendations').update({letter_path:uploadedPath}).eq('id',createdId);if(update.error)throw update.error;event.target.reset();await loadJourneySections();tapid.setMessage(message,'Recommendation letter uploaded.','success');}catch(error){if(uploadedPath)await tapid.client.storage.from('media').remove([uploadedPath]);if(createdId)await tapid.client.from('recommendations').delete().eq('id',createdId).eq('student_user_id',currentUser.id);tapid.setMessage(message,error.message,'error');}finally{tapid.setBusy(button,false);}});
-
-    document.getElementById('saveNotificationPreferences').addEventListener('click',async()=>{
-      const button=document.getElementById('saveNotificationPreferences');tapid.setBusy(button,true,'Saving…');const payload={student_user_id:currentUser.id,connection_updates:document.getElementById('notifyConnections').checked,verified_outcomes:document.getElementById('notifyOutcomes').checked,career_fair_updates:document.getElementById('notifyFairs').checked,card_updates:document.getElementById('notifyCard').checked,email_enabled:document.getElementById('notifyEmail').checked,updated_at:new Date().toISOString()};const result=await tapid.client.from('notification_preferences').upsert(payload,{onConflict:'student_user_id'}).select().single();tapid.setBusy(button,false);if(result.error)return tapid.setMessage(message,result.error.message,'error');populateNotificationPreferences(result.data);tapid.setMessage(message,'Notification preferences saved.','success');
-    });
 
     document.getElementById('markNotificationsRead').addEventListener('click',async()=>{const result=await tapid.client.from('student_notifications').update({read_at:new Date().toISOString()}).eq('student_user_id',currentUser.id).is('read_at',null);if(result.error)return tapid.setMessage(message,result.error.message,'error');currentNotifications.forEach(item=>item.read_at=item.read_at||new Date().toISOString());renderNotifications();});
 

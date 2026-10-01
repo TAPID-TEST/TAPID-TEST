@@ -460,7 +460,7 @@
         if(profile.show_organizations!==false)renderPublicOrganizations();
         if(profile.show_certifications!==false)renderPublicCertifications();
         if(profile.show_recommendations!==false)renderPublicRecommendations();
-        if(profile.show_outcomes===true)renderPublicOutcomes();
+        // Employer-reported outcomes are private and institution-facing only.
         renderPublicOpportunities();
         renderSnapshot();
 

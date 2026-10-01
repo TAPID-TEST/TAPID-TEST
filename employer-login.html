@@ -9,14 +9,15 @@
 <body class="auth-page employer-auth-page">
   <header class="auth-nav auth-shell">
     <a class="brand auth-brand" href="index.html">Tap<span>ID</span></a>
-    <a class="auth-nav-link" href="employer-signup.html">Create employer account</a>
+    <a class="auth-nav-link" href="index.html">Back home</a>
   </header>
 
   <main class="auth-main auth-shell">
     <section class="auth-panel employer-auth-panel" aria-labelledby="employerLoginTitle">
+      <nav class="role-selector" aria-label="Choose account type"><a href="login.html"><strong>Student</strong><small>Profile &amp; TapID card</small></a><a class="active" href="employer-login.html"><strong>Employer</strong><small>Recruiter workspace</small></a><a href="university-login.html"><strong>University</strong><small>Career services</small></a></nav>
       <div class="auth-heading">
         <div class="eyebrow">Employer portal</div>
-        <h1 id="employerLoginTitle">Recruiter log in.</h1>
+        <h1 id="employerLoginTitle">Employer log in.</h1>
         <p>Return to the students your company connected with.</p>
       </div>
 
@@ -41,9 +42,7 @@
     </section>
   </main>
 
-  <footer class="auth-footer auth-shell">
-    <a href="login.html">Student sign in</a>
-  </footer>
+  <footer class="auth-footer auth-shell"><span>Employer accounts require company verification before full access.</span></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script>
 <script>
@@ -59,5 +58,5 @@ async function ensureRecruiter(user){
   const result=await tapid.client.rpc('register_employer',{p_company_name:company,p_recruiter_name:name,p_recruiter_email:email});
   if(result.error) throw result.error; return true;
 }
-form.addEventListener('submit',async e=>{e.preventDefault();tapid.setMessage(message,'');tapid.setBusy(button,true,'Logging in…');try{const {data,error}=await tapid.client.auth.signInWithPassword({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value});if(error)throw error;if(!(await ensureRecruiter(data.user))){await tapid.client.auth.signOut();throw new Error('This is a student account. Use the student Log In page instead.');}location.replace('employer-dashboard.html');}catch(error){tapid.setMessage(message,error.message,'error');}finally{tapid.setBusy(button,false);}});
+form.addEventListener('submit',async e=>{e.preventDefault();tapid.setMessage(message,'');tapid.setBusy(button,true,'Logging in…');try{const {data,error}=await tapid.client.auth.signInWithPassword({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value});if(error)throw error;if(!(await ensureRecruiter(data.user))){const type=data.user.user_metadata?.user_type;await tapid.client.auth.signOut();throw new Error(type==='university'?'This is a university account. Choose University login above.':'This is a student account. Choose Student login above.');}location.replace('employer-dashboard.html');}catch(error){tapid.setMessage(message,error.message,'error');}finally{tapid.setBusy(button,false);}});
 </script></body></html>
