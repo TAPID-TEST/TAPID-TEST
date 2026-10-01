@@ -25,7 +25,7 @@
 </section>
 <section class="dashboard-section card" data-section="notifications" hidden id="dash-notifications">
 <div class="section-head"><div><h2>Notifications</h2><p class="subtle">Updates about your connections, verified outcomes, career fairs, and TapID card.</p></div><button class="btn btn-secondary" id="markNotificationsRead" type="button">Mark All Read</button></div>
-<div class="notification-list" id="notificationList"></div><div class="inline-empty" id="notificationEmpty">You have no notifications yet.</div>
+<div class="notification-list" id="notificationList"></div><div class="inline-empty" id="notificationEmpty"><strong>You’re all caught up.</strong><br>Connection, career-fair, verified-outcome, and card updates will appear here.</div>
 <div class="notification-settings"><h3>Notification preferences</h3><div class="visibility-grid privacy-grid"><label class="toggle-row"><input id="notifyConnections" type="checkbox"><span>Connection updates</span></label><label class="toggle-row"><input id="notifyOutcomes" type="checkbox"><span>Verified outcomes</span></label><label class="toggle-row"><input id="notifyFairs" type="checkbox"><span>Career-fair announcements</span></label><label class="toggle-row"><input id="notifyCard" type="checkbox"><span>Card updates</span></label><label class="toggle-row"><input id="notifyEmail" type="checkbox"><span>Email notifications</span></label></div><p class="help">In-app notifications work immediately. Email delivery begins after production SMTP is configured.</p><button class="btn btn-primary" id="saveNotificationPreferences" type="button">Save Preferences</button></div>
 </section>
 <section class="dashboard-section card" data-section="profile" hidden id="dash-profile">
@@ -96,15 +96,16 @@
 <div class="item-list" id="certificationsList"></div>
 <div class="inline-empty" id="certificationsEmpty">No certifications added yet.</div>
 </section>
-<section class="dashboard-section card embedded-journey-section" data-section="recommendations" hidden id="dash-recommendations"><div class="section-head"><div><h2>Recommendations</h2><p class="subtle">Manage the professional recommendations connected to your TapID.</p></div></div><iframe src="journey.html?embed=recommendations" title="Recommendations"></iframe></section>
+<section class="dashboard-section card" data-section="recommendations" hidden id="dash-recommendations"><div class="section-head"><div><h2>Letters of Recommendation</h2><p class="subtle">Upload the original PDF letter and identify the person who wrote it.</p></div></div><form id="dashboardRecommendationForm"><div class="form-grid"><div class="field"><label for="dashboardAuthorName">Writer’s name</label><input id="dashboardAuthorName" required></div><div class="field"><label for="dashboardAuthorEmail">Writer’s contact email</label><input id="dashboardAuthorEmail" type="email" required></div></div><div class="form-grid"><div class="field"><label for="dashboardAuthorTitle">Title or position</label><input id="dashboardAuthorTitle" required placeholder="Professor, Project Manager, Supervisor"></div><div class="field"><label for="dashboardAuthorOrganization">Organization</label><input id="dashboardAuthorOrganization" placeholder="University or company"></div></div><div class="field"><label for="dashboardRelationship">Relationship to you</label><input id="dashboardRelationship" placeholder="Professor, internship supervisor, mentor…"></div><div class="field"><label for="dashboardRecommendationParent">Related experience or project</label><select id="dashboardRecommendationParent"><option value="">General professional recommendation</option></select></div><div class="field"><label for="dashboardRecommendationLetter">Recommendation letter (PDF)</label><input id="dashboardRecommendationLetter" type="file" accept="application/pdf,.pdf" required><div class="help">PDF only, up to 10 MB. The writer’s contact information is stored for reference but is not displayed publicly.</div></div><label class="toggle-row"><input id="dashboardRecommendationPublic" type="checkbox"><span>Show this letter on my public profile</span></label><button class="btn btn-primary" type="submit">Upload Letter</button></form><div class="dashboard-subsection"><h3>Your recommendation letters</h3><div id="dashboardRecommendationList" class="item-list"></div><div id="dashboardRecommendationEmpty" class="inline-empty"><strong>No recommendation letters yet.</strong><br>Upload an original PDF letter when a professor, supervisor, or mentor provides one.</div></div></section>
 <section class="dashboard-section connections-card card" data-section="connections" hidden="" id="dash-connections">
 <div class="section-head"><div><h2>My Connections</h2><p class="subtle">People who voluntarily shared their information after tapping your TapID. Connection notes are private to you.</p></div><span class="badge" id="connectionCount">0</span></div>
 <div class="connections-list" id="connectionsList"></div>
-<div class="inline-empty" id="connectionsEmpty">No connections yet. When someone uses “Connect With You” on your public profile, they will appear here.</div>
+<div class="inline-empty" id="connectionsEmpty"><strong>No connections yet.</strong><br>Share your TapID at a career fair or networking event. Accepted employer requests and people who connect through your public profile will appear here.</div>
 </section>
-<section class="dashboard-section card embedded-journey-section" data-section="outcomes" hidden id="dash-outcomes"><div class="section-head"><div><h2>Outcomes</h2><p class="subtle">Employer-verified career milestones appear here automatically.</p></div></div><iframe src="journey.html?embed=outcomes" title="Verified career outcomes"></iframe></section>
+<section class="dashboard-section card" data-section="outcomes" hidden id="dash-outcomes"><div class="section-head"><div><h2>Outcomes</h2><p class="subtle">Career milestones appear automatically when a connected employer updates your candidate status. You control whether each verified outcome is public.</p></div></div><div id="dashboardOutcomeList" class="item-list"></div><div id="dashboardOutcomeEmpty" class="inline-empty">No employer-verified outcomes yet.</div></section>
 <section class="dashboard-section card" data-section="career-fairs" hidden id="dash-career-fairs">
   <div class="section-head"><div><div class="eyebrow">Opportunities</div><h2>Career Fairs</h2><p class="subtle">See companies currently registered for an event. If you miss a booth, you can send your public TapID as a connection request.</p></div></div>
+  <div class="career-fair-tools"><label class="candidate-search-wrap" for="careerFairEmployerSearch"><i class="fa-solid fa-magnifying-glass"></i><input id="careerFairEmployerSearch" type="search" placeholder="Search employers across career fairs…"></label><span class="subtle"><i class="fa-solid fa-star"></i> Favorites appear first</span></div>
   <div id="careerFairMessage" class="message" hidden></div>
   <div id="careerFairDirectory" class="career-fair-directory"><div class="empty-state compact"><p class="subtle">Loading registered employers…</p></div></div>
 </section>
@@ -281,6 +282,8 @@
     let currentOpportunityPreferences = null;
     let currentNotifications = [];
     let currentNotificationPreferences = null;
+    let currentRecommendations = [];
+    let currentOutcomes = [];
     let selectedEmployerRequest = null;
 
     const message = document.getElementById('message');
@@ -895,8 +898,11 @@
         root.innerHTML = '<div class="empty-state compact"><h3>No registered career fairs yet.</h3><p class="subtle">Employers appear here after they set their current TapID event.</p></div>';
         return;
       }
+      const search=String(document.getElementById('careerFairEmployerSearch')?.value||'').trim().toLowerCase();
+      const filteredRows=currentCareerFairDirectory.filter(row=>!search||row.company_name.toLowerCase().includes(search)||row.event_name.toLowerCase().includes(search));
+      if(!filteredRows.length){root.innerHTML='<div class="empty-state compact"><h3>No matching employers.</h3><p class="subtle">Try a different company or career-fair name.</p></div>';return;}
       const grouped = new Map();
-      currentCareerFairDirectory.forEach(row => {
+      filteredRows.forEach(row => {
         if (!grouped.has(row.event_name)) grouped.set(row.event_name, []);
         grouped.get(row.event_name).push(row);
       });
@@ -906,6 +912,7 @@
         const fairWhen=fair?.starts_at?new Date(fair.starts_at).toLocaleString(undefined,{month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}):'Date to be announced';
         block.innerHTML=`<div class="career-event-heading"><div><span class="eyebrow">Career fair</span><h3>${escapeHtml(eventName)}</h3><p class="career-event-meta"><i class="fa-regular fa-calendar"></i> ${escapeHtml(fairWhen)}${fair?.location?` <span>·</span> <i class="fa-solid fa-location-dot"></i> ${escapeHtml(fair.location)}`:''}</p>${fair?.description?`<p class="subtle">${escapeHtml(fair.description)}</p>`:''}</div><span class="badge">${rows.length} ${rows.length===1?'employer':'employers'}</span></div>`;
         const list=document.createElement('div'); list.className='career-employer-list';
+        rows.sort((a,b)=>{const favoriteA=currentCareerFairPlans.some(p=>p.career_fair_id===fair?.id&&p.company_id===a.company_id),favoriteB=currentCareerFairPlans.some(p=>p.career_fair_id===fair?.id&&p.company_id===b.company_id);return Number(favoriteB)-Number(favoriteA)||a.company_name.localeCompare(b.company_name);});
         rows.forEach(row => {
           const item=document.createElement('div'); item.className='career-employer-row';
           const status=row.request_status;
@@ -920,10 +927,7 @@
           }
           if(fair){
             const plan=currentCareerFairPlans.find(p=>p.career_fair_id===fair.id&&p.company_id===row.company_id);
-            const planBtn=document.createElement('button');planBtn.type='button';planBtn.className='btn btn-small '+(plan?'btn-primary':'btn-secondary');
-            planBtn.textContent=plan?.plan_status==='visited'?'Visited ✓':plan?'Mark Visited':'Save Employer';
-            planBtn.addEventListener('click',()=>saveCareerFairPlan(fair,row,plan));action.appendChild(planBtn);
-            if(plan){const removeBtn=document.createElement('button');removeBtn.type='button';removeBtn.className='text-button';removeBtn.textContent='Remove';removeBtn.addEventListener('click',()=>removeCareerFairPlan(plan));action.appendChild(removeBtn);}
+            const favoriteBtn=document.createElement('button');favoriteBtn.type='button';favoriteBtn.className='favorite-employer-btn'+(plan?' active':'');favoriteBtn.setAttribute('aria-pressed',String(Boolean(plan)));favoriteBtn.setAttribute('aria-label',plan?`Remove ${row.company_name} from favorites`:`Favorite ${row.company_name}`);favoriteBtn.innerHTML=`<i class="${plan?'fa-solid':'fa-regular'} fa-star"></i><span>${plan?'Favorited':'Favorite'}</span>`;favoriteBtn.addEventListener('click',()=>toggleCareerFairFavorite(fair,row,plan));action.prepend(favoriteBtn);
           }
           list.appendChild(item);
         });
@@ -944,17 +948,13 @@
       renderCareerFairDirectory();
     }
 
-    async function saveCareerFairPlan(fair,row,plan){
-      const payload={student_user_id:currentUser.id,career_fair_id:fair.id,company_id:row.company_id,plan_status:plan?'visited':'saved',updated_at:new Date().toISOString()};
+    async function toggleCareerFairFavorite(fair,row,plan){
+      if(plan){const result=await tapid.client.from('career_fair_student_plans').delete().eq('id',plan.id).eq('student_user_id',currentUser.id);if(result.error)return tapid.setMessage(message,result.error.message,'error');currentCareerFairPlans=currentCareerFairPlans.filter(item=>item.id!==plan.id);renderCareerFairDirectory();updateDashboardHome();return tapid.setMessage(message,`${row.company_name} removed from favorites.`,'success');}
+      const payload={student_user_id:currentUser.id,career_fair_id:fair.id,company_id:row.company_id,plan_status:'saved',updated_at:new Date().toISOString()};
       const result=await tapid.client.from('career_fair_student_plans').upsert(payload,{onConflict:'student_user_id,career_fair_id,company_id'}).select().single();
       if(result.error)return tapid.setMessage(message,result.error.message,'error');
       const index=currentCareerFairPlans.findIndex(p=>p.id===result.data.id);if(index>=0)currentCareerFairPlans[index]=result.data;else currentCareerFairPlans.push(result.data);
-      renderCareerFairDirectory();tapid.setMessage(message,plan?'Employer marked as visited.':'Employer saved to your fair plan.','success');
-    }
-
-    async function removeCareerFairPlan(plan){
-      const result=await tapid.client.from('career_fair_student_plans').delete().eq('id',plan.id).eq('student_user_id',currentUser.id);if(result.error)return tapid.setMessage(message,result.error.message,'error');
-      currentCareerFairPlans=currentCareerFairPlans.filter(p=>p.id!==plan.id);renderCareerFairDirectory();tapid.setMessage(message,'Employer removed from your fair plan.','success');
+      renderCareerFairDirectory();updateDashboardHome();tapid.setMessage(message,`${row.company_name} added to favorites.`,'success');
     }
 
     function openEmployerRequest(row) {
@@ -1020,7 +1020,7 @@
     function renderNotifications(){
       const root=document.getElementById('notificationList'),empty=document.getElementById('notificationEmpty');root.innerHTML='';empty.hidden=currentNotifications.length>0;
       currentNotifications.forEach(item=>{const row=document.createElement(item.href?'a':'div');row.className='notification-item'+(item.read_at?'':' unread');if(item.href)row.href=item.href;const icon={connection:'fa-user-group',outcome:'fa-bullseye',career_fair:'fa-calendar-days',card:'fa-id-card',profile:'fa-user-shield'}[item.notification_type]||'fa-bell';row.innerHTML=`<span class="notification-icon"><i class="fa-solid ${icon}"></i></span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.body)}</small><time>${escapeHtml(connectionDate(item.created_at))}</time></span>${item.read_at?'':'<i class="notification-dot"></i>'}`;root.appendChild(row);});
-      const unread=currentNotifications.filter(item=>!item.read_at).length,badge=document.getElementById('notificationNavCount');badge.textContent=String(unread);badge.hidden=!unread;
+      const unread=currentNotifications.filter(item=>!item.read_at).length,badge=document.getElementById('notificationNavCount');badge.textContent=String(unread);badge.hidden=!unread;document.getElementById('markNotificationsRead').hidden=!unread;
     }
 
     function populateNotificationPreferences(data){
@@ -1102,11 +1102,30 @@
           const dateLabel = fair.starts_at ? new Date(fair.starts_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Date to be announced';
           const employers = currentCareerFairDirectory.filter(item => item.event_name === fair.name).length;
           const saved=currentCareerFairPlans.filter(item=>item.career_fair_id===fair.id).length;
-          row.innerHTML = `<span class="fair-date"><i class="fa-regular fa-calendar"></i>${escapeHtml(dateLabel)}</span><span><strong>${escapeHtml(fair.name)}</strong><small>${escapeHtml(fair.location || 'Location to be announced')} · ${employers} ${employers === 1 ? 'employer' : 'employers'}${saved?` · ${saved} saved`:''}</small></span><i class="fa-solid fa-chevron-right"></i>`;
+          row.innerHTML = `<span class="fair-date"><i class="fa-regular fa-calendar"></i>${escapeHtml(dateLabel)}</span><span><strong>${escapeHtml(fair.name)}</strong><small>${escapeHtml(fair.location || 'Location to be announced')} · ${employers} ${employers === 1 ? 'employer' : 'employers'}${saved?` · ${saved} favorite${saved===1?'':'s'}`:''}</small></span><i class="fa-solid fa-chevron-right"></i>`;
           fairRoot.appendChild(row);
         });
       }
     }
+
+    function recommendationParentPayload(){const value=document.getElementById('dashboardRecommendationParent').value;if(!value)return {experience_id:null,project_id:null};const [type,id]=value.split(':');return {experience_id:type==='experience'?Number(id):null,project_id:type==='project'?Number(id):null};}
+
+    function renderJourneySections(){
+      const recommendationList=document.getElementById('dashboardRecommendationList');recommendationList.innerHTML='';document.getElementById('dashboardRecommendationEmpty').hidden=currentRecommendations.length>0;
+      currentRecommendations.forEach(item=>{const row=document.createElement('div');row.className='connection-item';row.innerHTML=`<span class="editable-copy"><strong>${escapeHtml(item.author_name)}</strong><small>${escapeHtml([item.author_title,item.author_organization].filter(Boolean).join(' · '))}</small><small>${escapeHtml(item.writer_email||'No contact email')} · ${item.is_public?'Public':'Private'} · PDF letter</small></span><span class="item-action-group">${item.letter_path?'<button class="btn btn-secondary btn-small view-letter" type="button">View Letter</button>':''}<button class="btn btn-danger btn-small delete-letter" type="button">Delete</button></span>`;row.querySelector('.view-letter')?.addEventListener('click',async()=>{const url=await tapid.signedFileUrl('media',item.letter_path);window.open(url,'_blank','noopener');});row.querySelector('.delete-letter').addEventListener('click',()=>deleteDashboardRecommendation(item));recommendationList.appendChild(row);});
+      const outcomeList=document.getElementById('dashboardOutcomeList'),labels={interview:'Interview',internship:'Internship',offer:'Offer',accepted_offer:'Accepted Offer',job:'Hired'};outcomeList.innerHTML='';document.getElementById('dashboardOutcomeEmpty').hidden=currentOutcomes.length>0;
+      currentOutcomes.forEach(item=>{const row=document.createElement('div');row.className='connection-item verified-outcome-item';row.innerHTML=`<span class="outcome-verified-icon">✓</span><span class="editable-copy"><strong>${escapeHtml(labels[item.outcome_type]||item.outcome_type)} · ${escapeHtml(item.company_name)}</strong><small>${item.outcome_date?escapeHtml(item.outcome_date):''}${item.notes?' · '+escapeHtml(item.notes):''}</small><small>Employer verified</small></span><label class="toggle-row outcome-visibility"><input type="checkbox" ${item.is_public?'checked':''}><span>Show publicly</span></label>`;row.querySelector('input').addEventListener('change',event=>setDashboardOutcomeVisibility(item,event.target));outcomeList.appendChild(row);});
+    }
+
+    async function loadJourneySections(){
+      const [recommendationResult,outcomeResult,contactResult]=await Promise.all([tapid.client.from('recommendations').select('*').eq('student_user_id',currentUser.id).order('updated_at',{ascending:false}),tapid.client.from('career_outcomes').select('*').eq('student_user_id',currentUser.id).eq('verification_status','verified').order('created_at',{ascending:false}),tapid.client.from('recommendation_contacts').select('recommendation_id,writer_email').eq('student_user_id',currentUser.id)]);
+      if(recommendationResult.error)throw recommendationResult.error;if(outcomeResult.error)throw outcomeResult.error;if(contactResult.error)throw contactResult.error;const contactMap=new Map((contactResult.data||[]).map(item=>[item.recommendation_id,item.writer_email]));currentRecommendations=(recommendationResult.data||[]).map(item=>({...item,writer_email:contactMap.get(item.id)||''}));currentOutcomes=outcomeResult.data||[];
+      const select=document.getElementById('dashboardRecommendationParent');select.innerHTML='<option value="">General professional recommendation</option>'+currentExperiences.map(item=>`<option value="experience:${item.id}">Experience: ${escapeHtml(item.title)}</option>`).join('')+currentProjects.map(item=>`<option value="project:${item.id}">Project: ${escapeHtml(item.title)}</option>`).join('');renderJourneySections();
+    }
+
+    async function deleteDashboardRecommendation(item){if(!confirm('Delete this recommendation?'))return;const media=await tapid.client.from('media').select('file_path').eq('recommendation_id',item.id);if(!media.error&&media.data?.length)await tapid.client.storage.from('media').remove(media.data.map(entry=>entry.file_path));const result=await tapid.client.from('recommendations').delete().eq('id',item.id).eq('student_user_id',currentUser.id);if(result.error)return tapid.setMessage(message,result.error.message,'error');await loadJourneySections();tapid.setMessage(message,'Recommendation deleted.','success');}
+
+    async function setDashboardOutcomeVisibility(item,input){const value=input.checked;const result=await tapid.client.from('career_outcomes').update({is_public:value,updated_at:new Date().toISOString()}).eq('id',item.id).eq('student_user_id',currentUser.id);if(result.error){input.checked=!value;return tapid.setMessage(message,result.error.message,'error');}item.is_public=value;tapid.setMessage(message,value?'Verified outcome is now public.':'Verified outcome is now private.','success');}
 
     async function init() {
       currentUser = await tapid.requireUser();
@@ -1122,11 +1141,13 @@
         await loadConnections();
         await loadCareerFairDirectory();
         await loadStudentExperienceData();
+        await loadJourneySections();
         updateDashboardHome();
       } catch (error) { tapid.setMessage(message, error.message, 'error'); }
     }
 
     document.getElementById('sendEmployerRequest').addEventListener('click', sendEmployerRequest);
+    document.getElementById('careerFairEmployerSearch').addEventListener('input',renderCareerFairDirectory);
     document.getElementById('closeRequestEmployer').addEventListener('click', ()=>document.getElementById('requestEmployerDialog').close());
     document.getElementById('cancelEmployerRequest').addEventListener('click', ()=>document.getElementById('requestEmployerDialog').close());
 
@@ -1134,6 +1155,8 @@
       event.preventDefault();const button=document.getElementById('saveOpportunities');tapid.setBusy(button,true,'Saving…');
       try{const payload={student_user_id:currentUser.id,opportunity_types:[...document.querySelectorAll('[name="opportunityType"]:checked')].map(input=>input.value),desired_roles:csvValues(document.getElementById('desiredRoles').value),industries:csvValues(document.getElementById('preferredIndustries').value),preferred_locations:csvValues(document.getElementById('preferredLocations').value),available_start_date:document.getElementById('availableStartDate').value||null,willing_to_relocate:document.getElementById('willingToRelocate').checked,is_public:document.getElementById('opportunitiesPublic').checked,updated_at:new Date().toISOString()};const result=await tapid.client.from('student_opportunity_preferences').upsert(payload,{onConflict:'student_user_id'}).select().single();if(result.error)throw result.error;populateOpportunityPreferences(result.data);updateDashboardHome();tapid.setMessage(message,'Opportunity preferences saved.','success');}catch(error){tapid.setMessage(message,error.message,'error');}finally{tapid.setBusy(button,false);}
     });
+
+    document.getElementById('dashboardRecommendationForm').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter;let createdId=null,uploadedPath=null;tapid.setBusy(button,true,'Uploading…');try{const file=document.getElementById('dashboardRecommendationLetter').files?.[0],writerEmail=document.getElementById('dashboardAuthorEmail').value.trim();if(!file)throw new Error('Choose the PDF recommendation letter.');if(file.type!=='application/pdf'||file.size>10*1024*1024)throw new Error('Recommendation letters must be PDFs no larger than 10 MB.');const payload={student_user_id:currentUser.id,author_name:document.getElementById('dashboardAuthorName').value.trim(),author_email:null,author_title:document.getElementById('dashboardAuthorTitle').value.trim(),author_organization:document.getElementById('dashboardAuthorOrganization').value.trim()||null,relationship:document.getElementById('dashboardRelationship').value.trim()||null,recommendation_text:null,is_public:document.getElementById('dashboardRecommendationPublic').checked,status:'submitted',...recommendationParentPayload()};const saved=await tapid.client.from('recommendations').insert(payload).select().single();if(saved.error)throw saved.error;createdId=saved.data.id;const contact=await tapid.client.from('recommendation_contacts').insert({recommendation_id:createdId,student_user_id:currentUser.id,writer_email:writerEmail});if(contact.error)throw contact.error;uploadedPath=`${currentUser.id}/recommendations/${createdId}.pdf`;const upload=await tapid.client.storage.from('media').upload(uploadedPath,file,{contentType:'application/pdf'});if(upload.error)throw upload.error;const media=await tapid.client.from('media').insert({user_id:currentUser.id,recommendation_id:createdId,file_path:uploadedPath,file_url:'',media_type:'pdf',caption:'Recommendation letter',sort_order:0});if(media.error)throw media.error;const update=await tapid.client.from('recommendations').update({letter_path:uploadedPath}).eq('id',createdId);if(update.error)throw update.error;event.target.reset();await loadJourneySections();tapid.setMessage(message,'Recommendation letter uploaded.','success');}catch(error){if(uploadedPath)await tapid.client.storage.from('media').remove([uploadedPath]);if(createdId)await tapid.client.from('recommendations').delete().eq('id',createdId).eq('student_user_id',currentUser.id);tapid.setMessage(message,error.message,'error');}finally{tapid.setBusy(button,false);}});
 
     document.getElementById('saveNotificationPreferences').addEventListener('click',async()=>{
       const button=document.getElementById('saveNotificationPreferences');tapid.setBusy(button,true,'Saving…');const payload={student_user_id:currentUser.id,connection_updates:document.getElementById('notifyConnections').checked,verified_outcomes:document.getElementById('notifyOutcomes').checked,career_fair_updates:document.getElementById('notifyFairs').checked,card_updates:document.getElementById('notifyCard').checked,email_enabled:document.getElementById('notifyEmail').checked,updated_at:new Date().toISOString()};const result=await tapid.client.from('notification_preferences').upsert(payload,{onConflict:'student_user_id'}).select().single();tapid.setBusy(button,false);if(result.error)return tapid.setMessage(message,result.error.message,'error');populateNotificationPreferences(result.data);tapid.setMessage(message,'Notification preferences saved.','success');

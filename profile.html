@@ -165,7 +165,7 @@
       const subtitle = [item.company, item.experience_type, formatDateRange(item.start_date, item.end_date, item.is_current), item.location].filter(Boolean).join(' · ');
       const media = mediaData.filter(m => m.experience_id === item.id);
       const lead = item.overview || item.work_description || item.role_description || '';
-      return `<details class="public-entry ${featured ? 'featured-entry' : ''}" ${featured ? 'open' : ''}><summary><span class="public-entry-title"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(subtitle)}</small>${featured && lead ? `<p>${escapeHtml(lead)}</p>` : ''}</span></summary><div class="public-entry-body">${detailBlock('Overview', item.overview)}${detailBlock('My Role', item.role_description)}${detailBlock('What I Actually Did', item.work_description)}${detailBlock('Problems I Helped Solve', item.problems_solved)}${detailBlock('Accomplishments', item.accomplishments)}${detailBlock('What I Learned', item.lessons_learned)}${mediaGallery(media)}</div></details>`;
+      return `<details class="public-entry ${featured ? 'featured-entry' : ''}"><summary><span class="public-entry-title"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(subtitle)}</small></span></summary><div class="public-entry-body">${detailBlock('Overview', item.overview)}${detailBlock('My Role', item.role_description)}${detailBlock('What I Actually Did', item.work_description)}${detailBlock('Problems I Helped Solve', item.problems_solved)}${detailBlock('Accomplishments', item.accomplishments)}${detailBlock('What I Learned', item.lessons_learned)}${mediaGallery(media)}</div></details>`;
     }
 
     function projectMarkup(item, featured = false) {
@@ -173,7 +173,7 @@
       const media = mediaData.filter(m => m.project_id === item.id);
       const lead = item.result || item.problem || item.role_description || '';
       const external = item.external_url ? `<div class="project-external"><a class="btn btn-secondary" href="${escapeHtml(item.external_url)}" target="_blank" rel="noopener">Open Project Link ↗</a></div>` : '';
-      return `<details class="public-entry ${featured ? 'featured-entry' : ''}" ${featured ? 'open' : ''}><summary><span class="public-entry-title"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(subtitle)}</small>${featured && lead ? `<p>${escapeHtml(lead)}</p>` : ''}</span></summary><div class="public-entry-body">${detailBlock('The Problem', item.problem)}${detailBlock('My Role', item.role_description)}${detailBlock('Process', item.process)}${detailBlock('Result', item.result)}${detailBlock('What I Learned', item.lessons_learned)}${mediaGallery(media)}${external}</div></details>`;
+      return `<details class="public-entry ${featured ? 'featured-entry' : ''}"><summary><span class="public-entry-title"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(subtitle)}</small></span></summary><div class="public-entry-body">${detailBlock('The Problem', item.problem)}${detailBlock('My Role', item.role_description)}${detailBlock('Process', item.process)}${detailBlock('Result', item.result)}${detailBlock('What I Learned', item.lessons_learned)}${mediaGallery(media)}${external}</div></details>`;
     }
 
     function renderPublicExperiences() {
@@ -284,9 +284,10 @@
       const container=document.getElementById('publicRecommendations');
       container.innerHTML='';
       recommendationsData.forEach(item=>{
-        const block=document.createElement('article');block.className='public-entry';
+        const block=document.createElement('details');block.className='public-entry';
         const author=[item.author_name,item.author_title,item.author_organization].filter(Boolean).join(' · ');
-        block.innerHTML=`<h3>${escapeHtml(author)}</h3>${item.relationship?`<p class="subtle">${escapeHtml(item.relationship)}</p>`:''}${item.recommendation_text?`<p>${escapeHtml(item.recommendation_text)}</p>`:''}`;
+        const letter=mediaData.find(media=>media.recommendation_id===item.id);
+        block.innerHTML=`<summary><span class="public-entry-title"><strong>${escapeHtml(item.author_name)}</strong><small>${escapeHtml([item.author_title,item.author_organization,item.relationship].filter(Boolean).join(' · '))}</small></span></summary><div class="public-entry-body"><h3>Letter of recommendation</h3>${letter?`<a class="btn btn-secondary" href="${escapeHtml(letter.file_url)}" target="_blank" rel="noopener">View PDF Letter ↗</a>`:'<p class="subtle">Letter unavailable.</p>'}</div>`;
         container.appendChild(block);
       });
       document.getElementById('recommendationsSection').hidden=!recommendationsData.length;
@@ -295,7 +296,7 @@
     function renderPublicOutcomes() {
       const labels={interview:'Interview',internship:'Internship',offer:'Offer',accepted_offer:'Accepted Offer',job:'Hired'};
       const container=document.getElementById('publicOutcomes');container.innerHTML='';
-      outcomesData.forEach(item=>{const block=document.createElement('article');block.className='public-entry';const meta=[item.company_name,item.title,item.outcome_date?new Date(item.outcome_date+'T00:00:00').toLocaleDateString():null].filter(Boolean).join(' · ');block.innerHTML=`<div class="eyebrow">${escapeHtml(labels[item.outcome_type]||item.outcome_type)}</div><h3>${escapeHtml(meta)}</h3>${item.notes?`<p>${escapeHtml(item.notes)}</p>`:''}<small class="subtle">${item.verification_status==='verified'?'Verified outcome':'Student reported'}</small>`;container.appendChild(block);});
+      outcomesData.forEach(item=>{const block=document.createElement('details');block.className='public-entry';const meta=[item.company_name,item.title,item.outcome_date?new Date(item.outcome_date+'T00:00:00').toLocaleDateString():null].filter(Boolean).join(' · ');block.innerHTML=`<summary><span class="public-entry-title"><strong>${escapeHtml(labels[item.outcome_type]||item.outcome_type)}</strong><small>${escapeHtml(meta)} · Employer verified</small></span></summary><div class="public-entry-body">${item.notes?`<p>${escapeHtml(item.notes)}</p>`:'<p class="subtle">No additional details provided.</p>'}</div>`;container.appendChild(block);});
       document.getElementById('outcomesSection').hidden=!outcomesData.length;
     }
 
@@ -465,8 +466,8 @@
 
         document.getElementById('saveContactBtn').addEventListener('click', () => tapid.downloadVCard(profileData, contactData, linksData));
         document.getElementById('connectFirstName').textContent = profile.first_name || 'Me';
-        const updated = profile.updated_at ? new Date(profile.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-        document.getElementById('lastUpdated').textContent = updated ? `Profile updated ${updated}` : '';
+        const updated = profile.updated_at ? new Date(profile.updated_at).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' }) : '';
+        document.getElementById('lastUpdated').textContent = updated ? `Profile last updated ${updated}` : '';
         document.getElementById('connectBtn').addEventListener('click', openConnectDialog);
 
         // A signed-in recruiter uses the same Connect form as everyone else.
@@ -483,7 +484,7 @@
         }
         loading.hidden = true;
         document.getElementById('publicContent').hidden = false;
-        if(pdfMode){document.body.classList.add('pdf-preview-mode');document.getElementById('pdfPreviewToolbar').hidden=false;setTimeout(()=>window.print(),700);}
+        if(pdfMode){document.body.classList.add('pdf-preview-mode');document.getElementById('pdfPreviewToolbar').hidden=false;document.querySelectorAll('#publicContent details').forEach(item=>item.open=true);setTimeout(()=>window.print(),700);}
         document.title = `${document.getElementById('name').textContent} — TapID`;
       } catch (error) {
         console.error(error);
