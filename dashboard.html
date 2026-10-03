@@ -20,7 +20,7 @@
 <div class="dashboard-main">
 <section class="dashboard-section dashboard-home" data-section="home" id="dash-home">
 <div class="home-intro"><div><div class="eyebrow">Today at a glance</div><h2 id="homeGreeting">Welcome back</h2><p class="subtle" id="homeStatusText">Review your profile, connections, and next career opportunity.</p></div><span class="home-date" id="homeDate"></span></div>
-<div class="home-grid"><div class="card home-panel home-readiness"><div class="home-panel-heading"><div><div class="eyebrow">Profile snapshot</div><h2>Your professional profile</h2></div><button class="text-action" data-jump="profile" type="button">Edit profile <i class="fa-solid fa-arrow-right"></i></button></div><p class="subtle">A quick check of the information employers can use when you share your TapID.</p><div class="profile-progress-copy"><strong id="homeProfileProgressLabel">Profile setup</strong><span id="homeProfileProgressValue">0%</span></div><div class="profile-progress"><span id="homeProfileProgressBar"></span></div><div class="readiness-rows" id="homeReadinessRows"></div></div><div class="card home-panel home-network"><div class="eyebrow">Your network</div><h2>Connection activity</h2><p class="subtle">Career-fair requests stay separate until an employer accepts.</p><div class="network-number"><strong id="homeConnectionBig">0</strong><span>accepted and direct connections</span></div><div class="connection-progress" aria-label="Career fair request status"><span class="accepted" id="homeAcceptedBar"></span><span class="pending" id="homePendingBar"></span><span class="declined" id="homeDeclinedBar"></span></div><div class="network-status-list"><span><i class="accepted"></i><strong id="homeAcceptedRequestCount">0</strong> Accepted</span><span><i class="pending"></i><strong id="homePendingRequestCount">0</strong> Pending</span><span><i class="declined"></i><strong id="homeDeclinedRequestCount">0</strong> Declined</span></div><button class="btn btn-primary btn-block" data-jump="connections" type="button">Manage Connections</button><button class="text-action centered" data-jump="career-fairs" type="button">Explore career fairs <i class="fa-solid fa-arrow-right"></i></button></div></div>
+<div class="home-grid"><div class="card home-panel home-readiness"><div class="home-panel-heading"><div><div class="eyebrow">Profile snapshot</div><h2>Your professional profile</h2></div><button class="text-action" data-jump="profile" type="button">Edit profile <i class="fa-solid fa-arrow-right"></i></button></div><p class="subtle">A quick check of the information employers can use when you share your TapID.</p><div class="profile-progress-copy"><strong id="homeProfileProgressLabel">Profile setup</strong><span id="homeProfileProgressValue">0%</span></div><div class="profile-progress"><span id="homeProfileProgressBar"></span></div><div class="readiness-rows" id="homeReadinessRows"></div></div><div class="card home-panel home-network"><div class="eyebrow">Your network</div><h2>Keep conversations moving</h2><p class="subtle">Your TapID is most useful after the first connection. Follow up, reply, and keep your profile current.</p><div class="network-quick-grid"><button data-jump="connections"><strong id="homeConnectionBig">0</strong><span>Connections</span></button><button data-jump="messages"><strong id="homeUnreadMessages">0</strong><span>Unread messages</span></button></div><div class="network-next-action"><span><i class="fa-solid fa-paper-plane"></i></span><div><strong><span id="homePendingRequestCount">0</span> requests awaiting employers</strong><small>Requests become connections after an employer accepts.</small></div></div><button class="btn btn-primary btn-block" data-jump="messages" type="button">Open Messages</button><button class="text-action centered" data-jump="career-fairs" type="button">Find employers at career fairs <i class="fa-solid fa-arrow-right"></i></button><div hidden><span id="homeAcceptedRequestCount">0</span><span id="homeDeclinedRequestCount">0</span><span id="homeAcceptedBar"></span><span id="homePendingBar"></span><span id="homeDeclinedBar"></span></div></div></div>
 <div class="card home-panel home-fairs"><div class="home-panel-heading"><div><div class="eyebrow">Upcoming opportunity</div><h2>Next career fair</h2></div><button class="text-action" data-jump="career-fairs" type="button">View all fairs <i class="fa-solid fa-arrow-right"></i></button></div><div id="homeUpcomingFairs" class="home-fair-list"><div class="inline-empty">Checking for your next career fair…</div></div></div>
 </section>
 <section class="dashboard-section card" data-section="notifications" hidden id="dash-notifications">
@@ -127,10 +127,6 @@
 <div class="profile-summary"><strong id="summaryName">Loading…</strong><span class="subtle" id="summaryMajor"></span><span class="subtle" id="summarySchool"></span><span class="subtle" id="summaryUsername"></span></div>
 <a class="btn btn-gold btn-block" href="card.html" id="manageCardBtn">Manage Card &amp; QR</a>
 <a class="btn btn-secondary btn-block" href="#" id="publicBtnSide" target="_blank" rel="noopener">View Public Profile</a>
-<div class="divider"></div>
-<label style="font-weight:800;display:block;margin-bottom:8px;">Profile availability</label>
-<p class="subtle" id="availabilityHelp" style="margin-top:0;">Activate your TapID card before making the public profile available.</p>
-<button class="btn btn-danger btn-block" id="toggleActiveBtn" type="button">Activate TapID First</button>
 </aside>
 </div>
 </main>
@@ -335,29 +331,21 @@
       document.getElementById('shareProfileUrl').textContent = url;
       const badge = document.getElementById('activeBadge');
       const cardBadge = document.getElementById('cardBadge');
-      const toggle = document.getElementById('toggleActiveBtn');
-      const availabilityHelp = document.getElementById('availabilityHelp');
       if (profile.card_activated) {
         cardBadge.textContent = 'CARD ACTIVE';
         cardBadge.className = 'badge';
         if (profile.profile_active) {
           badge.textContent = 'PROFILE LIVE';
           badge.className = 'badge';
-          toggle.textContent = 'Pause Public Profile';
-          availabilityHelp.textContent = 'Your NFC/QR link is live. Pause it if the card is lost or you temporarily want the profile unavailable.';
         } else {
           badge.textContent = 'PROFILE PAUSED';
           badge.className = 'badge off';
-          toggle.textContent = 'Reactivate Public Profile';
-          availabilityHelp.textContent = 'Your card is activated, but the public profile is paused. The same NFC/QR link will work again when reactivated.';
         }
       } else {
         cardBadge.textContent = 'CARD NOT ACTIVATED';
         cardBadge.className = 'badge off';
         badge.textContent = 'PROFILE OFF';
         badge.className = 'badge off';
-        toggle.textContent = 'Activate TapID First';
-        availabilityHelp.textContent = 'Finish card activation to make the permanent public URL and QR code live.';
       }
       document.getElementById('avatarPublic').checked = profile.avatar_is_public !== false;
       renderAvatar();
@@ -959,11 +947,11 @@
       currentCareerFairDirectory = result.data || [];
       currentCareerFairs = fairResult.error ? [] : (fairResult.data || []);
       currentCareerFairPlans = planResult.error ? [] : (planResult.data || []);
-      const companyIds=[...new Set(currentCareerFairDirectory.map(row=>row.company_id))];currentCareerCompanies=new Map();if(companyIds.length){const companies=await tapid.client.from('companies').select('id,name,description,website,industries,locations,recruiting_majors,opportunities').in('id',companyIds);if(!companies.error)(companies.data||[]).forEach(item=>currentCareerCompanies.set(item.id,item));}
+      const companyIds=[...new Set(currentCareerFairDirectory.map(row=>row.company_id))];currentCareerCompanies=new Map();if(companyIds.length){const companies=await tapid.client.from('companies').select('id,name,description,website,careers_url,employee_size,culture,student_message,industries,locations,recruiting_majors,opportunities').in('id',companyIds);if(!companies.error)(companies.data||[]).forEach(item=>currentCareerCompanies.set(item.id,item));}
       renderCareerFairDirectory();
     }
 
-    function openCompanyPreview(companyId){const company=currentCareerCompanies.get(companyId);if(!company)return;document.getElementById('companyPreviewName').textContent=company.name;document.getElementById('companyPreviewIndustries').textContent=(company.industries||[]).join(' · ');document.getElementById('companyPreviewDescription').textContent=company.description||'This employer has not added a description yet.';document.getElementById('companyPreviewDetails').innerHTML=[connectionDetailRow('Locations',(company.locations||[]).join(', ')),connectionDetailRow('Majors recruited',(company.recruiting_majors||[]).join(', ')),connectionDetailRow('Opportunities',(company.opportunities||[]).join(', '))].join('');const link=document.getElementById('companyPreviewWebsite');link.hidden=!company.website;if(company.website)link.href=company.website;document.getElementById('companyPreviewDialog').showModal();}
+    function openCompanyPreview(companyId){const company=currentCareerCompanies.get(companyId);if(!company)return;document.getElementById('companyPreviewName').textContent=company.name;document.getElementById('companyPreviewIndustries').textContent=(company.industries||[]).join(' · ');document.getElementById('companyPreviewDescription').textContent=company.description||'This employer has not added a description yet.';document.getElementById('companyPreviewDetails').innerHTML=[connectionDetailRow('Organization size',company.employee_size),connectionDetailRow('Locations',(company.locations||[]).join(', ')),connectionDetailRow('Majors recruited',(company.recruiting_majors||[]).join(', ')),connectionDetailRow('Opportunities',(company.opportunities||[]).join(', ')),connectionDetailRow('Culture',company.culture),connectionDetailRow('Message to students',company.student_message),connectionDetailRow('Careers page',company.careers_url,company.careers_url)].join('');const link=document.getElementById('companyPreviewWebsite');link.hidden=!company.website;if(company.website)link.href=company.website;document.getElementById('companyPreviewDialog').showModal();}
 
     async function toggleCareerFairFavorite(fair,row,plan){
       if(plan){const result=await tapid.client.from('career_fair_student_plans').delete().eq('id',plan.id).eq('student_user_id',currentUser.id);if(result.error)return tapid.setMessage(message,result.error.message,'error');currentCareerFairPlans=currentCareerFairPlans.filter(item=>item.id!==plan.id);renderCareerFairDirectory();updateDashboardHome();return tapid.setMessage(message,`${row.company_name} removed from favorites.`,'success');}
@@ -1157,6 +1145,7 @@
         const button=document.createElement('button');button.type='button';button.className='conversation-item'+(selectedMessageCompanyId===connection.company_id?' active':'');button.innerHTML=`<span class="connection-avatar">${escapeHtml((company?.name||'E').charAt(0))}</span><span><strong>${escapeHtml(company?.name||'Employer')}</strong><small>${escapeHtml(last?.body||connection.event_name||'Connected employer')}</small></span>${companyUnread?`<b>${companyUnread}</b>`:''}`;button.addEventListener('click',()=>openStudentThread(connection.company_id));list.appendChild(button);
       });
       const badge=document.getElementById('messageNavCount');badge.textContent=String(unread);badge.hidden=!unread;
+      const homeUnread=document.getElementById('homeUnreadMessages');if(homeUnread)homeUnread.textContent=String(unread);
       if(selectedMessageCompanyId)renderStudentThread();
     }
 
@@ -1641,18 +1630,6 @@
       await loadConnections();
       document.getElementById('connectionDialog').close();
       tapid.setMessage(message, 'Connection deleted.', 'success');
-    });
-
-    document.getElementById('toggleActiveBtn').addEventListener('click', async () => {
-      if (!currentProfile.card_activated) {
-        window.location.href = 'card.html';
-        return;
-      }
-      const nextState = !currentProfile.profile_active;
-      const { data, error } = await tapid.client.from('profiles').update({ profile_active: nextState, updated_at: new Date().toISOString() }).eq('id', currentUser.id).select().single();
-      if (error) return tapid.setMessage(message, error.message, 'error');
-      populateProfile(data);
-      tapid.setMessage(message, nextState ? 'Public profile reactivated. Your NFC and QR links are live again.' : 'Public profile paused. Your NFC and QR links now lead to an unavailable profile.', 'success');
     });
 
     document.getElementById('logoutBtn').addEventListener('click', async () => { await tapid.client.auth.signOut(); window.location.replace('login.html'); });
