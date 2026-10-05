@@ -63,7 +63,7 @@
       if(!company||!name||!email||password.length<8){tapid.setMessage(message,'Complete every field and use a password of at least 8 characters.','error');return;}
       tapid.setBusy(button,true,'Creating account…');
       try{
-        const emailRedirectTo=new URL('employer-login.html?confirmed=1',location.href).href;
+        const emailRedirectTo=tapid.siteUrl('employer-login.html?confirmed=1');
         const {data,error}=await tapid.client.auth.signUp({email,password,options:{emailRedirectTo,data:{user_type:'employer',employer_company:company,recruiter_name:name}}});
         if(error) throw error;
         if(!data.session){tapid.setMessage(message,'Account created. Confirm your email, then use Employer Log In.','success');form.reset();return;}

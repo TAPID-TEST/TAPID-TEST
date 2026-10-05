@@ -83,8 +83,15 @@
       return `https://${raw}`;
     },
 
+    siteUrl(path = '') {
+      const configured = String(window.TAPID_CONFIG.SITE_URL || '').replace(/\/$/, '');
+      const base = configured || window.location.origin;
+      const cleanPath = String(path || '').replace(/^\//, '');
+      return cleanPath ? `${base}/${cleanPath}` : base;
+    },
+
     profileUrl(username) {
-      return `${window.location.origin}/profile.html?u=${encodeURIComponent(username)}`;
+      return this.siteUrl(`profile.html?u=${encodeURIComponent(username)}`);
     },
 
     // Backward-compatible name used by earlier dashboard builds.
