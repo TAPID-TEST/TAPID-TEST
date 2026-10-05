@@ -21,10 +21,7 @@
         <div class="public-meta"><span id="major"></span><span id="schoolYear"></span><span id="school"></span><span id="gradYear"></span></div>
         <div class="verified-school-badge" id="verifiedSchoolBadge" hidden><i class="fa-solid fa-circle-check"></i><span id="verifiedSchoolText"></span></div>
         <p id="bio" class="public-bio"></p>
-      </section>
-
-      <section class="card public-section public-connect-hub">
-        <div class="section-head"><div><div class="eyebrow">Connect</div><h2>Keep the conversation going</h2></div></div>
+        <div class="hero-connect-panel">
         <div class="primary-action-grid">
           <a id="resumeBtn" class="action-tile" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-file-lines"></i><span><strong>View Résumé</strong><small>Open the latest PDF</small></span></a>
           <button id="saveContactBtn" class="action-tile" type="button"><i class="fa-solid fa-address-card"></i><span><strong>Save Contact</strong><small>Add this person to your contacts</small></span></button>
@@ -33,11 +30,7 @@
         <div id="resumeUnavailable" class="availability-note" hidden>Résumé not available</div>
         <div id="contactSection" class="compact-contact" hidden><div id="contactDetails" class="contact-details"></div></div>
         <div id="linksSection" class="compact-links" hidden><div id="publicLinks" class="public-links"></div></div>
-      </section>
-
-      <section id="snapshotSection" class="card public-section" hidden>
-        <div class="eyebrow">Quick snapshot</div><h2>At a glance</h2>
-        <div id="snapshotGrid" class="snapshot-grid"></div>
+        </div>
       </section>
 
       <div class="public-portfolio-grid"><div class="public-portfolio-main">
@@ -211,19 +204,6 @@
       const allBtn = document.getElementById('showAllProjectsBtn');
       allBtn.hidden = rest.length === 0;
       allBtn.onclick = () => { section.hidden = !section.hidden; allBtn.textContent = section.hidden ? 'View all projects' : 'Hide additional projects'; };
-    }
-
-    function renderSnapshot() {
-      const items = [
-        ['fa-briefcase', experiencesData.length, experiencesData.length === 1 ? 'Experience' : 'Experiences'],
-        ['fa-diagram-project', projectsData.length, projectsData.length === 1 ? 'Project' : 'Projects'],
-        ['fa-people-group', organizationsData.length, organizationsData.length === 1 ? 'Organization' : 'Organizations'],
-        ['fa-certificate', certificationsData.length, certificationsData.length === 1 ? 'Certification' : 'Certifications']
-      ].filter(([, count]) => count > 0);
-      const section = document.getElementById('snapshotSection');
-      if (!items.length) { section.hidden = true; return; }
-      document.getElementById('snapshotGrid').innerHTML = items.map(([icon,count,label]) => `<div class="snapshot-item"><i class="fa-solid ${icon}"></i><strong>${count}</strong><span>${label}</span></div>`).join('');
-      section.hidden = false;
     }
 
     function renderPublicSkills() {
@@ -465,7 +445,6 @@
         if(profile.show_recommendations!==false)renderPublicRecommendations();
         // Employer-reported outcomes are private and institution-facing only.
         renderPublicOpportunities();
-        renderSnapshot();
 
         document.getElementById('saveContactBtn').addEventListener('click', () => tapid.downloadVCard(profileData, contactData, linksData));
         document.getElementById('connectFirstName').textContent = profile.first_name || 'Me';
