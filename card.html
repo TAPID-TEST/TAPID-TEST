@@ -26,7 +26,8 @@
         <div class="section-head"><div><h2>Your Permanent Public URL</h2><p class="subtle">This is the URL to program onto the NFC chip and encode in the QR code.</p></div></div>
         <div class="permanent-url-box"><code id="publicUrl">Loading…</code><button id="copyUrlBtn" class="btn btn-secondary" type="button">Copy URL</button></div>
         <div class="activation-actions">
-          <input id="cardSerial" placeholder="Card serial from your university">
+          <label for="cardSerial">Card serial</label>
+          <input id="cardSerial" placeholder="Assigned automatically for confirmed Cal Poly emails">
           <button id="activateBtn" class="btn btn-primary" type="button">Activate My TapID</button>
           <a id="viewProfileBtn" class="btn btn-secondary" href="#" target="_blank" rel="noopener">View Public Profile ↗</a>
         </div>
@@ -61,7 +62,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20261006-auto-cards1"></script>
   <script>
     let currentUser;
     let currentProfile;
@@ -70,7 +71,7 @@
 
     function renderCardState(profile) {
       currentProfile = profile;
-      document.getElementById('cardSerial').hidden = Boolean(profile.card_activated);
+      document.getElementById('cardSerial').hidden = false;
       currentUrl = tapid.profileUrl(profile.username);
       document.getElementById('publicUrl').textContent = currentUrl;
       document.getElementById('viewProfileBtn').href = currentUrl;
@@ -132,6 +133,15 @@
         const profile = await tapid.getProfileById(currentUser.id);
         if (!profile) throw new Error('Your TapID profile record could not be found.');
         if (!tapid.onboardingComplete(profile)) { window.location.replace('onboarding.html'); return; }
+        const cards = await tapid.client.from('card_issuance').select('card_serial,issuance_source,status').eq('student_user_id',currentUser.id).in('status',['issued','activated']).order('issued_at',{ascending:false}).limit(1);
+        if (cards.error) throw cards.error;
+        if (cards.data?.[0]) {
+          document.getElementById('cardSerial').value = cards.data[0].card_serial;
+          document.getElementById('cardSerial').readOnly = true;
+          if (cards.data[0].issuance_source === 'calpoly_email' && !profile.card_activated) {
+            document.getElementById('cardIntro').textContent = 'Your Cal Poly email is confirmed and your serial is ready. Activate your TapID when you are ready to share your profile.';
+          }
+        }
         renderCardState(profile);
         await loadReadiness();
       } catch (error) {
@@ -147,7 +157,7 @@
         let payload;
         if (!currentProfile.card_activated) {
           const serial=document.getElementById('cardSerial').value.trim();
-          if(!serial) throw new Error('Enter the card serial issued by your university.');
+          if(!serial) throw new Error('Confirm your Cal Poly email and select Cal Poly as your school to receive a serial automatically. Other schools can use a university-issued serial.');
           const activation=await tapid.client.rpc('activate_issued_tapid_card',{p_card_serial:serial});
           if(activation.error) throw activation.error;
           const refreshed=await tapid.getProfileById(currentUser.id);

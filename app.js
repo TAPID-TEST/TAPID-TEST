@@ -5,11 +5,20 @@
     throw new Error('TapID configuration or Supabase library failed to load.');
   }
 
+  // University administration must not inherit a student/employer login from another tab.
+  const universitySession = document.body.classList.contains('university-auth-page') ||
+    document.body.classList.contains('university-dashboard-page') ||
+    (['forgot-password.html', 'reset-password.html'].includes(window.location.pathname.split('/').pop()) &&
+      new URLSearchParams(window.location.search).get('role') === 'university');
+  const universityAuth = universitySession ? {
+    storageKey: `tapid-university-${new URL(window.TAPID_CONFIG.SUPABASE_URL).hostname}-auth`
+  } : {};
   const client = window.supabase.createClient(
     window.TAPID_CONFIG.SUPABASE_URL,
     window.TAPID_CONFIG.SUPABASE_KEY,
     {
       auth: {
+        ...universityAuth,
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true
@@ -51,6 +60,11 @@
     },
 
     async getProfileById(id) {
+      const { data: sessionData } = await client.auth.getSession();
+      if (!universitySession && sessionData.session?.user?.id === id) {
+        const assignment = await client.rpc('ensure_my_calpoly_card');
+        if (assignment.error) throw assignment.error;
+      }
       const { data, error } = await client.from('profiles').select('*').eq('id', id).maybeSingle();
       if (error) throw error;
       return data;
