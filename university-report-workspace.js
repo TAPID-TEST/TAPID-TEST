@@ -40,6 +40,7 @@
     if($('reportStart').value&&$('reportEnd').value&&$('reportStart').value>$('reportEnd').value){tapid.setMessage($('pageMessage'),'Connected from must be before connected through.','error');$('printReport').disabled=$('exportReport').disabled=true;return;}
     tapid.setMessage($('pageMessage'),'');$('printReport').disabled=$('exportReport').disabled=false;
     const values=selected(),s=M.summarize(values,days(),loadedAt.getTime()),event=events.find(e=>e.key===$('reportEvent').value),title=event?.name||'All career fairs';
+    if($('comparisonWindowControl'))$('comparisonWindowControl').hidden=!$('compareEvent').value||!days();
     $('reportTitle').textContent=title;$('printTitle').textContent=title+' · Career-fair report';
     const parts=[admin.school_name,event?.date?date(event.date):null,days()?`First ${days()} days after connection`:'All recorded results',`Generated ${loadedAt.toLocaleString('en-US',{timeZone:'America/Los_Angeles'})} PT`,$('reportEmployer').selectedOptions[0]?.textContent,$('reportMajor').value,$('reportYear').value,$('reportStart').value?`Connected from ${$('reportStart').value}`:null,$('reportEnd').value?`Through ${$('reportEnd').value}`:null].filter(Boolean);
     $('printScope').textContent=parts.join(' · ');
@@ -63,8 +64,9 @@
       const old=$('reportEvent').value,past=events.filter(e=>e.date&&Date.parse(e.date)<=Date.now()).sort((a,b)=>Date.parse(b.date)-Date.parse(a.date));
       options('reportEvent',events.map(e=>[e.key,e.name+(e.date?' · '+date(e.date):'')]),'All connection sources');
       const newestRecorded=rows.slice().sort((a,b)=>M.stamp(b.connected_at)-M.stamp(a.connected_at))[0]?.event_key;
-      $('reportEvent').value=events.some(e=>e.key===old)?old:past[0]?.key||newestRecorded||events[0]?.key||'';$('reportEvent').disabled=false;
-      options('compareEvent',events.map(e=>[e.key,e.name]),'No comparison');
+      const linked=new URLSearchParams(location.search).get('fair');
+      $('reportEvent').value=events.some(e=>e.key===old)?old:events.some(e=>e.key===linked)?linked:past[0]?.key||newestRecorded||events[0]?.key||'';$('reportEvent').disabled=false;
+      options('compareEvent',events.map(e=>[e.key,e.name+(e.date?' · '+date(e.date):'')]),'No comparison');
       options('reportEmployer',[...new Map(rows.map(r=>[String(r.company_id),r.company_name])).entries()],'All employers');
       for(const [id,key,title]of [['reportMajor','major','All majors'],['reportYear','school_year','All class years']])options(id,[...new Set(rows.map(r=>r[key]).filter(Boolean))].sort().map(v=>[v,v]),title);
       render();

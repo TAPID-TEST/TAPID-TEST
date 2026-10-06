@@ -1,0 +1,36 @@
+/* Dashboard palette, existing public portfolio layout. */
+body.public-profile-page{--green:#15533a;--gold:#b88c2a;--ink:#202a23;--text:#41554a;--muted:#778078;--line:#e5e9e5;background:#f3f5f2;color:#202a23;font-family:Inter,Arial,Helvetica,sans-serif}
+.public-profile-page .topbar{border-bottom:1px solid #e0e6df;background:transparent}
+.public-profile-page .public-hero{background:#fff;color:#202a23;border:1px solid #e5e9e3;border-top:5px solid #15533a;box-shadow:0 2px 3px #19342603;border-radius:18px}
+.public-profile-page .public-hero::before,.public-profile-page .public-hero::after{display:none}
+.public-profile-page .public-hero h1{color:#15533a}.public-profile-page .public-bio{color:#52685a}
+.public-profile-page .public-meta span{background:#edf3e9;border:1px solid #dfe8dc;color:#346449}
+.public-profile-page .eyebrow,.public-profile-page .portfolio-aside-heading span{color:#789080}
+.public-profile-page .verified-school-badge{background:#e5efe5;color:#15533a;border-radius:9px}
+.public-profile-page .public-avatar{border-color:#fff;box-shadow:0 7px 20px #19342614;border-radius:18px}
+.public-profile-page .hero-connect-panel{border-color:#e5e9e3}
+.public-profile-page .hero-connect-panel .action-tile{background:#f8faf6;border-color:#e0e7dc;color:#202a23;border-radius:12px}
+.public-profile-page .hero-connect-panel .action-tile>i{background:#e5efe5;color:#15533a}
+.public-profile-page .hero-connect-panel .action-tile small{color:#718275}
+.public-profile-page .hero-connect-panel .action-tile:hover{background:#edf4e8;border-color:#a4bea2;box-shadow:none}
+.public-profile-page .hero-connect-panel .action-tile-gold{background:linear-gradient(125deg,#15543b,#267348);border-color:#205f40;color:#fff}
+.public-profile-page .hero-connect-panel .action-tile-gold small{color:#d7e8d8}
+.public-profile-page .hero-connect-panel .action-tile-gold>i{color:#fff;background:#ffffff18}
+.public-profile-page .hero-connect-panel .action-tile-gold:hover{background:#15533a;color:#fff}
+.public-profile-page .hero-connect-panel .compact-contact,.public-profile-page .hero-connect-panel .compact-links,.public-profile-page .hero-connect-panel .contact-row{border-color:#e5e9e3}
+.public-profile-page .hero-connect-panel .contact-row span{color:#778078}
+.public-profile-page .hero-connect-panel .contact-row strong,.public-profile-page .hero-connect-panel .contact-row a{color:#264f37}
+.public-profile-page .hero-connect-panel .public-link{background:#f5f8f1;border-color:#e3e9df;color:#264f37}.public-profile-page .hero-connect-panel .public-link small{color:#718275}
+.public-profile-page .card,.public-profile-page .feature-section{background:#fff;border:1px solid #e5e9e3;border-radius:15px;box-shadow:0 2px 3px #19342603}
+.public-profile-page .opportunity-highlight{background:#fff;color:#202a23;border:1px solid #e5e9e3}
+.public-profile-page .opportunity-highlight h2{color:#15533a}.public-profile-page .opportunity-highlight .eyebrow{color:#789080}
+.public-profile-page .opportunity-highlight .opportunity-public-block{border-color:#e1e8dd;background:#f5f8f1;border-radius:11px}
+.public-profile-page .opportunity-highlight .opportunity-public-block strong{color:#647b68}
+.public-profile-page .opportunity-highlight .opportunity-public-block span{color:#15533a;background:#e5efe5}
+.public-profile-page .opportunity-highlight .opportunity-note{color:#41554a}
+.public-profile-page .opportunity-highlight .opportunity-public-statement{color:#41554a;background:#f5f8f1;border-color:#e1e8dd}
+.public-profile-page .public-entry,.public-profile-page .feature-section .featured-entry{background:#fafcf8;border-color:#e3e9df;border-radius:11px}
+.public-profile-page .public-entry h3,.public-profile-page .public-entry-title strong{color:#202a23}
+.public-profile-page .btn-primary{background:linear-gradient(125deg,#15543b,#267348);border-color:#205f40;color:#fff;border-radius:9px;box-shadow:none}
+.public-profile-page .btn-secondary{background:#fff;border-color:#dfe5dc;color:#15533a;border-radius:9px;box-shadow:none}
+@media print{body.public-profile-page{background:#fff}.public-profile-page .public-hero{border-top:3px solid #15533a}}
