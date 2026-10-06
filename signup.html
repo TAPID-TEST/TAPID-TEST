@@ -17,7 +17,7 @@
       <div class="auth-heading">
         <div class="eyebrow">Get started</div>
         <h1 id="signupTitle">Create your TapID.</h1>
-        <p>Start with the basics. You’ll build the rest of your professional profile next.</p>
+        <p>Your Cal Poly email handles verification. Your profile starts with you.</p>
       </div>
 
       <div id="message" class="message" hidden></div>
@@ -34,18 +34,11 @@
           </div>
         </div>
 
-        <div class="field">
-          <label for="username">TapID username</label>
-          <div class="username-field">
-            <span>tapid /</span>
-            <input id="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="yourname" required>
-          </div>
-          <div class="help">This becomes your permanent public profile address.</div>
-        </div>
+        <input id="username" type="hidden">
 
         <div class="field">
-          <label for="email">Email</label>
-          <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          <label for="email">University email</label>
+          <input id="email" type="email" autocomplete="email" placeholder="you@calpoly.edu" required>
         </div>
 
         <div class="field">
@@ -68,7 +61,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20261006-reports"></script>
   <script>
     const form = document.getElementById('signupForm');
     const message = document.getElementById('message');
@@ -85,7 +78,8 @@
 
       const firstName = document.getElementById('firstName').value.trim();
       const lastName = document.getElementById('lastName').value.trim();
-      const username = tapid.cleanUsername(usernameInput.value);
+      const stem = tapid.cleanUsername(`${document.getElementById('firstName').value}${document.getElementById('lastName').value}`) || 'student';
+      const username = `${stem.slice(0,24)}-${crypto.randomUUID().slice(0,8)}`;
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
@@ -104,6 +98,7 @@
           email,
           password,
           options: {
+            emailRedirectTo: tapid.siteUrl('login.html?confirmed=1'),
             data: {
               username,
               first_name: firstName,

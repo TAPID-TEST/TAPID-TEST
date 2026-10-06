@@ -17,7 +17,7 @@
       <div class="auth-heading">
         <div class="eyebrow">Employer portal</div>
         <h1 id="employerSignupTitle">Create recruiter account.</h1>
-        <p>Save the students you meet and keep the context from every career fair connection.</p>
+        <p>Create account. Confirm email. Request university approval.</p>
       </div>
 
       <div id="message" class="message" hidden></div>
@@ -26,13 +26,14 @@
         <div class="form-grid auth-name-grid">
           <div class="field">
             <label for="company">Company</label>
-            <input id="company" placeholder="Kiewit" required>
+            <input id="company" placeholder="Company name" required>
           </div>
           <div class="field">
             <label for="name">Recruiter name</label>
-            <input id="name" autocomplete="name" placeholder="Jordan Lee" required>
+            <input id="name" autocomplete="name" placeholder="Full name" required>
           </div>
         </div>
+        <div class="form-grid"><div class="field"><label for="university">University</label><select id="university" required><option value="Cal Poly">Cal Poly</option></select></div><div class="field"><label for="website">Company website</label><input id="website" type="url" placeholder="https://company.com" required></div></div>
         <div class="field">
           <label for="email">Work email</label>
           <input id="email" type="email" autocomplete="email" placeholder="you@company.com" required>
@@ -54,19 +55,20 @@
     <a href="login.html">Student sign in</a>
   </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js?v=20261006-reports"></script>
   <script>
     const form=document.getElementById('form'), message=document.getElementById('message'), button=document.getElementById('button');
+    tapid.client.rpc('tapid_available_universities').then(r=>{if(r.error||!r.data?.length)return;const select=document.getElementById('university');select.innerHTML='';r.data.forEach(row=>{const option=document.createElement('option');option.value=row.school_name;option.textContent=row.school_name;select.appendChild(option);});});
     form.addEventListener('submit', async e=>{
       e.preventDefault(); tapid.setMessage(message,'');
       const company=document.getElementById('company').value.trim(), name=document.getElementById('name').value.trim(), email=document.getElementById('email').value.trim(), password=document.getElementById('password').value;
-      if(!company||!name||!email||password.length<8){tapid.setMessage(message,'Complete every field and use a password of at least 8 characters.','error');return;}
+      if(!company||!name||!email||password.length<8||!form.checkValidity()){tapid.setMessage(message,'Complete every field and use a password of at least 8 characters.','error');return;}
       tapid.setBusy(button,true,'Creating account…');
       try{
         const emailRedirectTo=tapid.siteUrl('employer-login.html?confirmed=1');
-        const {data,error}=await tapid.client.auth.signUp({email,password,options:{emailRedirectTo,data:{user_type:'employer',employer_company:company,recruiter_name:name}}});
+        const {data,error}=await tapid.client.auth.signUp({email,password,options:{emailRedirectTo,data:{user_type:'employer',employer_company:company,recruiter_name:name,employer_school:document.getElementById('university').value,company_website:document.getElementById('website').value.trim()}}});
         if(error) throw error;
-        if(!data.session){tapid.setMessage(message,'Account created. Confirm your email, then use Employer Log In.','success');form.reset();return;}
+        if(!data.session){tapid.setMessage(message,'Account created. Confirm your work email, then sign in to submit your university approval request.','success');form.reset();return;}
         const {error:regError}=await tapid.client.rpc('register_employer',{p_company_name:company,p_recruiter_name:name,p_recruiter_email:email});
         if(regError) throw regError;
         location.replace('employer-dashboard.html');

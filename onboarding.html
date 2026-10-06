@@ -34,7 +34,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20261006-reports"></script>
   <script>
     let currentUser;
     const message = document.getElementById('message');
@@ -53,6 +53,11 @@
         document.getElementById('lastName').value = profile.last_name || '';
         usernameInput.value = profile.username || '';
         document.getElementById('school').value = profile.school || '';
+        if (currentUser.email_confirmed_at && /@calpoly\.edu$/i.test(currentUser.email || '') &&
+            (!profile.school || /^(cal poly|cal poly san luis obispo|cal poly, san luis obispo)$/i.test(profile.school.trim()))) {
+          document.getElementById('school').value = 'Cal Poly';
+          document.getElementById('school').readOnly = true;
+        }
         document.getElementById('major').value = profile.major || '';
         document.getElementById('schoolYear').value = profile.school_year || '';
         document.getElementById('graduationYear').value = profile.graduation_year || '';

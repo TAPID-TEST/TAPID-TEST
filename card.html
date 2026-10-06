@@ -62,7 +62,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="config.js"></script>
-  <script src="app.js?v=20261006-auto-cards1"></script>
+  <script src="app.js?v=20261006-reports"></script>
   <script>
     let currentUser;
     let currentProfile;
@@ -130,6 +130,12 @@
       currentUser = await tapid.requireUser();
       if (!currentUser) return;
       try {
+        if (currentUser.email_confirmed_at && /@calpoly\.edu$/i.test(currentUser.email || '')) {
+          const assigned = await tapid.client.rpc('ensure_my_calpoly_card');
+          if (assigned.error) throw new Error(assigned.error.code === 'PGRST202'
+            ? 'Automatic card setup is not installed yet. You can still use your dashboard; run the supplied SQL update to assign your serial.'
+            : 'Your serial could not be assigned. Please retry or contact your university administrator.');
+        }
         const profile = await tapid.getProfileById(currentUser.id);
         if (!profile) throw new Error('Your TapID profile record could not be found.');
         if (!tapid.onboardingComplete(profile)) { window.location.replace('onboarding.html'); return; }

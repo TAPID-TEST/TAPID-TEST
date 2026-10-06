@@ -61,9 +61,13 @@
 
     async getProfileById(id) {
       const { data: sessionData } = await client.auth.getSession();
-      if (!universitySession && sessionData.session?.user?.id === id) {
-        const assignment = await client.rpc('ensure_my_calpoly_card');
-        if (assignment.error) throw assignment.error;
+      if (!universitySession && sessionData.session?.user?.id === id &&
+          /@calpoly\.edu$/i.test(sessionData.session.user.email || '')) {
+        // Optional provisioning must not make a successful login unusable.
+        try {
+          const assignment = await client.rpc('ensure_my_calpoly_card');
+          if (assignment.error) console.warn('TapID automatic card setup deferred:', assignment.error.code || 'request failed');
+        } catch (_) { console.warn('TapID automatic card setup deferred.'); }
       }
       const { data, error } = await client.from('profiles').select('*').eq('id', id).maybeSingle();
       if (error) throw error;
