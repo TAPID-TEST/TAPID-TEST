@@ -32,11 +32,13 @@
         <div class="assembly-layer layer-coil" aria-hidden="true"><span class="coil-loop coil-one"></span><span class="coil-loop coil-two"></span><span class="coil-loop coil-three"></span><span class="coil-chip"></span></div>
         <div class="assembly-layer layer-finish" aria-hidden="true"></div>
         <div class="assembly-layer layer-engraving" aria-hidden="true">
-          <div class="engraved-name"><span>Ethan Dierke</span></div>
-          <div class="engraved-rule"></div>
-          <div class="engraved-major"><span>Engineering</span></div>
+          <svg class="engraving-svg" viewBox="0 0 720 220" role="img" aria-label="Ethan Dierke, Engineering">
+            <text class="svg-name" x="10" y="78">Ethan Dierke</text>
+            <path class="svg-rule" d="M10 104 H455 L482 84 H680"/>
+            <text class="svg-major" x="12" y="158">ENGINEERING</text>
+            <circle class="svg-laser-point" r="7" cx="10" cy="69"/>
+          </svg>
           <div class="engraved-nfc"><i></i><i></i><i></i></div>
-          <span class="engraving-laser"></span>
           <span class="laser-spark spark-a"></span><span class="laser-spark spark-b"></span><span class="laser-spark spark-c"></span>
         </div>
         <span class="assembly-light" aria-hidden="true"></span>
@@ -45,7 +47,6 @@
           <div class="demo-phone-screen">
             <span class="demo-phone-island"></span>
             <div class="tap-notification"><b>T</b><span><strong>TapID opened</strong><small>Professional profile ready</small></span></div>
-            <div class="tap-profile-preview"><div class="tap-profile-hero"><span>ED</span><strong>Ethan Dierke</strong><small>Engineering · Cal Poly</small></div><div class="tap-profile-grid"><i>Experience</i><i>Projects</i><i>Skills</i><i>Connect</i></div></div>
           </div>
         </div>
       </div>
@@ -82,12 +83,29 @@
       }, delay);
       soundTimers.push(timer);
     };
+    const engravingSound = (delay = 0, duration = 3.8) => {
+      if (!soundOn || !audioContext) return;
+      const timer = setTimeout(() => {
+        const length = Math.floor(audioContext.sampleRate * duration);
+        const buffer = audioContext.createBuffer(1, length, audioContext.sampleRate);
+        const channel = buffer.getChannelData(0);
+        for (let i = 0; i < length; i++) channel[i] = (Math.random() * 2 - 1) * (0.28 + 0.12 * Math.sin(i / 37));
+        const source = audioContext.createBufferSource();
+        const filter = audioContext.createBiquadFilter();
+        const gain = audioContext.createGain();
+        filter.type = 'bandpass'; filter.frequency.value = 1450; filter.Q.value = 2.4;
+        gain.gain.setValueAtTime(.0001, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.035, audioContext.currentTime + .08);
+        gain.gain.exponentialRampToValueAtTime(.0001, audioContext.currentTime + duration);
+        source.buffer = buffer; source.connect(filter); filter.connect(gain); gain.connect(audioContext.destination); source.start();
+      }, delay);
+      soundTimers.push(timer);
+    };
     const scheduleSound = () => {
       soundTimers.forEach(clearTimeout); soundTimers = [];
       tone(110, .5, 450, .025); tone(170, .35, 2650, .035);
-      tone(980, .1, 5300, .045); tone(1350, .14, 6400, .04);
-      tone(720, .12, 10800, .065); tone(1080, .2, 10920, .055);
-      tone(620, .12, 11900, .055); tone(930, .22, 12020, .045);
+      engravingSound(4900, 3.9);
+      tone(1050, .09, 10800, .07); tone(1480, .2, 10910, .065);
     };
     const playAssembly = () => {
       scene.classList.remove('is-playing');
