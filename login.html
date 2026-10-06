@@ -12,11 +12,12 @@
   <main class="auth-main auth-shell">
     <div class="role-login-layout">
     <section class="login-card-showcase" aria-label="TapID welcome panel">
-      <div class="login-demo-card" aria-hidden="true">
-        <div class="demo-card-name">Your Name</div>
+      <div class="login-demo-card product-tilt-card" data-tilt-card aria-hidden="true">
+        <span class="product-card-shine"></span>
+        <div class="demo-card-name product-depth-high">Tap<span>ID</span></div>
         <div class="demo-card-line"></div>
-        <div class="demo-card-major">Your Field</div>
-        <div class="demo-card-nfc"><i></i><i></i><i></i></div>
+        <div class="demo-card-major product-depth-mid">Professional Identity</div>
+        <div class="demo-card-nfc product-depth-high"><i></i><i></i><i></i></div>
       </div>
       <div class="login-showcase-copy"><span class="eyebrow">Welcome back</span><h2>Your work. Your story. Your TapID.</h2><p>Keep your profile current and continue the conversations that started in person.</p></div>
     </section>
@@ -57,6 +58,22 @@
   <script src="config.js"></script>
   <script src="app.js"></script>
   <script>
+    document.querySelectorAll('[data-tilt-card]').forEach((card) => {
+      card.addEventListener('pointermove', (event) => {
+        const box = card.getBoundingClientRect();
+        const x = (event.clientX - box.left) / box.width;
+        const y = (event.clientY - box.top) / box.height;
+        card.style.setProperty('--tilt-x', `${(0.5 - y) * 9}deg`);
+        card.style.setProperty('--tilt-y', `${(x - 0.5) * 12}deg`);
+        card.style.setProperty('--shine-x', `${x * 100}%`);
+        card.style.setProperty('--shine-y', `${y * 100}%`);
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.removeProperty('--tilt-x');
+        card.style.removeProperty('--tilt-y');
+      });
+    });
+
     const form = document.getElementById('loginForm');
     const message = document.getElementById('message');
     const button = document.getElementById('loginBtn');
