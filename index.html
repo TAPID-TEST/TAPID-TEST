@@ -20,24 +20,36 @@
 
   <main class="landing-main landing-split shell">
     <section class="landing-story" aria-labelledby="landing-title">
-      <h1 id="landing-title">Your résumé may look like everyone else’s.<br><em>You don’t.</em></h1>
-      <p>TapID gives employers a clearer view of the work, experiences, goals, and recommendations that make you different.</p>
+      <h1 id="landing-title">Your résumé shows what you’ve done.<br><em>TapID shows who you are.</em></h1>
       <div class="landing-actions"><a class="landing-primary" href="login.html">Get Started <span aria-hidden="true">→</span></a></div>
     </section>
 
-    <section class="landing-card-stage" aria-label="TapID professional card">
-      <div class="landing-nfc-card product-tilt-card" data-tilt-card>
-        <span class="product-card-shine" aria-hidden="true"></span>
-        <div class="landing-card-brand product-depth-high">Tap<span>ID</span></div>
-        <div class="product-card-label product-depth-mid">Professional identity</div>
-        <div class="landing-nfc-center">
-          <span class="landing-rings" aria-hidden="true"></span>
-          <svg class="landing-nfc-icon product-depth-high" viewBox="0 0 64 64" aria-hidden="true">
-            <path d="M25 22c7 5 7 15 0 20M34 15c13 10 13 24 0 34M43 8c19 14 19 34 0 48" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-          </svg>
+    <section class="landing-card-stage assembly-stage" aria-label="TapID card assembling and engraving">
+      <div class="assembly-scene" id="assemblyScene">
+        <div class="assembly-shadow" aria-hidden="true"></div>
+        <div class="assembly-layer layer-core" aria-hidden="true"></div>
+        <div class="assembly-layer layer-metal" aria-hidden="true"></div>
+        <div class="assembly-layer layer-coil" aria-hidden="true"><span class="coil-loop coil-one"></span><span class="coil-loop coil-two"></span><span class="coil-loop coil-three"></span><span class="coil-chip"></span></div>
+        <div class="assembly-layer layer-finish" aria-hidden="true"></div>
+        <div class="assembly-layer layer-engraving" aria-hidden="true">
+          <div class="engraved-name"><span>Ethan Dierke</span></div>
+          <div class="engraved-rule"></div>
+          <div class="engraved-major"><span>Engineering</span></div>
+          <div class="engraved-nfc"><i></i><i></i><i></i></div>
+          <span class="engraving-laser"></span>
+          <span class="laser-spark spark-a"></span><span class="laser-spark spark-b"></span><span class="laser-spark spark-c"></span>
+        </div>
+        <span class="assembly-light" aria-hidden="true"></span>
+        <span class="tap-ripple" aria-hidden="true"></span>
+        <div class="demo-phone" aria-hidden="true">
+          <div class="demo-phone-screen">
+            <span class="demo-phone-island"></span>
+            <div class="tap-notification"><b>T</b><span><strong>TapID opened</strong><small>Professional profile ready</small></span></div>
+            <div class="tap-profile-preview"><div class="tap-profile-hero"><span>ED</span><strong>Ethan Dierke</strong><small>Engineering · Cal Poly</small></div><div class="tap-profile-grid"><i>Experience</i><i>Projects</i><i>Skills</i><i>Connect</i></div></div>
+          </div>
         </div>
       </div>
-      <div class="landing-stage-caption"><strong>One introduction. A fuller story.</strong><span>Share your professional profile in seconds.</span></div>
+      <button class="sound-toggle" id="soundToggle" type="button" aria-label="Enable animation sound">♪</button>
     </section>
   </main>
 
@@ -49,20 +61,62 @@
     <span class="landing-employer-link">Students · Employers · Universities</span>
   </footer>
   <script>
-    document.querySelectorAll('[data-tilt-card]').forEach((card) => {
-      card.addEventListener('pointermove', (event) => {
-        const box = card.getBoundingClientRect();
+    const scene = document.getElementById('assemblyScene');
+    const soundToggle = document.getElementById('soundToggle');
+    let soundOn = false;
+    let audioContext;
+    let soundTimers = [];
+    const tone = (frequency, duration, delay = 0, volume = .05) => {
+      if (!soundOn || !audioContext) return;
+      const timer = setTimeout(() => {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const now = audioContext.currentTime;
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequency, now);
+        gain.gain.setValueAtTime(.0001, now);
+        gain.gain.exponentialRampToValueAtTime(volume, now + .02);
+        gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+        oscillator.connect(gain); gain.connect(audioContext.destination);
+        oscillator.start(now); oscillator.stop(now + duration + .04);
+      }, delay);
+      soundTimers.push(timer);
+    };
+    const scheduleSound = () => {
+      soundTimers.forEach(clearTimeout); soundTimers = [];
+      tone(110, .5, 450, .025); tone(170, .35, 2650, .035);
+      tone(980, .1, 5300, .045); tone(1350, .14, 6400, .04);
+      tone(720, .12, 10800, .065); tone(1080, .2, 10920, .055);
+      tone(620, .12, 11900, .055); tone(930, .22, 12020, .045);
+    };
+    const playAssembly = () => {
+      scene.classList.remove('is-playing');
+      void scene.offsetWidth;
+      scene.classList.add('is-playing');
+      scheduleSound();
+    };
+    requestAnimationFrame(playAssembly);
+    setInterval(playAssembly, 17000);
+    soundToggle.addEventListener('click', async () => {
+      if (!audioContext) audioContext = new AudioContext();
+      await audioContext.resume();
+      soundOn = !soundOn;
+      soundToggle.classList.toggle('is-on', soundOn);
+      soundToggle.textContent = soundOn ? '♫' : '♪';
+      if (soundOn) scheduleSound(); else { soundTimers.forEach(clearTimeout); soundTimers = []; }
+    });
+    scene.addEventListener('pointermove', (event) => {
+        const box = scene.getBoundingClientRect();
         const x = (event.clientX - box.left) / box.width;
         const y = (event.clientY - box.top) / box.height;
-        card.style.setProperty('--tilt-x', `${(0.5 - y) * 12}deg`);
-        card.style.setProperty('--tilt-y', `${(x - 0.5) * 16}deg`);
-        card.style.setProperty('--shine-x', `${x * 100}%`);
-        card.style.setProperty('--shine-y', `${y * 100}%`);
-      });
-      card.addEventListener('pointerleave', () => {
-        card.style.removeProperty('--tilt-x');
-        card.style.removeProperty('--tilt-y');
-      });
+        scene.style.setProperty('--scene-rx', `${(0.5 - y) * 10}deg`);
+        scene.style.setProperty('--scene-ry', `${(x - 0.5) * 14}deg`);
+        scene.style.setProperty('--light-x', `${x * 100}%`);
+        scene.style.setProperty('--light-y', `${y * 100}%`);
+    });
+    scene.addEventListener('pointerleave', () => {
+      scene.style.removeProperty('--scene-rx');
+      scene.style.removeProperty('--scene-ry');
     });
   </script>
 </body>
