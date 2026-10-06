@@ -12,6 +12,22 @@
   <meta property="og:url" content="https://tapidcard.com/">
   <meta name="theme-color" content="#073f31">
   <link rel="stylesheet" href="styles.css?v=20261006-login-fix1">
+  <style id="landing-eight-second-timeline">
+    /* Keep assembly, SVG engraving, tap, and repeat on one eight-second timeline. */
+    .landing-page .assembly-scene.is-playing .layer-core{animation:assembleCore 1.55s cubic-bezier(.2,.75,.2,1) both}
+    .landing-page .assembly-scene.is-playing .layer-metal{animation:assembleMetal 1.65s .1s cubic-bezier(.2,.75,.2,1) both}
+    .landing-page .assembly-scene.is-playing .layer-coil{animation:assembleCoil 1.7s .15s cubic-bezier(.2,.75,.2,1) both}
+    .landing-page .assembly-scene.is-playing .layer-finish{animation:assembleFinish 1.75s .2s cubic-bezier(.2,.75,.2,1) both}
+    .landing-page .assembly-scene.is-playing .layer-engraving{animation:setEngraving 1.75s .25s cubic-bezier(.2,.75,.2,1) both}
+    .landing-page .assembly-scene.is-playing .svg-rule{animation:traceRule .35s 3.76s linear both}
+    .landing-page .assembly-scene.is-playing .engraved-nfc{animation:engraveNfc .3s 5.05s ease both}
+    .landing-page .assembly-scene.is-playing .demo-phone{animation:tapidPhoneEightSeconds .6s 5.35s cubic-bezier(.2,.75,.2,1) both}
+    .landing-page .assembly-scene.is-playing .tap-ripple{animation:tapPulse .7s 5.9s ease-out both}
+    .landing-page .assembly-scene.is-playing .tap-notification{animation:tapidNotificationEightSeconds .3s 6.1s ease both}
+    @keyframes tapidPhoneEightSeconds{from{opacity:0;transform:translate3d(170px,90px,160px) rotateY(-22deg) rotateZ(12deg) scale(.7)}to{opacity:1;transform:translate3d(0,0,135px) rotateY(-16deg) rotateZ(7deg) scale(1)}}
+    @keyframes tapidNotificationEightSeconds{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
+    @media(prefers-reduced-motion:reduce){.landing-page .assembly-scene.is-playing .assembly-layer{animation-duration:.01s;animation-delay:0s}}
+  </style>
 </head>
 <body class="landing-page">
   <header class="landing-nav shell">
@@ -66,11 +82,11 @@
     const scene = document.getElementById('assemblyScene');
     let sealTimer;
     let engravingFrame;
-    const assemblyCompleteAt = 4200;
+    const assemblyCompleteAt = 2000;
     const engravingPaths = [...scene.querySelectorAll('.engraving-glyph')].map(path => ({
       path, length: path.getTotalLength(),
-      start: path.dataset.row === 'name-trace' ? assemblyCompleteAt + Number(path.dataset.index) * 190 : assemblyCompleteAt + 2920 + Number(path.dataset.index) * 130,
-      duration: path.dataset.row === 'name-trace' ? 340 : 250
+      start: path.dataset.row === 'name-trace' ? assemblyCompleteAt + Number(path.dataset.index) * 160 : 3800 + Number(path.dataset.index) * 110,
+      duration: path.dataset.row === 'name-trace' ? 160 : 110
     }));
     const laserContact = scene.querySelector('.contact-laser');
     function renderEngraving(started, now) {
@@ -90,7 +106,7 @@
         laserContact.setAttribute('transform', `translate(${point.x} ${point.y})`);
         laserContact.querySelector('.contact-spark').style.opacity = Math.sin(elapsed * .17) > .55 ? .85 : .12;
       }
-      if (elapsed < 10000) engravingFrame = requestAnimationFrame(now => renderEngraving(started, now));
+      if (elapsed < 5300) engravingFrame = requestAnimationFrame(now => renderEngraving(started, now));
     }
     const playAssembly = () => {
       cancelAnimationFrame(engravingFrame);
@@ -103,7 +119,7 @@
       sealTimer = setTimeout(() => scene.classList.add('is-sealed'), assemblyCompleteAt);
     };
     requestAnimationFrame(playAssembly);
-    setInterval(playAssembly, 17000);
+    setInterval(playAssembly, 8000);
     scene.addEventListener('pointermove', (event) => {
         const box = scene.getBoundingClientRect();
         const x = (event.clientX - box.left) / box.width;
