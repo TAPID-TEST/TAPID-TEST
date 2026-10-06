@@ -66,9 +66,10 @@
     const scene = document.getElementById('assemblyScene');
     let sealTimer;
     let engravingFrame;
+    const assemblyCompleteAt = 4200;
     const engravingPaths = [...scene.querySelectorAll('.engraving-glyph')].map(path => ({
       path, length: path.getTotalLength(),
-      start: path.dataset.row === 'name-trace' ? 4550 + Number(path.dataset.index) * 190 : 7470 + Number(path.dataset.index) * 130,
+      start: path.dataset.row === 'name-trace' ? assemblyCompleteAt + Number(path.dataset.index) * 190 : assemblyCompleteAt + 2920 + Number(path.dataset.index) * 130,
       duration: path.dataset.row === 'name-trace' ? 340 : 250
     }));
     const laserContact = scene.querySelector('.contact-laser');
@@ -99,7 +100,7 @@
       scene.classList.add('is-playing');
       const started = performance.now();
       renderEngraving(started, started);
-      sealTimer = setTimeout(() => scene.classList.add('is-sealed'), 4050);
+      sealTimer = setTimeout(() => scene.classList.add('is-sealed'), assemblyCompleteAt);
     };
     requestAnimationFrame(playAssembly);
     setInterval(playAssembly, 17000);
