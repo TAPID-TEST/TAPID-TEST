@@ -15,19 +15,13 @@
 
     <div id="publicContent" hidden>
       <section class="public-hero recruiter-hero">
-        <img id="publicAvatar" class="public-avatar" alt="Profile photo" hidden>
-        <div class="eyebrow">Professional identity</div>
-        <h1 id="name"></h1>
-        <div class="public-meta"><span id="major"></span><span id="schoolYear"></span><span id="school"></span><span id="gradYear"></span></div>
-        <div class="verified-school-badge" id="verifiedSchoolBadge" hidden><i class="fa-solid fa-circle-check"></i><span id="verifiedSchoolText"></span></div>
+        <div class="public-identity-row"><div class="public-identity-copy"><div class="eyebrow">Professional identity</div><h1 id="name"></h1><div class="public-meta"><span id="major"></span><span id="schoolYear"></span><span id="school"></span><span id="gradYear"></span></div><div class="verified-school-badge" id="verifiedSchoolBadge" hidden><i class="fa-solid fa-circle-check"></i><span id="verifiedSchoolText"></span></div></div><img id="publicAvatar" class="public-avatar" alt="Profile photo" hidden></div>
         <p id="bio" class="public-bio"></p>
         <div class="hero-connect-panel">
         <div class="primary-action-grid">
-          <a id="resumeBtn" class="action-tile" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-file-lines"></i><span><strong>View Résumé</strong><small>Open the latest PDF</small></span></a>
           <button id="saveContactBtn" class="action-tile" type="button"><i class="fa-solid fa-address-card"></i><span><strong>Save Contact</strong><small>Add this person to your contacts</small></span></button>
           <button id="connectBtn" class="action-tile action-tile-gold" type="button"><i class="fa-solid fa-handshake"></i><span><strong>Connect With <span id="connectFirstName">Me</span></strong><small>Share your info back</small></span></button>
         </div>
-        <div id="resumeUnavailable" class="availability-note" hidden>Résumé not available</div>
         <div id="contactSection" class="compact-contact" hidden><div id="contactDetails" class="contact-details"></div></div>
         <div id="linksSection" class="compact-links" hidden><div id="publicLinks" class="public-links"></div></div>
         </div>
@@ -35,6 +29,8 @@
 
       <div class="public-portfolio-grid"><div class="public-portfolio-main">
       <section id="opportunitiesSection" class="card public-section opportunity-highlight" hidden><div class="eyebrow">Open to opportunities</div><h2>What I’m Looking For</h2><div id="publicOpportunities" class="opportunity-public-grid"></div></section>
+
+      <section id="resumeSection" class="card public-section public-resume-section" hidden><div class="eyebrow">Professional documents</div><h2>Résumé</h2><p class="subtle">A concise overview of education, experience, and qualifications.</p><a id="resumeBtn" class="btn btn-primary" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-file-lines"></i> Open Résumé</a></section>
 
       <section id="featuredExperienceSection" class="card public-section feature-section" hidden>
         <div class="eyebrow">Professional experience</div><h2>Featured Experience</h2>
@@ -283,7 +279,7 @@
       document.getElementById('outcomesSection').hidden=!outcomesData.length;
     }
 
-    function renderPublicOpportunities(){const section=document.getElementById('opportunitiesSection'),root=document.getElementById('publicOpportunities');root.innerHTML='';if(!opportunityData){section.hidden=true;return;}const blocks=[['Opportunities',opportunityData.opportunity_types],['Desired roles',opportunityData.desired_roles],['Industries',opportunityData.industries],['Preferred locations',opportunityData.preferred_locations]];blocks.forEach(([label,values])=>{if(!values?.length)return;const block=document.createElement('div');block.className='opportunity-public-block';block.innerHTML=`<strong>${escapeHtml(label)}</strong><div>${values.map(value=>`<span>${escapeHtml(value)}</span>`).join('')}</div>`;root.appendChild(block);});if(opportunityData.available_start_date){const block=document.createElement('div');block.className='opportunity-public-block';block.innerHTML=`<strong>Availability</strong><div><span>${escapeHtml(new Date(opportunityData.available_start_date+'T12:00:00').toLocaleDateString(undefined,{month:'long',year:'numeric'}))}</span>${opportunityData.willing_to_relocate?'<span>Willing to relocate</span>':''}</div>`;root.appendChild(block);}section.hidden=!root.children.length;}
+    function renderPublicOpportunities(){const section=document.getElementById('opportunitiesSection'),root=document.getElementById('publicOpportunities');root.innerHTML='';if(!opportunityData){section.hidden=true;return;}if(opportunityData.opportunity_statement){const statement=document.createElement('p');statement.className='opportunity-public-statement';statement.textContent=opportunityData.opportunity_statement;root.appendChild(statement);}const blocks=[['Opportunities',opportunityData.opportunity_types],['Desired roles',opportunityData.desired_roles],['Industries',opportunityData.industries],['Preferred locations',opportunityData.preferred_locations]];blocks.forEach(([label,values])=>{if(!values?.length)return;const block=document.createElement('div');block.className='opportunity-public-block';block.innerHTML=`<strong>${escapeHtml(label)}</strong><div>${values.map(value=>`<span>${escapeHtml(value)}</span>`).join('')}</div>`;root.appendChild(block);});if(opportunityData.available_start_date){const block=document.createElement('div');block.className='opportunity-public-block';block.innerHTML=`<strong>Availability</strong><div><span>${escapeHtml(new Date(opportunityData.available_start_date+'T12:00:00').toLocaleDateString(undefined,{month:'long',year:'numeric'}))}</span>${opportunityData.willing_to_relocate?'<span>Willing to relocate</span>':''}</div>`;root.appendChild(block);}section.hidden=!root.children.length;}
 
     function resetConnectForm() {
       document.getElementById('connectForm').reset();
@@ -413,9 +409,8 @@
         const bio = document.getElementById('bio'); bio.textContent = profile.bio || ''; bio.hidden = !profile.bio;
 
         if (profile.avatar_path && profile.avatar_is_public) { const avatar=document.getElementById('publicAvatar'); avatar.src=await tapid.signedFileUrl('avatars',profile.avatar_path); avatar.hidden=false; }
-        if (resumeResult.data?.file_path) document.getElementById('resumeBtn').href = await tapid.signedFileUrl('resumes',resumeResult.data.file_path);
-        else if (resumeResult.data?.file_url) document.getElementById('resumeBtn').href = resumeResult.data.file_url;
-        else { document.getElementById('resumeBtn').hidden = true; document.getElementById('resumeUnavailable').hidden = false; }
+        if (resumeResult.data?.file_path) { document.getElementById('resumeBtn').href = await tapid.signedFileUrl('resumes',resumeResult.data.file_path); document.getElementById('resumeSection').hidden=false; }
+        else if (resumeResult.data?.file_url) { document.getElementById('resumeBtn').href = resumeResult.data.file_url; document.getElementById('resumeSection').hidden=false; }
 
         const contactSection = document.getElementById('contactSection');
         const location = profile.show_location === false ? '' : [contactData?.city, contactData?.state].filter(Boolean).join(', ');
