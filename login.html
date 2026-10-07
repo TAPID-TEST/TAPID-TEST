@@ -2507,8 +2507,8 @@ body.landing-page .assembly-light{background:linear-gradient(110deg,transparent 
 /* V10.2 consolidated workflow refinements */
 .event-results-list{display:grid;gap:14px;margin-top:18px}.event-result-card{border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden}.event-result-card>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px}.event-result-card>summary::-webkit-details-marker{display:none}.event-result-card>summary>span:first-child{display:grid;gap:4px}.event-result-card>summary strong{font-size:1.05rem}.event-summary-count{font-weight:850;color:var(--green);background:#edf5f1;border-radius:999px;padding:8px 12px}.event-result-card[open]>summary{border-bottom:1px solid var(--line);background:#f8faf8}.event-metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:18px}.event-metric-grid>div{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbfcfb}.event-metric-grid strong{display:block;font-size:1.5rem;color:var(--green)}.event-metric-grid span{display:block;color:var(--muted);font-size:.73rem;font-weight:800;margin-top:4px}.event-context-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 18px 18px}.event-context-grid span{display:grid;gap:3px;color:var(--muted);font-size:.78rem}.event-context-grid strong{color:var(--ink)}.event-student-list{border-top:1px solid var(--line)}.event-student-list button{width:100%;border:0;border-bottom:1px solid var(--line);background:#fff;padding:14px 18px;display:flex;justify-content:space-between;gap:16px;text-align:left;color:var(--ink);cursor:pointer}.event-student-list button:last-child{border-bottom:0}.event-student-list button:hover{background:#f7faf8}.event-student-list button span{display:grid;gap:3px}.event-student-list small{color:var(--muted)}.advanced-integration{grid-column:1/-1;padding:0;overflow:hidden}.advanced-integration>summary{list-style:none;cursor:pointer;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}.advanced-integration>summary::-webkit-details-marker{display:none}.advanced-integration>summary>span:first-child{display:grid;gap:4px}.advanced-integration>summary small{color:var(--muted)}.advanced-integration>summary>span:last-child{color:var(--green);font-weight:850}.advanced-integration[open]>summary{border-bottom:1px solid var(--line)}.advanced-integration-body{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:22px}.advanced-match-panel{border-left:1px solid var(--line);padding-left:24px}@media(max-width:1050px){.employer-attention-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:760px){.event-metric-grid{grid-template-columns:1fr 1fr}.event-context-grid,.advanced-integration-body{grid-template-columns:1fr}.advanced-match-panel{border-left:0;border-top:1px solid var(--line);padding:20px 0 0}.event-student-list button{display:grid}}@media(max-width:520px){.employer-attention-grid,.event-metric-grid{grid-template-columns:1fr}}
 </style>
-</head>
-<body class="auth-page">
+<link rel="stylesheet" href="login-fit.css?v=20261006-loginfit"></head>
+<body class="auth-page login-fit-page">
   <header class="auth-nav auth-shell"><a class="brand auth-brand" href="index.html">Tap<span>ID</span></a><a class="auth-nav-link" href="index.html">Back home</a></header>
 
   <main class="auth-main auth-shell">
@@ -2521,14 +2521,14 @@ body.landing-page .assembly-light{background:linear-gradient(110deg,transparent 
         <div class="demo-card-major product-depth-mid">Professional Identity</div>
         <div class="demo-card-nfc product-depth-high"><i></i><i></i><i></i></div>
       </div>
-      <div class="login-showcase-copy"><h2>The introduction was only the beginning.</h2><p>Keep your profile current, continue employer conversations, and move opportunities forward.</p></div>
+      <div class="login-showcase-copy"><h2>The introduction was only the beginning.</h2><p>Keep your story current and your employer conversations moving.</p></div>
     </section>
     <section class="auth-panel role-auth-panel" aria-labelledby="loginTitle">
       <nav class="role-selector" aria-label="Choose account type"><a class="active" href="login.html"><strong>Student</strong><small>Profile &amp; TapID card</small></a><a href="employer-login.html"><strong>Employer</strong><small>Recruiter workspace</small></a><a href="university-login.html"><strong>University</strong><small>Career services</small></a></nav>
       <div class="auth-heading">
         <div class="eyebrow">Student access</div>
         <h1 id="loginTitle">Student log in.</h1>
-        <p>Return to your profile and continue where you left off.</p>
+        <p>Your profile, connections, and next steps.</p>
       </div>
 
       <div id="message" class="message" hidden></div>
@@ -2549,7 +2549,7 @@ body.landing-page .assembly-light{background:linear-gradient(110deg,transparent 
 
       <p class="auth-switch"><a href="forgot-password.html">Forgot your password?</a></p>
 
-      <p class="auth-switch">New student? <a href="signup.html">Create student account</a></p>
+      <p class="auth-switch"><a class="auth-create-link" href="signup.html">Create a student account</a></p>
     </section>
     </div>
   </main>

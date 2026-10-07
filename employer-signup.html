@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Create Employer Account — TapID</title>
   <link rel="stylesheet" href="styles.css">
-</head>
+<link rel="stylesheet" href="employer-onboarding.css?v=20261006-employerflow"></head>
 <body class="auth-page employer-auth-page">
   <header class="auth-nav auth-shell">
     <a class="brand auth-brand" href="index.html">Tap<span>ID</span></a>
@@ -17,7 +17,7 @@
       <div class="auth-heading">
         <div class="eyebrow">Employer portal</div>
         <h1 id="employerSignupTitle">Create recruiter account.</h1>
-        <p>Create account. Confirm email. Request university approval.</p>
+        <p>Create your account and confirm your work email. Your university reviews your request before recruiting access opens.</p>
       </div>
 
       <div id="message" class="message" hidden></div>
@@ -47,7 +47,7 @@
         </div>
       </form>
 
-      <p class="auth-switch">Already have an account? <a href="employer-login.html">Log in</a></p>
+      <section id="confirmationPanel" class="employer-confirmation" hidden><h2>Check your work email.</h2><p id="confirmationCopy"></p><div class="employer-confirmation-actions"><button id="resendConfirmation" class="btn btn-secondary" type="button">Resend confirmation</button><a class="btn btn-primary" href="employer-login.html">Continue to employer login</a></div><p class="subtle">After confirming your email, sign in to submit your university review request.</p></section><p class="auth-switch">Already have an account? <a href="employer-login.html">Log in</a></p>
     </section>
   </main>
 
@@ -57,8 +57,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js?v=20261006-reports"></script>
   <script>
-    const form=document.getElementById('form'), message=document.getElementById('message'), button=document.getElementById('button');
+    const form=document.getElementById('form'), message=document.getElementById('message'), button=document.getElementById('button');let confirmationEmail='',confirmationNextSend=0;
     tapid.client.rpc('tapid_available_universities').then(r=>{if(r.error||!r.data?.length)return;const select=document.getElementById('university');select.innerHTML='';r.data.forEach(row=>{const option=document.createElement('option');option.value=row.school_name;option.textContent=row.school_name;select.appendChild(option);});});
+    document.getElementById('resendConfirmation').onclick=async()=>{
+      const resend=document.getElementById('resendConfirmation');
+      if(Date.now()<confirmationNextSend){tapid.setMessage(message,'Please wait a minute before requesting another confirmation email.','error');return;}
+      tapid.setBusy(resend,true,'Sending…');try{const result=await tapid.client.auth.resend({type:'signup',email:confirmationEmail,options:{emailRedirectTo:tapid.siteUrl('employer-login.html?confirmed=1')}});if(result.error)throw result.error;confirmationNextSend=Date.now()+60000;tapid.setMessage(message,'Confirmation email requested. Check your inbox and spam folder.','success');}catch(error){tapid.setMessage(message,tapid.friendlyAuthError(error),'error');}finally{tapid.setBusy(resend,false);}
+    };
     form.addEventListener('submit', async e=>{
       e.preventDefault(); tapid.setMessage(message,'');
       const company=document.getElementById('company').value.trim(), name=document.getElementById('name').value.trim(), email=document.getElementById('email').value.trim(), password=document.getElementById('password').value;
@@ -68,10 +73,10 @@
         const emailRedirectTo=tapid.siteUrl('employer-login.html?confirmed=1');
         const {data,error}=await tapid.client.auth.signUp({email,password,options:{emailRedirectTo,data:{user_type:'employer',employer_company:company,recruiter_name:name,employer_school:document.getElementById('university').value,company_website:document.getElementById('website').value.trim()}}});
         if(error) throw error;
-        if(!data.session){tapid.setMessage(message,'Account created. Confirm your work email, then sign in to submit your university approval request.','success');form.reset();return;}
+        if(!data.session){confirmationEmail=email;confirmationNextSend=Date.now()+60000;form.hidden=true;document.getElementById('confirmationPanel').hidden=false;document.getElementById('confirmationCopy').textContent=`We sent a confirmation link to ${email}. Confirm your email, then sign in to continue.`;return;}
         const {error:regError}=await tapid.client.rpc('register_employer',{p_company_name:company,p_recruiter_name:name,p_recruiter_email:email});
         if(regError) throw regError;
-        location.replace('employer-dashboard.html');
+        location.replace('employer-approval.html');
       }catch(error){tapid.setMessage(message,tapid.friendlyAuthError(error),'error');}
       finally{tapid.setBusy(button,false);}
     });

@@ -2507,8 +2507,8 @@ body.landing-page .assembly-light{background:linear-gradient(110deg,transparent 
 /* V10.2 consolidated workflow refinements */
 .event-results-list{display:grid;gap:14px;margin-top:18px}.event-result-card{border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden}.event-result-card>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px}.event-result-card>summary::-webkit-details-marker{display:none}.event-result-card>summary>span:first-child{display:grid;gap:4px}.event-result-card>summary strong{font-size:1.05rem}.event-summary-count{font-weight:850;color:var(--green);background:#edf5f1;border-radius:999px;padding:8px 12px}.event-result-card[open]>summary{border-bottom:1px solid var(--line);background:#f8faf8}.event-metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:18px}.event-metric-grid>div{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbfcfb}.event-metric-grid strong{display:block;font-size:1.5rem;color:var(--green)}.event-metric-grid span{display:block;color:var(--muted);font-size:.73rem;font-weight:800;margin-top:4px}.event-context-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 18px 18px}.event-context-grid span{display:grid;gap:3px;color:var(--muted);font-size:.78rem}.event-context-grid strong{color:var(--ink)}.event-student-list{border-top:1px solid var(--line)}.event-student-list button{width:100%;border:0;border-bottom:1px solid var(--line);background:#fff;padding:14px 18px;display:flex;justify-content:space-between;gap:16px;text-align:left;color:var(--ink);cursor:pointer}.event-student-list button:last-child{border-bottom:0}.event-student-list button:hover{background:#f7faf8}.event-student-list button span{display:grid;gap:3px}.event-student-list small{color:var(--muted)}.advanced-integration{grid-column:1/-1;padding:0;overflow:hidden}.advanced-integration>summary{list-style:none;cursor:pointer;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}.advanced-integration>summary::-webkit-details-marker{display:none}.advanced-integration>summary>span:first-child{display:grid;gap:4px}.advanced-integration>summary small{color:var(--muted)}.advanced-integration>summary>span:last-child{color:var(--green);font-weight:850}.advanced-integration[open]>summary{border-bottom:1px solid var(--line)}.advanced-integration-body{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:22px}.advanced-match-panel{border-left:1px solid var(--line);padding-left:24px}@media(max-width:1050px){.employer-attention-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:760px){.event-metric-grid{grid-template-columns:1fr 1fr}.event-context-grid,.advanced-integration-body{grid-template-columns:1fr}.advanced-match-panel{border-left:0;border-top:1px solid var(--line);padding:20px 0 0}.event-student-list button{display:grid}}@media(max-width:520px){.employer-attention-grid,.event-metric-grid{grid-template-columns:1fr}}
 </style>
-</head>
-<body class="auth-page employer-auth-page">
+<link rel="stylesheet" href="login-fit.css?v=20261006-loginfit"></head>
+<body class="auth-page login-fit-page employer-auth-page">
   <header class="auth-nav auth-shell">
     <a class="brand auth-brand" href="index.html">Tap<span>ID</span></a>
     <a class="auth-nav-link" href="index.html">Back home</a>
@@ -2522,14 +2522,14 @@ body.landing-page .assembly-light{background:linear-gradient(110deg,transparent 
         <div class="recruiting-action-card"><div class="recruiting-action-top"><span class="recruiting-check">✓</span><span>YOUR NEXT MOVE</span><b>Today</b></div><strong>Keep the conversation going.</strong><div class="recruiting-task"><span>01</span><div><b>Review their TapID</b><small>Projects, experience, recommendations</small></div><i>✓</i></div><div class="recruiting-task"><span>02</span><div><b>Send a personal follow-up</b><small>Pick up where you left off</small></div><i>↗</i></div><div class="recruiting-stage-track"><span class="complete">Connected</span><i></i><span class="current">Follow-up</span><i></i><span>Interview</span></div></div>
         <div class="recruiting-message-chip"><span>↗</span><div><strong>One introduction. More possibility.</strong><small>Context stays with the connection.</small></div></div>
       </div>
-      <div class="login-showcase-copy"><h2>Meet the person.<br>Remember the potential.</h2><p>Keep the context behind every introduction, follow up with purpose, and move the right candidates forward.</p></div>
+      <div class="login-showcase-copy"><h2>Meet the person.<br>Remember the potential.</h2><p>Turn a short conversation into a clearer view of your next hire.</p></div>
     </section>
     <section class="auth-panel employer-auth-panel" aria-labelledby="employerLoginTitle">
       <nav class="role-selector" aria-label="Choose account type"><a href="login.html"><strong>Student</strong><small>Profile &amp; TapID card</small></a><a class="active" href="employer-login.html"><strong>Employer</strong><small>Recruiter workspace</small></a><a href="university-login.html"><strong>University</strong><small>Career services</small></a></nav>
       <div class="auth-heading">
         <div class="eyebrow">Employer portal</div>
         <h1 id="employerLoginTitle">Employer log in.</h1>
-        <p>Continue conversations and move candidate relationships forward.</p>
+        <p>Your candidates, conversations, and next steps.</p>
       </div>
 
       <div id="message" class="message" hidden></div>
@@ -2549,14 +2549,14 @@ body.landing-page .assembly-light{background:linear-gradient(110deg,transparent 
       </form>
 
       <p class="auth-switch"><a href="forgot-password.html?role=employer">Forgot your password?</a></p>
-      <p class="auth-switch">Need an employer account? <a href="employer-signup.html">Create one</a></p>
+      <p class="auth-switch"><a class="auth-create-link" href="employer-signup.html">Create an employer account</a></p>
     </section>
   </div></main>
 
   <footer class="auth-footer auth-shell"><span>Employer accounts require company verification before full access.</span></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js?v=20261006-reports"></script>
-<script>
+<script src="employer-access.js?v=20261006-employerflow"></script><script>
 const form=document.getElementById('form'),message=document.getElementById('message'),button=document.getElementById('button');
 async function ensureRecruiter(user){
   let {data,error}=await tapid.client.from('employer_recruiters').select('*').eq('user_id',user.id).maybeSingle();
@@ -2569,5 +2569,5 @@ async function ensureRecruiter(user){
   const result=await tapid.client.rpc('register_employer',{p_company_name:company,p_recruiter_name:name,p_recruiter_email:email});
   if(result.error) throw result.error; return true;
 }
-form.addEventListener('submit',async e=>{e.preventDefault();tapid.setMessage(message,'');tapid.setBusy(button,true,'Logging in…');try{const {data,error}=await tapid.client.auth.signInWithPassword({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value});if(error)throw error;if(!(await ensureRecruiter(data.user))){const type=data.user.user_metadata?.user_type;await tapid.client.auth.signOut();throw new Error(type==='university'?'This is a university account. Choose University login above.':'This is a student account. Choose Student login above.');}location.replace('employer-dashboard.html');}catch(error){tapid.setMessage(message,error.message,'error');}finally{tapid.setBusy(button,false);}});
+form.addEventListener('submit',async e=>{e.preventDefault();tapid.setMessage(message,'');tapid.setBusy(button,true,'Logging in…');try{const {data,error}=await tapid.client.auth.signInWithPassword({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value});if(error)throw error;if(!(await ensureRecruiter(data.user))){const type=data.user.user_metadata?.user_type;await tapid.client.auth.signOut();throw new Error(type==='university'?'This is a university account. Choose University login above.':'This is a student account. Choose Student login above.');}const recruiter=await TapIDEmployerAccess.recruiterFor(data.user);location.replace(TapIDEmployerAccess.route(recruiter));}catch(error){tapid.setMessage(message,error.message,'error');}finally{tapid.setBusy(button,false);}});
 </script></body></html>

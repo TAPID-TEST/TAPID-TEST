@@ -1,0 +1,76 @@
+/* Keep the complete login form visible without changing role authentication. */
+.auth-page.login-fit-page{min-height:100dvh;height:auto;overflow-x:hidden;overflow-y:auto}
+.login-fit-page .auth-shell{width:min(1220px,calc(100% - 48px))}
+.login-fit-page .auth-nav{min-height:64px;padding:12px 0;flex:0 0 auto;box-sizing:border-box}
+.login-fit-page .auth-main{min-height:0;padding:0 0 20px;box-sizing:border-box}
+.login-fit-page .role-login-layout{min-height:0;gap:24px}
+.login-fit-page .login-card-showcase{min-height:0;padding:clamp(24px,3vw,40px);justify-content:center;gap:0}
+.login-fit-page .auth-panel{width:100%;min-height:0;padding:clamp(24px,2.8vw,36px);overflow:visible;justify-content:center;box-sizing:border-box}
+.login-fit-page .role-selector{margin-bottom:20px;padding:5px;gap:5px;flex-shrink:0}
+.login-fit-page .role-selector a{padding:9px 6px}
+.login-fit-page .auth-heading h1{font-size:clamp(2rem,3vw,3rem);margin:8px 0 10px;line-height:1.06}
+.login-fit-page .auth-heading p{font-size:.92rem;line-height:1.5;margin:0}
+.login-fit-page .auth-form{margin-top:18px}
+.login-fit-page .auth-form .field{margin:0 0 13px}
+.login-fit-page .auth-form .field label{margin-bottom:6px;font-size:.82rem}
+.login-fit-page .auth-form .field input{height:46px;min-height:46px;font-size:16px;padding:0 13px}
+.login-fit-page .auth-submit-row{margin:17px 0 0}
+.login-fit-page .auth-primary{min-height:48px;padding:12px 18px;flex-shrink:0}
+.login-fit-page .auth-switch{margin:13px 0 0;font-size:.84rem;line-height:1.5;flex-shrink:0}
+.login-fit-page .auth-create-link{display:block;padding:10px 14px;border:1px solid #cad8cf;background:#edf3ee;border-radius:12px;color:#154734;font-weight:800;text-decoration:none;line-height:1.3}
+.login-fit-page .auth-create-link:hover{background:#e2ede5;text-decoration:none;border-color:#154734}
+.login-fit-page .auth-create-link:focus-visible{outline:3px solid #d7a638;outline-offset:3px}
+.login-fit-page .login-showcase-copy{margin-top:26px}
+.login-fit-page .login-showcase-copy h2{font-size:clamp(2rem,3.2vw,3.2rem);line-height:1.03;margin:0 0 13px}
+.login-fit-page .login-showcase-copy p{font-size:.94rem;line-height:1.5;margin:0;max-width:460px}
+.login-fit-page .login-demo-card{width:min(100%,470px);max-height:260px;min-height:0;flex-shrink:0;padding:30px;box-sizing:border-box;align-self:center}
+.login-fit-page .demo-card-name{font-size:clamp(2rem,3vw,3rem)}
+.login-fit-page .demo-card-major{font-size:.7rem;letter-spacing:.28em}
+.login-fit-page .recruiting-scene{min-height:300px;flex-shrink:0}
+.login-fit-page .university-insight-scene{padding:22px;flex-shrink:0}
+.login-fit-page .message:not([hidden]){margin:12px 0 0;padding:10px 12px;font-size:.82rem;line-height:1.4;overflow-wrap:anywhere}
+@media(min-width:941px) and (min-height:620px){
+ .auth-page.login-fit-page{height:100dvh;min-height:0}
+ .login-fit-page .auth-main{flex:1;height:auto;min-height:0;display:flex;align-items:stretch}
+ .login-fit-page .role-login-layout{height:100%;flex:1;grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr)}
+}
+@media(min-width:941px) and (max-height:800px){
+ .login-fit-page .login-card-showcase{padding:28px}
+ .login-fit-page .auth-panel{padding:24px 28px}
+ .login-fit-page .login-showcase-copy h2{font-size:clamp(1.9rem,2.8vw,2.7rem)}
+ .login-fit-page .login-showcase-copy{margin-top:22px}
+ .login-fit-page .recruiting-scene{zoom:.85}
+ .login-fit-page .login-demo-card{max-width:390px;max-height:220px}
+ .login-fit-page .university-insight-scene{padding:18px}
+}
+@media(min-width:941px) and (max-height:700px){
+ .login-fit-page .auth-nav{min-height:56px;padding:8px 0}
+ .login-fit-page .auth-main{padding-bottom:12px}
+ .login-fit-page .auth-panel{padding:18px 24px}
+ .login-fit-page .role-selector{margin-bottom:14px}
+ .login-fit-page .role-selector small{display:none}
+ .login-fit-page .auth-heading h1{font-size:2rem;margin:6px 0 8px}
+ .login-fit-page .auth-heading .eyebrow{display:none}
+ .login-fit-page .auth-form{margin-top:14px}
+ .login-fit-page .auth-form .field{margin-bottom:10px}
+ .login-fit-page .auth-submit-row{margin-top:12px}
+ .login-fit-page .auth-switch{margin-top:10px}
+ .login-fit-page .login-showcase-copy h2{font-size:2rem}
+ .login-fit-page .recruiting-scene{zoom:.72}
+ .login-fit-page .login-demo-card{max-width:340px;max-height:200px;padding:24px}
+ .login-fit-page .demo-card-nfc{right:24px;bottom:22px}
+ .login-fit-page .login-showcase-copy{margin-top:18px}
+ .login-fit-page .university-insight-scene{zoom:.85}
+}
+/* Small screens and browser zoom remain usable rather than clipping controls. */
+@media(max-width:940px){
+ .auth-page.login-fit-page{height:auto;overflow-y:auto}
+ .login-fit-page .role-login-layout{grid-template-columns:1fr;height:auto;gap:18px}
+ .login-fit-page .auth-panel{grid-row:1;min-height:0}
+ .login-fit-page .login-card-showcase{grid-row:2;padding:28px}
+ .login-fit-page .role-selector{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .login-fit-page .role-selector a{text-align:center;padding:10px 5px}
+ .login-fit-page .role-selector small{display:none}
+ .login-fit-page .auth-heading h1{font-size:2.2rem}
+ .login-fit-page .auth-shell{width:calc(100% - 28px)}
+}
