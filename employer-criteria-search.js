@@ -6,12 +6,12 @@
    const $=id=>document.getElementById(id),form=$('candidateMatchForm');if(!form)return;
    let generation=0;
    const input=$('matchQuery'),button=$('matchSubmit'),status=$('matchStatus'),chips=$('matchCriteria'),results=$('matchResults'),summary=$('matchSummary');
-   const clear=()=>{generation++;input.value='';chips.innerHTML='';results.innerHTML='';summary.textContent='';status.textContent='';status.dataset.error='false';button.disabled=false;button.textContent='Find matches';};
+   const clear=()=>{generation++;input.value='';chips.innerHTML='';results.innerHTML='';summary.textContent='';status.textContent='';status.dataset.error='false';['matchEvent','matchYear','matchMajor','matchStage','matchPriority','matchSearch'].forEach(id=>$(id).value='');['matchFavorites','matchAttention'].forEach(id=>$(id).checked=false);button.disabled=false;button.textContent='Find matches';};
    form.onsubmit=async event=>{
     event.preventDefault();const query=input.value.trim();if(query.length<3)return;
     const mine=++generation;button.disabled=true;button.textContent='Finding matches…';status.textContent='Interpreting your criteria and checking the evidence…';status.dataset.error='false';results.innerHTML='';chips.innerHTML='';summary.textContent='';
     try{
-     const response=await client.functions.invoke('search-student-experience',{body:{query,event:$('matchEvent').value,year:$('matchYear').value,major:$('matchMajor').value}});
+     const response=await client.functions.invoke('search-student-experience',{body:{query,event:$('matchEvent').value,year:$('matchYear').value,major:$('matchMajor').value,stage:$('matchStage').value,priority:$('matchPriority').value,search:$('matchSearch').value,favorites:$('matchFavorites').checked,attention:$('matchAttention').checked}});
      if(mine!==generation)return;
      if(response.error){let message='Candidate Match is unavailable. Check that its Supabase function is deployed.';try{const data=await response.error.context?.json();if(data?.error)message=data.error;}catch{}throw new Error(message);}
      const data=response.data;if(!data||!Array.isArray(data.results))throw new Error('Unexpected search response. Try again.');
@@ -28,7 +28,7 @@
     finally{if(mine===generation){button.disabled=false;button.textContent='Find matches';}}
    };
    $('matchClear').onclick=clear;
-   [input,$('matchEvent'),$('matchYear'),$('matchMajor')].forEach(node=>node.addEventListener(node===input?'input':'change',()=>{generation++;results.innerHTML='';chips.innerHTML='';summary.textContent='';status.textContent='';button.disabled=false;button.textContent='Find matches';}));
+   [input,$('matchEvent'),$('matchYear'),$('matchMajor'),$('matchStage'),$('matchPriority'),$('matchSearch'),$('matchFavorites'),$('matchAttention')].forEach(node=>node.addEventListener([input,$('matchSearch')].includes(node)?'input':'change',()=>{generation++;results.innerHTML='';chips.innerHTML='';summary.textContent='';status.textContent='';button.disabled=false;button.textContent='Find matches';}));
   }
  };
 })(typeof window==='undefined'?globalThis:window);
