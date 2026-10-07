@@ -1,31 +1,34 @@
 (function(root){
  const escape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- root.TapIDExperienceSearch={
-  evidenceHtml(result){if(!result)return '';return `<span class="experience-work-count">${result.matching_work_entries} matching work ${result.matching_work_entries===1?'entry':'entries'} · ${result.matches.length} ${result.matches.length===1?'criterion':'criteria'} found</span>`+result.matches.map(match=>`<span class="experience-evidence"><strong>${escape(match.label)}</strong>${match.sources.slice(0,2).map(source=>`<small>${escape(source.kind)} · ${escape(source.title)}${source.organization?' · '+escape(source.organization):''}</small><small>“${escape(source.quote)}”</small>`).join('')}${match.source_count>2?`<small>+${match.source_count-2} more matching entries</small>`:''}</span>`).join('');},
-  init({client,onResults}){
-   const $=id=>document.getElementById(id),form=$('experienceSearchForm');if(!form)return;
-   const input=$('experienceQuery'),button=$('experienceSearchSubmit'),status=$('experienceSearchStatus'),chips=$('experienceCriteria'),reset=$('experienceSearchReset'),mode=$('experienceMatchMode');
-   let generation=0,criteria=[],lastQuery='';
-   const clear=()=>{generation++;criteria=[];lastQuery='';chips.innerHTML='';status.textContent='Searches public work entries and skills in your connections.';status.dataset.error='false';reset.hidden=true;input.value='';button.disabled=false;button.textContent='Find experience';onResults(null);};
-   const search=async event=>{
-    event?.preventDefault();const query=input.value.trim();if(query.length<3){status.textContent='Describe the work experience you need.';status.dataset.error='true';return;}
-    const mine=++generation;button.disabled=true;button.textContent='Searching…';status.dataset.error='false';status.textContent='Finding documented experience…';chips.innerHTML='';reset.hidden=false;onResults(null);
+ root.TapIDCandidateMatch={
+  resultHtml(row){return `<article class="match-card"><div class="match-card-head"><span class="match-position">${row.position}</span><div><h3>${escape(row.name)}</h3><p>${escape([row.major,row.year].filter(Boolean).join(' · '))}</p></div><button class="favorite-toggle" type="button" data-match-favorite="${escape(row.student_id)}" aria-label="Favorite ${escape(row.name)}" aria-pressed="false">☆</button></div><div class="match-reasons"><strong>Why this profile matches</strong><p>${escape(row.explanation)}</p></div><div class="match-evidence">${row.matches.map(m=>`<details><summary>${escape(m.label)} <span>${m.source_count} ${m.source_count===1?'source':'sources'}</span></summary>${m.sources.map(s=>`<div><strong>${escape(s.kind)} · ${escape(s.title)}</strong><blockquote>${escape(s.quote)}</blockquote></div>`).join('')}</details>`).join('')}</div>${row.missing_criteria?.length?`<p class="match-missing">Not documented: ${escape(row.missing_criteria.join(', '))}</p>`:''}<div class="match-actions"><button class="btn btn-primary" type="button" data-match-open="${escape(row.student_id)}">View student</button>${row.has_resume?`<button class="btn btn-secondary" type="button" data-match-resume="${escape(row.student_id)}">View résumé</button>`:''}</div></article>`;},
+  init({client,onOpen,onResume,onFavorite,isFavorite}){
+   const $=id=>document.getElementById(id),form=$('candidateMatchForm');if(!form)return;
+   let generation=0;
+   const input=$('matchQuery'),button=$('matchSubmit'),status=$('matchStatus'),chips=$('matchCriteria'),results=$('matchResults'),summary=$('matchSummary');
+   const clear=()=>{generation++;input.value='';chips.innerHTML='';results.innerHTML='';summary.textContent='';status.textContent='';status.dataset.error='false';button.disabled=false;button.textContent='Find matches';};
+   form.onsubmit=async event=>{
+    event.preventDefault();const query=input.value.trim();if(query.length<3)return;
+    const mine=++generation;button.disabled=true;button.textContent='Finding matches…';status.textContent='Interpreting your criteria and checking the evidence…';status.dataset.error='false';results.innerHTML='';chips.innerHTML='';summary.textContent='';
     try{
-     const body=query===lastQuery&&criteria.length?{criteria,mode:mode.value==='auto'?'all':mode.value}:{query,mode:mode.value};
-     const response=await client.functions.invoke('search-student-experience',{body});
+     const response=await client.functions.invoke('search-student-experience',{body:{query,event:$('matchEvent').value,year:$('matchYear').value,major:$('matchMajor').value}});
      if(mine!==generation)return;
-     if(response.error){let message='AI search is unavailable. Check the function deployment and your session.';try{const payload=await response.error.context?.json();if(payload?.error)message=payload.error;}catch{}throw new Error(message);}
-     const data=response.data;if(!data||!Array.isArray(data.results)||!Array.isArray(data.criteria))throw new Error('Search returned an unexpected response.');
-     criteria=data.criteria.map(x=>x.key);lastQuery=query;if(data.mode)mode.value=data.mode;
-     chips.innerHTML=data.criteria.map(x=>`<span>${escape(x.label)}</span>`).join('');
-     status.textContent=data.message||`${data.results.length} matching ${data.results.length===1?'student':'students'} across ${data.searched} active public profiles · ${data.mode==='any'?'Any':'All'} criteria · Most matching work entries first`;
-     onResults(new Map(data.results.map(x=>[x.student_id,x])));
-    }catch(error){if(mine===generation){criteria=[];lastQuery='';status.textContent=error.message;status.dataset.error='true';onResults(null);}}
-    finally{if(mine===generation){button.disabled=false;button.textContent='Find experience';}}
+     if(response.error){let message='Candidate Match is unavailable. Check that its Supabase function is deployed.';try{const data=await response.error.context?.json();if(data?.error)message=data.error;}catch{}throw new Error(message);}
+     const data=response.data;if(!data||!Array.isArray(data.results))throw new Error('Unexpected search response. Try again.');
+     const selections=[data.filters?.event,data.filters?.year,data.filters?.major,...(data.criteria||[]).map(c=>c.label),data.filters?.require_resume?'Résumé text included':null].filter(Boolean);
+     chips.innerHTML=selections.map(label=>`<span>${escape(label)}</span>`).join('');
+     summary.textContent=data.message||`${data.results.length} of ${data.total_matches||0} matching profiles · ${data.searched} reviewed`;
+     status.textContent=data.unreadable_resumes?`${data.unreadable_resumes} public ${data.unreadable_resumes===1?'résumé could':'résumés could'} not be read and were excluded. Scanned PDFs need selectable text.`:'';
+     if(!data.results.length){results.innerHTML='<div class="match-empty"><h3>No documented matches yet</h3><p>Try a broader fair, class year, or work requirement.</p></div>';return;}
+     results.innerHTML=data.results.map(root.TapIDCandidateMatch.resultHtml).join('');
+     results.querySelectorAll('[data-match-open]').forEach(b=>b.onclick=()=>onOpen(b.dataset.matchOpen));
+     results.querySelectorAll('[data-match-resume]').forEach(b=>b.onclick=()=>onResume(b.dataset.matchResume,status));
+     results.querySelectorAll('[data-match-favorite]').forEach(b=>{const sync=()=>{const active=isFavorite(b.dataset.matchFavorite);b.textContent=active?'★':'☆';b.setAttribute('aria-pressed',String(active));};sync();b.onclick=async()=>{b.disabled=true;try{await onFavorite(b.dataset.matchFavorite);sync();}finally{b.disabled=false;}};});
+    }catch(error){if(mine===generation){status.textContent=error.message;status.dataset.error='true';}}
+    finally{if(mine===generation){button.disabled=false;button.textContent='Find matches';}}
    };
-   form.addEventListener('submit',search);reset.onclick=clear;
-   document.querySelectorAll('[data-experience-example]').forEach(b=>b.onclick=()=>{input.value=b.dataset.experienceExample;input.focus();});
-   input.addEventListener('input',()=>{if(button.disabled||(lastQuery&&input.value.trim()!==lastQuery)){generation++;criteria=[];lastQuery='';chips.innerHTML='';status.textContent='Search again to apply your edited criteria.';onResults(null);button.disabled=false;button.textContent='Find experience';}});
+   $('matchClear').onclick=clear;
+   [input,$('matchEvent'),$('matchYear'),$('matchMajor')].forEach(node=>node.addEventListener(node===input?'input':'change',()=>{generation++;results.innerHTML='';chips.innerHTML='';summary.textContent='';status.textContent='';button.disabled=false;button.textContent='Find matches';}));
   }
  };
 })(typeof window==='undefined'?globalThis:window);
