@@ -1,0 +1,11 @@
+.experience-search{margin:0 0 22px;padding:22px;background:#f2f7f4;border:1px solid #dce8e0;border-radius:18px}
+.experience-search h3{margin:0 0 6px;font-size:1.2rem;color:#143e30}.experience-search p{margin:0 0 16px;color:#52685e;font-size:.9rem}
+.experience-search .experience-form-row{display:flex;gap:10px;align-items:stretch}.experience-search textarea{flex:1;resize:vertical;min-height:66px;max-height:160px;margin:0;background:#fff;font:inherit;font-size:.95rem;color:#193e30}
+.experience-search select{width:auto;max-width:190px;background:#fff}.experience-search .btn{white-space:nowrap;align-self:center;min-height:48px}
+.experience-examples{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.experience-examples button{border:1px solid #d5e2d9;background:#fff;color:#255640;border-radius:100px;padding:7px 12px;font:inherit;font-size:.82rem;cursor:pointer}
+.experience-search-status{font-size:.85rem;color:#4d6359}.experience-search-status[data-error=true]{color:#9c352c}
+.experience-criteria{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.experience-criteria span{background:#dfece3;color:#194c34;padding:6px 10px;border-radius:8px;font-size:.82rem;font-weight:650}
+.experience-evidence{display:block;border-top:1px solid #e3eae5;margin-top:10px;padding-top:10px;white-space:normal}.experience-evidence strong{font-size:.84rem}.experience-evidence small{display:block;margin:4px 0;color:#4a6055;line-height:1.5}
+.experience-work-count{display:block;margin-top:6px;color:#265b40;font-size:.8rem}.experience-result-copy{min-width:0}.experience-reset{margin-top:10px;background:none;border:none;color:#28563f;cursor:pointer;font:inherit;font-size:.86rem;padding:3px 0;text-decoration:underline}
+@media(max-width:850px){.experience-search .experience-form-row{flex-wrap:wrap}.experience-search textarea{flex-basis:100%}.experience-search select{flex:1}.experience-search .btn{flex:1}.experience-search{padding:16px}}
+.experience-search .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

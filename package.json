@@ -3,7 +3,7 @@
   "private": true,
   "version": "3.0.0",
   "scripts": {
-    "test": "node tests/smoke.mjs && node tests/fair-reports.cjs",
+    "test": "node tests/smoke.mjs && node tests/fair-reports.cjs && node tests/population-workspace.cjs && node tests/fair-setup.cjs && node tests/employer-onboarding.mjs && node tests/fair-notifications.cjs && node tests/employer-criteria-search.mjs",
     "serve": "python3 -m http.server 8888"
   }
 }

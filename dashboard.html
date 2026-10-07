@@ -264,7 +264,7 @@
     })();
 </script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-<script src="app.js"></script>
+<script src="fair-dashboard.js?v=20261007-fairalerts"></script><script src="app.js"></script>
 <script>
     let currentUser;
     let currentProfile;
@@ -896,21 +896,18 @@
       const root = document.getElementById('careerFairDirectory');
       if (!root) return;
       root.innerHTML = '';
-      if (!currentCareerFairDirectory.length) {
-        root.innerHTML = '<div class="empty-state compact"><h3>No registered career fairs yet.</h3><p class="subtle">Employers appear here after they set their current TapID event.</p></div>';
+      if (!currentCareerFairs.length) {
+        root.innerHTML = '<div class="empty-state compact"><h3>No registered career fairs yet.</h3><p class="subtle">Published university career fairs appear here.</p></div>';
         return;
       }
       const search=String(document.getElementById('careerFairEmployerSearch')?.value||'').trim().toLowerCase();
       const filteredRows=currentCareerFairDirectory.filter(row=>!search||row.company_name.toLowerCase().includes(search)||row.event_name.toLowerCase().includes(search));
-      if(!filteredRows.length){root.innerHTML='<div class="empty-state compact"><h3>No matching employers.</h3><p class="subtle">Try a different company or career-fair name.</p></div>';return;}
-      const grouped = new Map();
-      filteredRows.forEach(row => {
-        if (!grouped.has(row.event_name)) grouped.set(row.event_name, []);
-        grouped.get(row.event_name).push(row);
-      });
-      grouped.forEach((rows,eventName) => {
+      if(!filteredRows.length&&!currentCareerFairs.some(f=>!search||f.name.toLowerCase().includes(search))){root.innerHTML='<div class="empty-state compact"><h3>No matching employers.</h3><p class="subtle">Try a different company or career-fair name.</p></div>';return;}
+      const grouped = new Map(currentCareerFairs.filter(f=>!search||f.name.toLowerCase().includes(search)||filteredRows.some(r=>r.career_fair_id===f.id)).map(f=>[f.id,[]]));
+      filteredRows.forEach(row=>{if(grouped.has(row.career_fair_id))grouped.get(row.career_fair_id).push(row);});
+      grouped.forEach((rows,fairId) => {
+        const fair=currentCareerFairs.find(item=>item.id===fairId),eventName=fair.name;
         const block=document.createElement('div'); block.className='career-event-block';
-        const fair=currentCareerFairs.find(item=>item.name===eventName);
         const fairWhen=fair?.starts_at?new Date(fair.starts_at).toLocaleString(undefined,{month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}):'Date to be announced';
         block.innerHTML=`<div class="career-event-heading"><div><span class="eyebrow">Career fair</span><h3>${escapeHtml(eventName)}</h3><p class="career-event-meta"><i class="fa-regular fa-calendar"></i> ${escapeHtml(fairWhen)}${fair?.location?` <span>·</span> <i class="fa-solid fa-location-dot"></i> ${escapeHtml(fair.location)}`:''}</p>${fair?.description?`<p class="subtle">${escapeHtml(fair.description)}</p>`:''}</div><span class="badge">${rows.length} ${rows.length===1?'employer':'employers'}</span></div>`;
         const list=document.createElement('div'); list.className='career-employer-list';
@@ -921,34 +918,37 @@
           item.innerHTML=`<div class="career-company-mark"><i class="fa-solid fa-building"></i></div><button class="editable-copy company-profile-link" type="button"><strong>${escapeHtml(row.company_name)}</strong><small>${status ? `Request: ${escapeHtml(requestStatusLabel(status))}` : 'Registered employer'} · View company</small></button><div class="career-request-action"></div>`;
           item.querySelector('.company-profile-link').addEventListener('click',()=>openCompanyPreview(row.company_id));
           const action=item.querySelector('.career-request-action');
-          if (!status) {
+          if (!status && row.can_connect) {
             const btn=document.createElement('button'); btn.type='button'; btn.className='btn btn-secondary btn-small'; btn.textContent='Request Connection';
             btn.addEventListener('click',()=>openEmployerRequest(row));
             action.appendChild(btn);
-          } else {
+          } else if(status) {
             const pill=document.createElement('span'); pill.className=`request-status request-${status}`; pill.textContent=requestStatusLabel(status); action.appendChild(pill);
           }
-          if(fair){
+          if(!row.can_connect&&!status){const note=document.createElement('span');note.className='subtle';note.textContent='Listed employer · TapID connection not available yet';action.appendChild(note);}
+          if(!row.company_id){item.querySelector('.company-profile-link').disabled=true;}
+          if(fair&&row.company_id){
             const plan=currentCareerFairPlans.find(p=>p.career_fair_id===fair.id&&p.company_id===row.company_id);
             const favoriteBtn=document.createElement('button');favoriteBtn.type='button';favoriteBtn.className='favorite-employer-btn'+(plan?' active':'');favoriteBtn.setAttribute('aria-pressed',String(Boolean(plan)));favoriteBtn.setAttribute('aria-label',plan?`Remove ${row.company_name} from favorites`:`Favorite ${row.company_name}`);favoriteBtn.innerHTML=`<i class="${plan?'fa-solid':'fa-regular'} fa-star"></i><span>${plan?'Favorited':'Favorite'}</span>`;favoriteBtn.addEventListener('click',()=>toggleCareerFairFavorite(fair,row,plan));action.prepend(favoriteBtn);
           }
           list.appendChild(item);
         });
+        if(!rows.length){list.innerHTML='<div class="inline-empty">The university will add the employer list here.</div>';}
         block.appendChild(list); root.appendChild(block);
       });
     }
 
     async function loadCareerFairDirectory() {
-      const [result, fairResult, planResult] = await Promise.all([
-        tapid.client.rpc('student_event_employer_directory'),
-        tapid.client.from('career_fairs').select('id,name,starts_at,ends_at,location,description').eq('is_published', true).ilike('school_name', currentProfile.school).order('starts_at', { ascending: true }),
+      const [workspace,planResult] = await Promise.all([
+        tapid.client.rpc('my_fair_workspace'),
         tapid.client.from('career_fair_student_plans').select('*').eq('student_user_id',currentUser.id)
       ]);
-      if (result.error) throw result.error;
-      currentCareerFairDirectory = result.data || [];
-      currentCareerFairs = fairResult.error ? [] : (fairResult.data || []);
-      currentCareerFairPlans = planResult.error ? [] : (planResult.data || []);
-      const companyIds=[...new Set(currentCareerFairDirectory.map(row=>row.company_id))];currentCareerCompanies=new Map();if(companyIds.length){const companies=await tapid.client.from('companies').select('id,name,description,website,careers_url,employee_size,culture,student_message,industries,locations,recruiting_majors,opportunities').in('id',companyIds);if(!companies.error)(companies.data||[]).forEach(item=>currentCareerCompanies.set(item.id,item));}
+      if(workspace.error)throw workspace.error;
+      if(planResult.error)throw planResult.error;
+      currentCareerFairDirectory=workspace.data?.directory||[];
+      currentCareerFairs=workspace.data?.fairs||[];
+      currentCareerFairPlans=planResult.data||[];
+      const companyIds=[...new Set(currentCareerFairDirectory.map(row=>row.company_id).filter(Boolean))];currentCareerCompanies=new Map();if(companyIds.length){const companies=await tapid.client.from('companies').select('id,name,description,website,careers_url,employee_size,culture,student_message,industries,locations,recruiting_majors,opportunities').in('id',companyIds);if(!companies.error)(companies.data||[]).forEach(item=>currentCareerCompanies.set(item.id,item));}
       renderCareerFairDirectory();
     }
 
@@ -979,9 +979,9 @@
       if (!message) { tapid.setMessage(msg,'Add a short message before sending.','error'); return; }
       tapid.setBusy(btn,true,'Sending…');
       try {
-        const result=await tapid.client.rpc('request_employer_connection',{
+        const result=await tapid.client.rpc('request_fair_employer_connection',{
           p_company_id:selectedEmployerRequest.company_id,
-          p_event_name:selectedEmployerRequest.event_name,
+          p_fair_id:selectedEmployerRequest.career_fair_id,
           p_message:message
         });
         if (result.error) throw result.error;
@@ -1025,15 +1025,15 @@
     }
 
     function renderNotifications(){
-      const root=document.getElementById('notificationList'),empty=document.getElementById('notificationEmpty');root.innerHTML='';empty.hidden=currentNotifications.length>0;
-      currentNotifications.forEach(item=>{const row=document.createElement(item.href?'a':'div');row.className='notification-item'+(item.read_at?'':' unread');if(item.href)row.href=item.href;const icon={connection:'fa-user-group',outcome:'fa-bullseye',career_fair:'fa-calendar-days',card:'fa-id-card',profile:'fa-user-shield'}[item.notification_type]||'fa-bell';row.innerHTML=`<span class="notification-icon"><i class="fa-solid ${icon}"></i></span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.body)}</small><time>${escapeHtml(connectionDate(item.created_at))}</time></span>${item.read_at?'':'<i class="notification-dot"></i>'}`;root.appendChild(row);});
-      const unread=currentNotifications.filter(item=>!item.read_at).length,badge=document.getElementById('notificationNavCount');badge.textContent=String(unread);badge.hidden=!unread;document.getElementById('markNotificationsRead').hidden=!unread;
+      const root=document.getElementById('notificationList'),empty=document.getElementById('notificationEmpty');root.innerHTML='';const visible=TapIDFairUI.unread(currentNotifications).filter(n=>n.notification_type!=='career_fair'||currentCareerFairs.some(f=>String(f.id)===String(n.metadata?.career_fair_id)));empty.hidden=visible.length>0;
+      visible.forEach(item=>{const row=document.createElement(item.href?'a':'div');row.className='notification-item'+(item.read_at?'':' unread');if(item.href)row.href=item.href;const icon={connection:'fa-user-group',outcome:'fa-bullseye',career_fair:'fa-calendar-days',card:'fa-id-card',profile:'fa-user-shield'}[item.notification_type]||'fa-bell';row.innerHTML=`<span class="notification-icon"><i class="fa-solid ${icon}"></i></span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.body)}</small><time>${escapeHtml(connectionDate(item.created_at))}</time></span>${item.read_at?'':'<i class="notification-dot"></i>'}`;root.appendChild(row);});
+      const unread=visible.length,badge=document.getElementById('notificationNavCount');badge.textContent=String(unread);badge.hidden=!unread;document.getElementById('markNotificationsRead').hidden=!unread;
     }
 
     async function loadStudentExperienceData(){
       const [opportunities,notifications]=await Promise.all([
         tapid.client.from('student_opportunity_preferences').select('*').eq('student_user_id',currentUser.id).maybeSingle(),
-        tapid.client.from('student_notifications').select('*').eq('student_user_id',currentUser.id).order('created_at',{ascending:false}).limit(50)
+        tapid.client.from('student_notifications').select('*').eq('student_user_id',currentUser.id).is('read_at',null).order('created_at',{ascending:false}).limit(200)
       ]);
       for(const result of [opportunities,notifications])if(result.error)throw result.error;
       populateOpportunityPreferences(opportunities.data);currentNotifications=notifications.data||[];renderNotifications();
@@ -1102,7 +1102,7 @@
           const row = document.createElement('button');
           row.type = 'button'; row.className = 'home-fair-row'; row.dataset.jump = 'career-fairs';
           const dateLabel = fair.starts_at ? new Date(fair.starts_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Date to be announced';
-          const employers = currentCareerFairDirectory.filter(item => item.event_name === fair.name).length;
+          const employers = currentCareerFairDirectory.filter(item => item.career_fair_id === fair.id).length;
           const saved=currentCareerFairPlans.filter(item=>item.career_fair_id===fair.id).length;
           row.innerHTML = `<span class="fair-date"><i class="fa-regular fa-calendar"></i>${escapeHtml(dateLabel)}</span><span><strong>${escapeHtml(fair.name)}</strong><small>${escapeHtml(fair.location || 'Location to be announced')} · ${employers} ${employers === 1 ? 'employer' : 'employers'}${saved?` · ${saved} favorite${saved===1?'':'s'}`:''}</small></span><i class="fa-solid fa-chevron-right"></i>`;
           fairRoot.appendChild(row);
@@ -1207,6 +1207,9 @@
 
     document.getElementById('dashboardRecommendationForm').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter;let createdId=null,uploadedPath=null;tapid.setBusy(button,true,'Uploading…');try{const file=document.getElementById('dashboardRecommendationLetter').files?.[0],writerEmail=document.getElementById('dashboardAuthorEmail').value.trim();if(!file)throw new Error('Choose the PDF recommendation letter.');if(file.type!=='application/pdf'||file.size>10*1024*1024)throw new Error('Recommendation letters must be PDFs no larger than 10 MB.');const payload={student_user_id:currentUser.id,author_name:document.getElementById('dashboardAuthorName').value.trim(),author_email:null,author_title:document.getElementById('dashboardAuthorTitle').value.trim(),author_organization:document.getElementById('dashboardAuthorOrganization').value.trim()||null,relationship:document.getElementById('dashboardRelationship').value.trim()||null,recommendation_text:null,is_public:document.getElementById('dashboardRecommendationPublic').checked,status:'submitted',...recommendationParentPayload()};const saved=await tapid.client.from('recommendations').insert(payload).select().single();if(saved.error)throw saved.error;createdId=saved.data.id;const contact=await tapid.client.from('recommendation_contacts').insert({recommendation_id:createdId,student_user_id:currentUser.id,writer_email:writerEmail});if(contact.error)throw contact.error;uploadedPath=`${currentUser.id}/recommendations/${createdId}.pdf`;const upload=await tapid.client.storage.from('media').upload(uploadedPath,file,{contentType:'application/pdf'});if(upload.error)throw upload.error;const media=await tapid.client.from('media').insert({user_id:currentUser.id,recommendation_id:createdId,file_path:uploadedPath,file_url:'',media_type:'pdf',caption:'Recommendation letter',sort_order:0});if(media.error)throw media.error;const update=await tapid.client.from('recommendations').update({letter_path:uploadedPath}).eq('id',createdId);if(update.error)throw update.error;event.target.reset();await loadJourneySections();tapid.setMessage(message,'Recommendation letter uploaded.','success');}catch(error){if(uploadedPath)await tapid.client.storage.from('media').remove([uploadedPath]);if(createdId)await tapid.client.from('recommendations').delete().eq('id',createdId).eq('student_user_id',currentUser.id);tapid.setMessage(message,error.message,'error');}finally{tapid.setBusy(button,false);}});
 
+    let refreshingFairAlerts=false;
+    async function refreshStudentFairAlerts(){if(!currentUser||!currentProfile||document.hidden||refreshingFairAlerts)return;refreshingFairAlerts=true;try{await loadCareerFairDirectory();const r=await tapid.client.from('student_notifications').select('*').eq('student_user_id',currentUser.id).is('read_at',null).order('created_at',{ascending:false}).limit(200);if(r.error)throw r.error;currentNotifications=r.data||[];renderNotifications();updateDashboardHome();}catch(error){tapid.setMessage(message,error.message,'error');}finally{refreshingFairAlerts=false;}}
+    setInterval(refreshStudentFairAlerts,60000);window.addEventListener('focus',refreshStudentFairAlerts);
     document.getElementById('markNotificationsRead').addEventListener('click',async()=>{const result=await tapid.client.from('student_notifications').update({read_at:new Date().toISOString()}).eq('student_user_id',currentUser.id).is('read_at',null);if(result.error)return tapid.setMessage(message,result.error.message,'error');currentNotifications.forEach(item=>item.read_at=item.read_at||new Date().toISOString());renderNotifications();});
 
     document.getElementById('copyProfileUrl').addEventListener('click',async()=>{const url=tapid.profileUrl(currentProfile.username);await navigator.clipboard.writeText(url);tapid.setMessage(message,'TapID link copied.','success');});
