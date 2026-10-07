@@ -23,3 +23,28 @@
 .employer-workspace-page .sidebar-label,.employer-workspace-page #sideCompany,.employer-workspace-page #sideVerified{display:none}.employer-workspace-page #sideRecruiter{font-size:1rem}.employer-workspace-page .home-date{font-size:1rem}.employer-workspace-page .notification-item strong,.employer-workspace-page .conversation-item strong,.employer-workspace-page .pipeline-student strong{font-size:1.05rem}.employer-workspace-page .notification-item small,.employer-workspace-page .conversation-item small,.employer-workspace-page .pipeline-student small,.employer-workspace-page .activity-item small{font-size:.94rem}.employer-workspace-page .pipeline-board{display:grid;gap:12px}.employer-workspace-page .candidate-profile-dialog .activity-item strong{font-size:1rem}
 .employer-workspace-page .field label{font-size:1rem}.employer-workspace-page input,.employer-workspace-page select,.employer-workspace-page textarea{font-size:1rem}.employer-workspace-page .form-grid{gap:18px}.employer-workspace-page .event-metric-grid span,.employer-workspace-page .event-context-grid span,.employer-workspace-page .event-student-list small{font-size:.95rem}
 .candidate-match-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}.candidate-match-heading h2{margin:0}.match-health{font-size:.95rem;color:#64776a;margin:12px 0 20px}.match-health[data-state=verified]{color:#1b6a45}.match-health[data-state=error]{color:#a1372d}.match-conversation:empty{display:none}.match-conversation{display:flex;flex-direction:column;gap:14px;max-height:380px;overflow-y:auto;scroll-behavior:smooth;margin:20px 0;padding:4px}.match-chat-message{max-width:90%;padding:16px 20px;background:#f0f5f1;border-radius:16px;align-self:flex-start;color:#214734}.match-chat-message.user{background:#174f35;color:white;align-self:flex-end}.match-chat-message strong{font-size:.88rem}.match-chat-message p{font-size:1rem;line-height:1.6;margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}#matchMore{margin-top:18px}.match-composer textarea{min-height:100px}.match-composer-actions{margin-top:14px}.match-composer button:disabled{opacity:.65;cursor:wait}@media(max-width:720px){.candidate-match-heading{align-items:flex-start;flex-direction:column}.match-chat-message{max-width:100%}.match-conversation{max-height:300px}}
+
+/* Filters → AI request → candidates; history never pushes the composer down. */
+.match-workspace {margin-top:24px;}
+.match-hard-filters {padding:22px;border:1px solid #dce7df;border-radius:18px;background:#fafcf9;}
+.match-panel-heading {display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.match-panel-heading h3,.match-panel-heading label {margin:0;font-size:1.1rem;font-weight:750;color:#164e38;}
+.match-hard-filters .match-scope {margin:18px 0;}
+.match-hard-filters .match-scope input,.match-hard-filters .match-scope select {width:100%;min-height:48px;padding:10px 14px;border:1px solid #d6e2d9;border-radius:12px;background:#fff;font:inherit;box-shadow:none;}
+.match-hard-filters .connection-extra-filters {gap:20px;}
+.match-hard-filters .connection-extra-filters label {display:inline-flex;align-items:center;gap:8px;}
+.match-hard-filters input[type=checkbox] {accent-color:#195a3d;width:18px;height:18px;}
+.match-composer {margin:18px 0 0;border-radius:18px;}
+.match-composer textarea {margin-top:16px;background:#fff;line-height:1.6;}
+.match-context {font-size:.88rem;color:#566d60;background:#fff;padding:6px 10px;border-radius:999px;}
+.match-composer-actions {justify-content:space-between;margin-top:16px;}
+.match-composer-actions .btn {min-height:46px;font-size:1rem;}
+.match-status:empty {display:none;}
+.match-results-heading {margin:24px 0 16px;}
+.match-summary {font-size:1.3rem;color:#123d2c;margin:0;}
+.match-criteria {margin-top:10px;}
+.match-criteria:empty,.match-summary:empty {display:none;}
+.match-history {margin-top:28px;border-top:1px solid #dce7df;padding-top:16px;}
+.match-history>summary {cursor:pointer;font-size:1rem;font-weight:650;color:#536a5b;}
+.match-history .match-conversation {margin-top:16px;max-height:280px;}
+@media(max-width:760px){.match-hard-filters,.match-composer{padding:16px;}.match-panel-heading{flex-wrap:wrap;}.match-context{font-size:.8rem;}}

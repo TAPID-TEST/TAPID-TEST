@@ -1,0 +1,18 @@
+/* Persistent navigation for student and employer workspaces. */
+@media (min-width:761px) {
+ .dashboard-page .dashboard-sidebar {position:fixed;left:max(24px,calc((100vw - 1460px)/2));top:24px;bottom:24px;width:205px;max-height:calc(100dvh - 48px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;z-index:20;}
+ .dashboard-page .topbar {padding-left:229px;}
+ .dashboard-page .dashboard-hero,.dashboard-page .dashboard-shell>.message {margin-left:229px;}
+}
+@media (min-width:761px) and (max-width:1100px) {
+ .dashboard-page .dashboard-sidebar {width:180px;}
+ .dashboard-page .topbar {padding-left:196px;}
+ .dashboard-page .dashboard-hero,.dashboard-page .dashboard-shell>.message {margin-left:196px;}
+}
+@media (max-width:760px) {
+ .dashboard-page .dashboard-sidebar {position:sticky;top:0;z-index:20;max-height:none;overflow:visible;padding:8px;background:#fafbf8;box-shadow:0 6px 16px #143c2210;}
+ .dashboard-page .dashboard-section-nav {display:flex;gap:6px;overflow-x:auto;overscroll-behavior:contain;scrollbar-width:thin;}
+ .dashboard-page .dashboard-nav-item {flex:0 0 auto;white-space:nowrap;min-height:44px;}
+ .dashboard-page .dashboard-sidebar .sidebar-label,.dashboard-page .dashboard-sidebar .sidebar-divider,.dashboard-page .dashboard-sidebar>h2,.dashboard-page .dashboard-sidebar>p,.dashboard-page .dashboard-sidebar>.badge {display:none;}
+}
+@media print {.dashboard-page .dashboard-sidebar{display:none;}.dashboard-page .topbar{padding-left:0;}.dashboard-page .dashboard-hero,.dashboard-page .dashboard-shell>.message{margin-left:0;}.dashboard-page .dashboard-grid{display:block;}}
