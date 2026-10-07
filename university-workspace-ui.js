@@ -20,3 +20,18 @@
   }
   root.UniversityUI={esc,number,kpis,table,bars,donut,columns};
 })(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(root){
+ const U=root.UniversityUI;
+ U.volumeBars=function(items,label='connections'){
+  if(!items.length||!items.some(x=>Number(x.value)>0))return '<div class="report-empty">No '+U.esc(label)+' recorded yet</div>';
+  const total=items.reduce((n,x)=>n+(Number(x.value)||0),0),max=Math.max(...items.map(x=>Number(x.value)||0),1);
+  return '<div class="engagement-bars">'+items.map(x=>{
+   const value=Number(x.value)||0;return `<div class="engagement-row"><div class="engagement-row-head"><span>${U.esc(x.label)}</span><strong>${U.number(value)} <small>${U.esc(label)}</small></strong></div><div class="workspace-track" role="img" aria-label="${U.esc(x.label)}: ${U.number(value)} ${U.esc(label)}"><i style="width:${value/max*100}%"></i></div><span class="engagement-share">${Math.round(value/total*100)}% of this chart</span></div>`;
+  }).join('')+'</div>';
+ };
+ U.participation=function(connected,total,label){
+  const rate=total?Math.round(connected/total*100):null;
+  return `<div class="engagement-participation"><strong>${rate===null?'—':rate+'%'}</strong><span>${U.number(connected)} of ${U.number(total)} ${U.esc(label)} have connections</span><div class="participation-track" role="img" aria-label="${U.number(connected)} of ${U.number(total)} ${U.esc(label)} have connections"><i style="width:${rate||0}%"></i></div><div class="participation-legend"><span><i></i>Connected</span><span><i></i>No connections yet</span></div></div>`;
+ };
+})(typeof globalThis!=='undefined'?globalThis:this);

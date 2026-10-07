@@ -24,3 +24,18 @@
   const api={num,rate,employerSummary,setupStates,compactGroups};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.UniversityPopulation=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
+
+// Engagement charts retain every group. Small majors are never hidden in "Other".
+(function(root){
+ const P=typeof module!=='undefined'&&module.exports?module.exports:root.UniversityPopulation;
+ P.engagementGroups=function(rows,dimension,college=''){
+  const totals=new Map();
+  for(const row of rows||[]){if(college&&row.college!==college)continue;
+   const label=row[dimension]||'Not set';const group=totals.get(label)||{label,accounts:0,connected:0,connections:0};
+   for(const key of ['accounts','connected','connections'])group[key]+=P.num(row[key]);totals.set(label,group);
+  }
+  return [...totals.values()].sort((a,b)=>b.connections-a.connections||a.label.localeCompare(b.label));
+ };
+ P.engagedEmployers=employers=>employers.filter(e=>e.status==='approved');
+ P.recentEmployers=employers=>employers.filter(e=>P.num(e.connections_30_days)>0);
+})(typeof globalThis!=='undefined'?globalThis:this);
