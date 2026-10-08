@@ -31,6 +31,7 @@ WEBSITE FILES
   career-interests.js
   career-interests.css
   workspace-polish.css
+  workspace-layout.css
   workspace-review.js
   university-dashboard.html
   university-students.html
@@ -48,11 +49,12 @@ WEBSITE FILES
   fair-report-model.js
 
 STUDENT
-- Seven primary destinations: Home, My TapID, Career interests, Career Fairs,
-  Connections, Messages, Notifications. All ten profile-editing sections are
-  accessible inside My TapID, with Preview & share and existing deep links retained.
-- Compact desktop rail without internal scrolling. Very short screens/mobile use
-  a horizontal navigation row; the content itself remains scrollable.
+- Full-height desktop sidebar with Daily, My TapID, Portfolio and Events groups.
+  Notifications and messages follow Home. Profile sections are expanded directly
+  in the primary rail; My TapID and Portfolio are collapsible groups. On smaller
+  laptop screens Portfolio starts folded; deep links open the corresponding group.
+- Card/public-profile actions stay at the bottom. Mobile and short screens use a
+  compact horizontal navigation strip. The second editor rail is removed.
 - Shared typography, buttons and spacing. Stable notification rows/badges retained.
 - Home keeps total connections and the latest five. Setup now shows three next
   steps rather than a percentage, using the written Career interests field.
@@ -60,7 +62,7 @@ STUDENT
 - Free writing prompts, legacy preference retention and public visibility preserved.
 
 EMPLOYER
-- Shared reading scale, card rhythm and compact sidebar retained.
+- Shared reading scale, card rhythm and full-height grouped sidebar.
 - Student detail shows public career interests and two experience/project highlights,
   public bio/skills and existing full-profile/résumé/message actions.
 - Private notes stay prominent; priority and reminder settings are secondary.
@@ -137,3 +139,32 @@ are reported. Career wishes are not proof of completed experience.
 
 SUGGESTed commit
 Unify TapID workspaces and improve candidate review and fair reporting
+
+LATEST NAVIGATION UPDATE
+TapID grouped full-height sidebar update · v14
+Upload the following THREE website files to your GitHub repository root together:
+ dashboard.html
+ employer-dashboard.html
+ workspace-layout.css
+No SQL or Edge Function update is needed. Wait for publishing to finish and refresh.
+
+Full-height fixed desktop rail below the logo, retaining the compact page header.
+Student groups: Daily (Home, Notifications, Messages, Connections), My TapID
+(Profile, Career interests, Résumé, Contact, Links, Preview & share), Portfolio
+(Experience, Projects, Skills, Organizations, Certifications, Recommendations),
+Events (Career Fairs). The second editing rail is removed.
+Employer groups: Daily (Home, Notifications, Messages, Requests, Reminders),
+Recruiting (Connections, Candidate Match, Candidate stages, Event Results),
+Your team (Company Profile, Recruiter Profile).
+
+Both names use a slightly larger 30px desktop heading (previously 27px).
+Sidebar navigation occupies the full-height panel, with account/card actions at
+its bottom. Related links have group headings; My TapID and Portfolio can fold.
+Portfolio initially collapses on laptop viewports 561–780px tall and opens when
+an editing deep link targets that group. Smaller screens use horizontal menus.
+The compact top header, existing forms, badges, notifications, searches and
+save handlers are preserved. Cache tags have been updated.
+
+All 13 existing local test scripts passed. Final HTML smoke checks passed after
+styling adjustments. No browser-render or signed-in live test was performed.
+Commit: Restore full-height grouped navigation for student and employer dashboards

@@ -2,7 +2,7 @@
   'use strict';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const number=v=>Number(v||0).toLocaleString();
-  function kpis(items){return items.map(x=>`<article class="report-kpi"><strong>${esc(x.value)}</strong><span>${esc(x.label)}</span>${x.detail?`<small>${esc(x.detail)}</small>`:''}</article>`).join('');}
+  function kpis(items){return items.map(x=>{const content=`<strong>${esc(x.value)}</strong><span>${esc(x.label)}</span>`;return x.href?`<a class="report-kpi kpi-link" href="${esc(x.href)}">${content}</a>`:`<article class="report-kpi">${content}</article>`;}).join('');}
   function table(headers,rows){return rows.length?`<table class="report-table"><thead><tr>${headers.map(h=>`<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`:'<div class="report-empty">No data yet</div>';}
   function bars(items,denominator){
     if(!items.length)return '<div class="report-empty">No data yet</div>';

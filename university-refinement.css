@@ -1,0 +1,14 @@
+/* University v15: clear totals, accessible drilldown, directory first. */
+.report-page .workspace-nav a{font-size:16px;min-height:48px;min-width:110px;padding:13px 20px;display:inline-flex;justify-content:center;align-items:center}
+.population-page .workspace-kpis .kpi-link{display:flex;flex-direction:column;justify-content:center;gap:8px;text-decoration:none;color:inherit;transition:border-color .15s,box-shadow .15s}
+.population-page .workspace-kpis .kpi-link:first-child{color:#fff;background:#15533a}
+.population-page .kpi-link:hover{border-color:#347853;box-shadow:0 3px 12px #15533a14}
+.population-page .kpi-link:focus-visible,.college-drill-bar:focus-visible{outline:3px solid #b68b24;outline-offset:3px}
+.population-page .workspace-kpis strong{font-size:36px}.population-page .workspace-kpis span{font-size:14px}
+#studentDirectoryPanel{scroll-margin-top:20px}.student-directory .report-table-wrap{min-height:0}.student-directory .directory-filters{margin:16px 0;grid-template-columns:1.5fr repeat(4,1fr)}
+.college-drill-bar{display:grid;grid-template-columns:1fr auto;gap:10px;width:100%;padding:16px 0;border:0;border-bottom:1px solid #e4ebe6;background:transparent;text-align:left;color:#173e2e;cursor:pointer;font:inherit}
+.college-drill-bar>span:first-child{font-size:15px}.college-drill-bar strong{font-size:20px}.college-drill-bar .workspace-track{grid-column:1/-1;height:18px;width:100%}.college-drill-bar i{background:linear-gradient(90deg,#15533a,#4b946c)}.college-drill-bar:hover{background:#f6f9f6}
+#collegeChartHint{display:block}#backToColleges{margin:8px 0}#connectionGrowth .workspace-chart{max-height:230px}.population-page .engagement-share{display:none}
+@media(max-width:900px){.student-directory .directory-filters{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.report-page .workspace-nav a{font-size:14px;min-width:0;padding:11px 12px}.student-directory .directory-filters{grid-template-columns:1fr}}
+@media print{#backToColleges{display:none!important}.kpi-link{text-decoration:none;color:#173e2e!important}.college-drill-bar{break-inside:avoid}}

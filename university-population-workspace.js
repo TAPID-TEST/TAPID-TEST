@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   const $=id=>document.getElementById(id),U=UniversityUI,P=UniversityPopulation,M=FairReport,mode=document.body.dataset.workspace;
-  let population=null,fair={rows:[],events:[]},admin=null,generated=null,page=0,directorySequence=0,directoryTotal=0,loadSequence=0;
+  let population=null,fair={rows:[],events:[]},admin=null,generated=null,page=0,directorySequence=0,directoryTotal=0,loadSequence=0,selectedCollege='';
   const date=v=>v?new Date(v).toLocaleDateString('en-US',{timeZone:'America/Los_Angeles',month:'short',day:'numeric',year:'numeric'}):'—';
   const pct=(n,d)=>P.rate(n,d)===null?'—':P.rate(n,d)+'%';
   function heading(){
@@ -11,10 +11,11 @@
   }
   function overview(){
     const s=population.students,e=P.employerSummary(population.employers),r=M.summarize(fair.rows,0,generated.getTime());
-    $('overviewKpis').innerHTML=U.kpis([{label:'Student accounts',value:U.number(s.accounts),detail:U.number(s.new_30_days)+' created in last 30 days'},
-      {label:'Approved companies',value:U.number(e.approved),detail:U.number(e.companies)+' companies registered'},
-      {label:'Unique connections',value:U.number(r.connections),detail:'Student × company × source'},
-      {label:'Interviews recorded',value:U.number(r.reached.interview),detail:pct(r.reached.interview,r.connections)+' of connections'}]);
+    $('overviewKpis').innerHTML=U.kpis([
+      {label:'Student accounts',value:U.number(s.accounts),href:'university-students.html#studentDirectoryPanel'},
+      {label:'Company accounts',value:U.number(e.companies),href:'university-employers.html#employerDirectory'},
+      {label:'Total connections',value:U.number(s.connections),href:'university-students.html?state=connected#studentDirectoryPanel'},
+      {label:'Interviews recorded',value:U.number(r.reached.interview),href:'university-fairs.html'}]);
     $('studentParticipation').innerHTML=U.participation(s.students_connected,s.accounts,'student accounts');
     $('employerParticipation').innerHTML=U.participation(e.approvedActive,e.approved,'approved companies');
     $('overviewMilestones').innerHTML=U.bars(M.stages.filter(([key])=>!['connected','interview'].includes(key)).map(([key,label])=>({label,value:r.reached[key]})),r.connections);
@@ -25,13 +26,17 @@
   }
   function connectionCharts(){
     const rows=population.engagement_groups;
-    $('collegeChartTitle').textContent=$('connectionDimension').value==='major'?'Connections by major':'Connections by college';
-    $('collegeChartHint').textContent=$('connectionDimension').value==='major'?'All majors · each introduction counted once':'Expand a college to see its majors';
-    if($('connectionDimension').value==='major'){
-      $('collegeConnections').innerHTML=U.volumeBars(P.engagementGroups(rows,'major').map(g=>({label:g.label,value:g.connections,accounts:g.accounts,connected:g.connected,filter:{dimension:'major',value:g.label}})));
+    const allMajors=$('connectionDimension').value==='major';
+    const groups=P.engagementGroups(rows,'college');
+    if(!groups.some(g=>g.label===selectedCollege))selectedCollege='';
+    $('collegeChartTitle').textContent=allMajors?'Connections by major':selectedCollege||'Connections by college';
+    $('collegeChartHint').textContent=selectedCollege?'Connections by major':'Select a college to see its majors';
+    $('backToColleges').hidden=!selectedCollege;
+    if(allMajors||selectedCollege){
+      $('collegeConnections').innerHTML=U.volumeBars(P.engagementGroups(rows,'major',allMajors?'':selectedCollege).map(g=>({label:g.label,value:g.connections,filter:{dimension:'major',value:g.label}})));
     }else{
-      const groups=P.engagementGroups(rows,'college'),max=Math.max(...groups.map(g=>g.connections),1);
-      $('collegeConnections').innerHTML=groups.length?groups.map(g=>`<details class="college-group"><summary><span>${U.esc(g.label)}</span><strong>${U.number(g.connections)} <small>connections</small></strong><span class="college-chevron" aria-hidden="true">⌄</span><div class="workspace-track"><i style="width:${g.connections/max*100}%"></i></div></summary><div class="college-majors"><p class="engagement-context">${pct(g.connected,g.accounts)} participation · ${U.number(g.connected)} of ${U.number(g.accounts)} students</p><button type="button" class="chart-filter-button" data-directory-dimension="college" data-directory-value="${U.esc(g.label)}">View students in this college</button>${U.volumeBars(P.engagementGroups(rows,'major',g.label).map(m=>({label:m.label,value:m.connections,accounts:m.accounts,connected:m.connected,filter:{dimension:'major',value:m.label}})))}</div></details>`).join(''):'<div class="report-empty">No student accounts yet</div>';
+      const max=Math.max(...groups.map(g=>g.connections),1);
+      $('collegeConnections').innerHTML=groups.length?groups.map(g=>`<button type="button" class="college-drill-bar" data-college-drill="${U.esc(g.label)}" aria-label="${U.esc(g.label)}: ${U.number(g.connections)} connections. View majors"><span>${U.esc(g.label)}</span><strong>${U.number(g.connections)}</strong><span class="workspace-track"><i style="width:${g.connections/max*100}%"></i></span></button>`).join(''):'<div class="report-empty">No student accounts yet</div>';
     }
     const yearOrder=['Freshman','Sophomore','Junior','Senior','Graduate'];const years=P.engagementGroups(rows,'year').sort((a,b)=>(yearOrder.includes(a.label)?yearOrder.indexOf(a.label):99)-(yearOrder.includes(b.label)?yearOrder.indexOf(b.label):99)||a.label.localeCompare(b.label));
     $('yearConnections').innerHTML=U.volumeBars(years.map(g=>({label:g.label,value:g.connections,accounts:g.accounts,connected:g.connected,filter:{dimension:'year',value:g.label}})));
@@ -39,10 +44,10 @@
   function students(){
     const s=population.students;
     $('studentKpis').innerHTML=U.kpis([
-      {label:'Student accounts',value:U.number(s.accounts),detail:U.number(s.new_30_days)+' new in last 30 days'},
-      {label:'Students with connections',value:U.number(s.students_connected),detail:pct(s.students_connected,s.accounts)+' of accounts'},
-      {label:'Total connections',value:U.number(s.connections),detail:'Each student × company × fair/source once'},
-      {label:'Students connecting · last 30 days',value:U.number(s.students_connected_30_days),detail:U.number(s.connections_30_days)+' new connections'}
+      {label:'Student accounts',value:U.number(s.accounts),href:'#studentDirectoryPanel'},
+      {label:'Students with connections',value:U.number(s.students_connected),href:'?state=connected#studentDirectoryPanel'},
+      {label:'Total connections',value:U.number(s.connections),href:'?state=connected#studentDirectoryPanel'},
+      {label:'Connection participation',value:pct(s.students_connected,s.accounts),href:'?state=never-connected#studentDirectoryPanel'}
     ]);
     const oldCollege=$('studentCollege').value;const colleges=[...new Set(population.engagement_groups.map(g=>g.college))].sort();$('studentCollege').innerHTML='<option value="">All colleges</option>'+colleges.map(c=>`<option>${U.esc(c)}</option>`).join('');$('studentCollege').value=colleges.includes(oldCollege)?oldCollege:'';
     connectionCharts();
@@ -58,7 +63,7 @@
   function employers(){
     const summary=P.employerSummary(population.employers),companies=P.engagedEmployers(population.employers),active=companies.filter(e=>P.num(e.connections)>0).length,recent=P.recentEmployers(companies).length;
     $('employerKpis').innerHTML=U.kpis([
-      {label:'Approved companies',value:U.number(companies.length),detail:'University-approved recruiting partners'},
+      {label:'Company accounts',value:U.number(summary.companies),href:'#employerDirectory'},
       {label:'Companies with connections',value:U.number(active),detail:pct(active,companies.length)+' of approved companies'},
       {label:'Students reached',value:U.number(population.students.approved_employers_students),detail:'Each student counted once across approved companies'},
       {label:'Companies connecting · last 30 days',value:U.number(recent),detail:U.number(companies.reduce((n,e)=>n+P.num(e.connections_30_days),0))+' new connections'}
@@ -69,7 +74,7 @@
     $('employerReachScope').innerHTML='<option value="">All approved employers</option>'+companies.map(e=>`<option value="${U.esc(e.company_id)}">${U.esc(e.name)}</option>`).join('');
     $('employerReachScope').value=companies.some(e=>String(e.company_id)===selected)?selected:'';employerMajorChart();
     $('employerActivityChart').innerHTML=U.columns(population.connection_growth.map(g=>({label:g.month,short:new Date(g.month+'-15T12:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}),value:g.employers})),'Approved companies recording new connections each month, last twelve months');
-    $('employerDirectory').innerHTML=U.table(['Company','Recruiters','Students reached','Connections','Fair sources','Last connection'],companies.map(e=>[U.esc(e.name),U.number(e.approved_recruiters),U.number(e.students),U.number(e.connections),U.number(e.events),U.esc(date(e.last_connection_at))]));
+    $('employerDirectory').innerHTML=U.table(['Company','Access','Recruiters','Students reached','Connections','Fair sources','Last connection'],population.employers.map(e=>[U.esc(e.name),U.esc(e.status),U.number(e.recruiters),U.number(e.students),U.number(e.connections),U.number(e.events),U.esc(date(e.last_connection_at))]));
   }
   async function load(){
     const token=++loadSequence;$('printWorkspace').disabled=true;
@@ -84,7 +89,9 @@
       fair=results[1]?.data||{rows:[],events:[]};generated=new Date(population.generated_at);heading();
       if(mode==='overview')overview();if(mode==='students'){students();await loadDirectory();}if(mode==='employers')employers();
       if($('workspaceContent'))$('workspaceContent').hidden=false;
-      $('printWorkspace').disabled=false;tapid.setMessage($('pageMessage'),'');
+      $('printWorkspace').disabled=false;if(mode!=='students')tapid.setMessage($('pageMessage'),'');
+      if(location.hash==='#studentDirectoryPanel')$('studentDirectoryPanel')?.scrollIntoView({block:'start'});
+      if(mode==='employers'&&location.hash==='#employerDirectory'){const panel=document.querySelector('.employer-details');panel.open=true;panel.scrollIntoView({block:'start'});}
     }catch(e){if(token===loadSequence){if($('workspaceContent'))$('workspaceContent').hidden=true;tapid.setMessage($('pageMessage'),e.code==='PGRST202'?'Run tapid_engagement_analytics.sql to enable this view.':e.message,'error');}}
     finally{if(token===loadSequence){if($('loadingWorkspace'))$('loadingWorkspace').hidden=true;if($('refreshWorkspace'))$('refreshWorkspace').disabled=false;}}
   }
@@ -94,13 +101,13 @@
     try{
       const filters={p_search:$('studentSearch').value.trim(),p_major:$('studentMajor').value,p_year:$('studentYear').value,p_state:$('studentState').value,p_page:page,p_college:$('studentCollege').value};
       const result=await tapid.client.rpc('university_student_directory_filtered',filters);if(token!==directorySequence)return;if(result.error)throw result.error;
-      const d=result.data;directoryTotal=d.total;
+      const d=result.data;if(!d||!Array.isArray(d.rows))throw new Error('Student directory returned an unexpected response.');directoryTotal=d.total;tapid.setMessage($('pageMessage'),'');
       if(page>0&&page*50>=d.total){page=Math.max(0,Math.ceil(d.total/50)-1);return loadDirectory();}
       $('studentDirectory').innerHTML=U.table(['Student','College','Major','Class year','Joined','Connections','Last connection'],d.rows.map(s=>[s.username?`<a href="profile.html?u=${encodeURIComponent(s.username)}" target="_blank" rel="noopener">${U.esc(s.name)}</a>`:U.esc(s.name),U.esc(s.college||'Unclassified major'),U.esc(s.major),U.esc(s.class_year),U.esc(date(s.joined_at)),U.number(s.connections),U.esc(date(s.last_connection_at))]));
       $('directoryPage').textContent=d.total?`${page*50+1}–${Math.min((page+1)*50,d.total)} of ${U.number(d.total)} students`:'0 students';
       $('directoryScope').textContent=[filters.p_search?'Search: '+filters.p_search:null,filters.p_college,filters.p_major,filters.p_year,$('studentState').selectedOptions[0].textContent,'Directory page '+(page+1)].filter(Boolean).join(' · ');
       $('previousStudents').disabled=page===0;$('nextStudents').disabled=(page+1)*50>=d.total;$('printDirectory').disabled=false;
-    }catch(e){if(token===directorySequence){$('studentDirectory').innerHTML='<div class="report-empty">Unable to load student directory</div>';tapid.setMessage($('pageMessage'),e.message,'error');}}
+    }catch(e){if(token===directorySequence){$('studentDirectory').innerHTML='<div class="report-empty">Unable to load student directory</div>';tapid.setMessage($('pageMessage'),e.code==='PGRST202'?'Student directory database update is missing. Run tapid_student_directory_repair.sql, then refresh.':e.message||'Student directory could not be loaded. Please retry.','error');}}
   }
   let printState=null;
   function restorePrint(){document.body.classList.remove('directory-print');if(!printState)return;
@@ -125,7 +132,9 @@
     $('refreshWorkspace').onclick=load;$('logoutBtn').onclick=async()=>{await tapid.client.auth.signOut();sessionStorage.removeItem('tapid-university-explicit-login');location.replace('university-login.html');};
   }
   if(mode==='students'){
-    $('connectionDimension').onchange=connectionCharts;
+    $('connectionDimension').onchange=()=>{selectedCollege='';connectionCharts();};
+    $('backToColleges').onclick=()=>{selectedCollege='';connectionCharts();};
+    document.addEventListener('click',e=>{const b=e.target.closest('[data-college-drill]');if(b){selectedCollege=b.dataset.collegeDrill;connectionCharts();}});
     document.addEventListener('click',e=>{const b=e.target.closest('[data-directory-dimension]');if(!b)return;const ids={major:'studentMajor',year:'studentYear',college:'studentCollege'};const id=ids[b.dataset.directoryDimension];if(!id)return;['studentCollege','studentMajor','studentYear','studentState','studentSearch'].forEach(key=>$(key).value='');$(id).value=b.dataset.directoryValue;page=0;loadDirectory();$('studentDirectory').scrollIntoView({behavior:'smooth',block:'center'});});
     $('clearDirectoryFilters').onclick=()=>{['studentCollege','studentMajor','studentYear','studentState','studentSearch'].forEach(id=>$(id).value='');page=0;loadDirectory();};
     const initial=new URLSearchParams(location.search).get('state');if([...$('studentState').options].some(x=>x.value===initial))$('studentState').value=initial;
