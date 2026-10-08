@@ -3,7 +3,7 @@
   const $=id=>document.getElementById(id),M=FairReport;
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const n=v=>Number(v||0).toLocaleString(),rate=(v,total)=>total?`${M.pct(v,total)}%`:'—';
-  const label=s=>({connected:'New connection',follow_up:'Follow-up planned',contacted:'Contacted',screening:'Under consideration',interview:'Interview',offer:'Offer extended',accepted_offer:'Offer accepted',internship:'Internship',job:'Hired',passed:'Closed'}[s]||s);
+  const label=s=>TapIDReview.stage(s);
   const day=v=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(v));
   const date=v=>Number.isFinite(Date.parse(v))?new Date(v).toLocaleDateString('en-US',{timeZone:'America/Los_Angeles',month:'short',day:'numeric',year:'numeric'}):'Date unavailable';
   let rows=[],events=[],admin=null,loadedAt=null;
@@ -59,14 +59,14 @@
     $('refreshReport').disabled=true;$('printReport').disabled=$('exportReport').disabled=true;$('loadingReport').hidden=false;
     try{
       const ctx=await requireUniversityCardAccess();admin=ctx.admin;$('schoolName').textContent=admin.school_name;
-      const r=await tapid.client.rpc('university_fair_report');if(r.error)throw r.error;
+      const r=await tapid.client.rpc('university_fair_report_v2');if(r.error)throw r.error;
       rows=r.data?.rows||[];events=r.data?.events||[];loadedAt=new Date(r.data?.generated_at||Date.now());
-      const old=$('reportEvent').value,past=events.filter(e=>e.date&&Date.parse(e.date)<=Date.now()).sort((a,b)=>Date.parse(b.date)-Date.parse(a.date));
-      options('reportEvent',events.map(e=>[e.key,e.name+(e.date?' · '+date(e.date):'')]),'All connection sources');
+      const old=$('reportEvent').value;
+      $('reportEvent').innerHTML='<option value="">All connection sources</option>'+[['completed','Completed fairs'],['past','Past events'],['in-progress','In progress'],['upcoming','Upcoming fairs'],['undated','Other sources']].map(([state,title])=>{const group=events.filter(e=>TapIDReview.fairState(e)===state);return group.length?`<optgroup label="${esc(title)}">${group.map(e=>`<option value="${esc(e.key)}">${esc(e.name+(e.date?' · '+date(e.date):''))}</option>`).join('')}</optgroup>`:'';}).join('');
       const newestRecorded=rows.slice().sort((a,b)=>M.stamp(b.connected_at)-M.stamp(a.connected_at))[0]?.event_key;
       const linked=new URLSearchParams(location.search).get('fair');
-      $('reportEvent').value=events.some(e=>e.key===old)?old:events.some(e=>e.key===linked)?linked:past[0]?.key||newestRecorded||events[0]?.key||'';$('reportEvent').disabled=false;
-      options('compareEvent',events.map(e=>[e.key,e.name+(e.date?' · '+date(e.date):'')]),'No comparison');
+      $('reportEvent').value=events.some(e=>e.key===old)?old:events.some(e=>e.key===linked)?linked:TapIDReview.defaultFair(events)||newestRecorded||'';$('reportEvent').disabled=false;
+      options('compareEvent',events.filter(e=>['completed','past'].includes(TapIDReview.fairState(e))).map(e=>[e.key,e.name+(e.date?' · '+date(e.date):'')]),'No comparison');
       options('reportEmployer',[...new Map(rows.map(r=>[String(r.company_id),r.company_name])).entries()],'All employers');
       for(const [id,key,title]of [['reportMajor','major','All majors'],['reportYear','school_year','All class years']])options(id,[...new Set(rows.map(r=>r[key]).filter(Boolean))].sort().map(v=>[v,v]),title);
       render();
@@ -92,11 +92,11 @@
     output.push([],['Source','Recorded TapID connections and employer-reported milestones; not official graduate-placement results.']);
     const blob=new Blob(['\uFEFF'+output.map(c=>c.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tapid-'+(event?.name||'all-fairs').replace(/[^a-z0-9]+/gi,'-')+'-'+day(loadedAt)+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   }
-  ['reportEvent','reportWindow','compareEvent','compareMature','reportEmployer','reportMajor','reportYear','reportStart','reportEnd'].forEach(id=>$(id).addEventListener('change',()=>{if(loadedAt)render();}));
+  ['reportEvent','reportWindow','compareEvent','compareMature','reportEmployer','reportMajor','reportYear','reportStart','reportEnd'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='compareEvent'&&$('compareEvent').value&&$('reportWindow').value==='0'){$('reportWindow').value='30';$('compareMature').checked=true;}if(loadedAt)render();}));
   $('clearReportFilters').onclick=()=>{['reportEmployer','reportMajor','reportYear','reportStart','reportEnd'].forEach(id=>$(id).value='');if(loadedAt)render();};
   $('reportTabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;document.querySelectorAll('[data-tab]').forEach(t=>t.classList.toggle('active',t===b));document.querySelectorAll('[data-panel]').forEach(p=>p.hidden=p.dataset.panel!==b.dataset.tab);};
   document.addEventListener('click',e=>{const fair=e.target.closest('[data-fair]'),employer=e.target.closest('[data-employer]');if(fair){$('reportEvent').value=fair.dataset.fair;render();}if(employer){$('reportEmployer').value=employer.dataset.employer;render();}});
-  $('refreshReport').onclick=load;$('exportReport').onclick=exportSummary;$('printReport').onclick=()=>{if(loadedAt)window.print();};
+  $('refreshReport').onclick=load;$('exportReport').onclick=exportSummary;$('printReport').onclick=()=>{if(loadedAt){document.body.classList.toggle('report-summary-print',$('printMode').value==='summary');window.print();}};window.addEventListener('afterprint',()=>document.body.classList.remove('report-summary-print'));
   $('logoutBtn').onclick=async()=>{await tapid.client.auth.signOut();sessionStorage.removeItem('tapid-university-explicit-login');location.replace('university-login.html');};
   load();
 })();

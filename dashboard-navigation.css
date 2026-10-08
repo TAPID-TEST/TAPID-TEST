@@ -36,7 +36,7 @@
  .student-dashboard-page .sidebar-group-label {margin-top:2px;padding-top:2px;}
 }
 /* Short landscape screens use visible horizontal navigation instead of a clipped rail. */
-@media(min-width:761px) and (max-height:680px) {
+@media(min-width:761px) and (max-height:520px) {
  .student-dashboard-page .dashboard-sidebar {position:sticky;top:0;bottom:auto;width:100%;grid-column:1/-1;grid-row:1;z-index:20;}
  .student-dashboard-page .dashboard-section-nav {display:flex;gap:4px;overflow-x:auto;}
  .student-dashboard-page .dashboard-nav-item {flex:0 0 auto;white-space:nowrap;min-height:36px;}
@@ -71,3 +71,16 @@ html:has(body.dashboard-page) {scrollbar-gutter:stable;}
  .employer-workspace-page .dashboard-nav-item{min-height:32px;padding:6px 10px;font-size:12px;gap:8px;}
 }
 @media(min-width:761px) and (max-height:820px){.employer-workspace-page .dashboard-nav-item{min-height:27px;padding:4px 8px;}}
+
+/* Employer navigation is sized to its contents, with readable, evenly spaced links. */
+@media(min-width:761px){
+ .employer-workspace-page .dashboard-sidebar{bottom:auto;height:auto;padding:12px 8px;max-height:calc(100dvh - 32px);overflow-y:auto;background:#fff;}
+ .employer-workspace-page .dashboard-section-nav{gap:3px;}
+ .employer-workspace-page .dashboard-nav-item{min-height:40px;padding:10px;font-size:13px;line-height:1.35;gap:8px;}
+ .employer-workspace-page .dashboard-sidebar .sidebar-divider{margin:12px 8px;}
+ .employer-workspace-page #sideRecruiter{margin:0;padding:2px 8px 4px;font-size:12px;}
+}
+@media(min-width:761px) and (max-height:650px){
+ .employer-workspace-page .dashboard-nav-item{min-height:32px;padding:6px 8px;}
+ .employer-workspace-page .dashboard-section-nav{gap:1px;}
+}

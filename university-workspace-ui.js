@@ -24,10 +24,10 @@
 (function(root){
  const U=root.UniversityUI;
  U.volumeBars=function(items,label='connections'){
-  if(!items.length||!items.some(x=>Number(x.value)>0))return '<div class="report-empty">No '+U.esc(label)+' recorded yet</div>';
+  if(!items.length||!items.some(x=>Number(x.value)>0||x.accounts!=null))return '<div class="report-empty">No '+U.esc(label)+' recorded yet</div>';
   const total=items.reduce((n,x)=>n+(Number(x.value)||0),0),max=Math.max(...items.map(x=>Number(x.value)||0),1);
   return '<div class="engagement-bars">'+items.map(x=>{
-   const value=Number(x.value)||0;return `<div class="engagement-row"><div class="engagement-row-head"><span>${U.esc(x.label)}</span><strong>${U.number(value)} <small>${U.esc(label)}</small></strong></div><div class="workspace-track" role="img" aria-label="${U.esc(x.label)}: ${U.number(value)} ${U.esc(label)}"><i style="width:${value/max*100}%"></i></div><span class="engagement-share">${Math.round(value/total*100)}% of this chart</span></div>`;
+   const value=Number(x.value)||0;return `<div class="engagement-row"><div class="engagement-row-head"><span>${x.filter?`<button type="button" class="chart-filter-button" data-directory-dimension="${U.esc(x.filter.dimension)}" data-directory-value="${U.esc(x.filter.value)}">${U.esc(x.label)}</button>`:U.esc(x.label)}</span><strong>${U.number(value)} <small>${U.esc(label)}</small></strong></div><div class="workspace-track" role="img" aria-label="${U.esc(x.label)}: ${U.number(value)} ${U.esc(label)}"><i style="width:${value/max*100}%"></i></div>${x.accounts!=null?`<p class="engagement-context">${x.accounts?Math.round((x.connected||0)/x.accounts*100)+'%':'—'} participation · ${U.number(x.connected||0)} of ${U.number(x.accounts)} students</p>`:`<span class="engagement-share">${(total?Math.round(value/total*100):0)}% of connections shown</span>`}</div>`;
   }).join('')+'</div>';
  };
  U.participation=function(connected,total,label){

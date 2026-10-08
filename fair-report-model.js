@@ -27,7 +27,7 @@
       const unique=new Set(marks.map(x=>x.stage));
       if([...unique].some(stage=>employerStages.has(stage)))unique.add('contacted');
       for(const [s]of stages)if(unique.has(s))reached[s]++;
-      current[row.candidate_status||'connected']=(current[row.candidate_status||'connected']||0)+1;
+      const status=row.candidate_status==='follow_up'?'connected':['internship','accepted_offer'].includes(row.candidate_status)?'offer':row.candidate_status||'connected';current[status]=(current[status]||0)+1;
       const first=stamp(row.first_follow_up_at);
       if(Number.isFinite(first)&&first>=start&&first<=cutoff)delays.push((first-start)/DAY);
       const anyEmployerActivity=observed(row).some(x=>employerStages.has(x.stage)&&stamp(x.at)>=start&&stamp(x.at)<=now);

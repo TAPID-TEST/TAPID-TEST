@@ -28,13 +28,13 @@
     $('collegeChartTitle').textContent=$('connectionDimension').value==='major'?'Connections by major':'Connections by college';
     $('collegeChartHint').textContent=$('connectionDimension').value==='major'?'All majors · each introduction counted once':'Expand a college to see its majors';
     if($('connectionDimension').value==='major'){
-      $('collegeConnections').innerHTML=U.volumeBars(P.engagementGroups(rows,'major').map(g=>({label:g.label,value:g.connections})));
+      $('collegeConnections').innerHTML=U.volumeBars(P.engagementGroups(rows,'major').map(g=>({label:g.label,value:g.connections,accounts:g.accounts,connected:g.connected,filter:{dimension:'major',value:g.label}})));
     }else{
       const groups=P.engagementGroups(rows,'college'),max=Math.max(...groups.map(g=>g.connections),1);
-      $('collegeConnections').innerHTML=groups.length?groups.map(g=>`<details class="college-group"><summary><span>${U.esc(g.label)}</span><strong>${U.number(g.connections)} <small>connections</small></strong><span class="college-chevron" aria-hidden="true">⌄</span><div class="workspace-track"><i style="width:${g.connections/max*100}%"></i></div></summary><div class="college-majors">${U.volumeBars(P.engagementGroups(rows,'major',g.label).map(m=>({label:m.label,value:m.connections})))}</div></details>`).join(''):'<div class="report-empty">No student accounts yet</div>';
+      $('collegeConnections').innerHTML=groups.length?groups.map(g=>`<details class="college-group"><summary><span>${U.esc(g.label)}</span><strong>${U.number(g.connections)} <small>connections</small></strong><span class="college-chevron" aria-hidden="true">⌄</span><div class="workspace-track"><i style="width:${g.connections/max*100}%"></i></div></summary><div class="college-majors"><p class="engagement-context">${pct(g.connected,g.accounts)} participation · ${U.number(g.connected)} of ${U.number(g.accounts)} students</p><button type="button" class="chart-filter-button" data-directory-dimension="college" data-directory-value="${U.esc(g.label)}">View students in this college</button>${U.volumeBars(P.engagementGroups(rows,'major',g.label).map(m=>({label:m.label,value:m.connections,accounts:m.accounts,connected:m.connected,filter:{dimension:'major',value:m.label}})))}</div></details>`).join(''):'<div class="report-empty">No student accounts yet</div>';
     }
     const yearOrder=['Freshman','Sophomore','Junior','Senior','Graduate'];const years=P.engagementGroups(rows,'year').sort((a,b)=>(yearOrder.includes(a.label)?yearOrder.indexOf(a.label):99)-(yearOrder.includes(b.label)?yearOrder.indexOf(b.label):99)||a.label.localeCompare(b.label));
-    $('yearConnections').innerHTML=U.volumeBars(years.map(g=>({label:g.label,value:g.connections})));
+    $('yearConnections').innerHTML=U.volumeBars(years.map(g=>({label:g.label,value:g.connections,accounts:g.accounts,connected:g.connected,filter:{dimension:'year',value:g.label}})));
   }
   function students(){
     const s=population.students;
@@ -44,6 +44,7 @@
       {label:'Total connections',value:U.number(s.connections),detail:'Each student × company × fair/source once'},
       {label:'Students connecting · last 30 days',value:U.number(s.students_connected_30_days),detail:U.number(s.connections_30_days)+' new connections'}
     ]);
+    const oldCollege=$('studentCollege').value;const colleges=[...new Set(population.engagement_groups.map(g=>g.college))].sort();$('studentCollege').innerHTML='<option value="">All colleges</option>'+colleges.map(c=>`<option>${U.esc(c)}</option>`).join('');$('studentCollege').value=colleges.includes(oldCollege)?oldCollege:'';
     connectionCharts();
     $('connectionGrowth').innerHTML=U.columns(population.connection_growth.map(g=>({label:g.month,short:new Date(g.month+'-15T12:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}),value:g.connections})),'New unique student-company-source connections per month, last twelve months');
     for(const [id,groups,all]of [['studentMajor',population.majors,'All majors'],['studentYear',population.years,'All class years']]){const value=$(id).value;$(id).innerHTML=`<option value="">${all}</option>`+groups.map(g=>`<option value="${U.esc(g.label)}">${U.esc(g.label)}</option>`).join('');$(id).value=groups.some(g=>g.label===value)?value:'';}
@@ -63,7 +64,7 @@
       {label:'Companies connecting · last 30 days',value:U.number(recent),detail:U.number(companies.reduce((n,e)=>n+P.num(e.connections_30_days),0))+' new connections'}
     ]);
     $('approvalQueueCount').textContent=summary.pendingRecruiters?'· '+U.number(summary.pendingRecruiters):'';
-    $('employerVolumeChart').innerHTML=U.volumeBars(companies.map(e=>({label:e.name,value:e.connections})));
+    $('employerVolumeChart').innerHTML=U.volumeBars(companies.map(e=>({label:e.name,value:e.connections,filter:{dimension:'employer',value:String(e.company_id)}})));
     const selected=$('employerReachScope').value;
     $('employerReachScope').innerHTML='<option value="">All approved employers</option>'+companies.map(e=>`<option value="${U.esc(e.company_id)}">${U.esc(e.name)}</option>`).join('');
     $('employerReachScope').value=companies.some(e=>String(e.company_id)===selected)?selected:'';employerMajorChart();
@@ -91,13 +92,13 @@
     const token=++directorySequence;$('printDirectory').disabled=true;$('previousStudents').disabled=$('nextStudents').disabled=true;
     $('studentDirectory').innerHTML='<div class="report-empty">Loading students…</div>';
     try{
-      const filters={p_search:$('studentSearch').value.trim(),p_major:$('studentMajor').value,p_year:$('studentYear').value,p_state:$('studentState').value,p_page:page};
-      const result=await tapid.client.rpc('university_student_directory',filters);if(token!==directorySequence)return;if(result.error)throw result.error;
+      const filters={p_search:$('studentSearch').value.trim(),p_major:$('studentMajor').value,p_year:$('studentYear').value,p_state:$('studentState').value,p_page:page,p_college:$('studentCollege').value};
+      const result=await tapid.client.rpc('university_student_directory_filtered',filters);if(token!==directorySequence)return;if(result.error)throw result.error;
       const d=result.data;directoryTotal=d.total;
       if(page>0&&page*50>=d.total){page=Math.max(0,Math.ceil(d.total/50)-1);return loadDirectory();}
       $('studentDirectory').innerHTML=U.table(['Student','College','Major','Class year','Joined','Connections','Last connection'],d.rows.map(s=>[s.username?`<a href="profile.html?u=${encodeURIComponent(s.username)}" target="_blank" rel="noopener">${U.esc(s.name)}</a>`:U.esc(s.name),U.esc(s.college||'Unclassified major'),U.esc(s.major),U.esc(s.class_year),U.esc(date(s.joined_at)),U.number(s.connections),U.esc(date(s.last_connection_at))]));
       $('directoryPage').textContent=d.total?`${page*50+1}–${Math.min((page+1)*50,d.total)} of ${U.number(d.total)} students`:'0 students';
-      $('directoryScope').textContent=[filters.p_search?'Search: '+filters.p_search:null,filters.p_major,filters.p_year,$('studentState').selectedOptions[0].textContent,'Directory page '+(page+1)].filter(Boolean).join(' · ');
+      $('directoryScope').textContent=[filters.p_search?'Search: '+filters.p_search:null,filters.p_college,filters.p_major,filters.p_year,$('studentState').selectedOptions[0].textContent,'Directory page '+(page+1)].filter(Boolean).join(' · ');
       $('previousStudents').disabled=page===0;$('nextStudents').disabled=(page+1)*50>=d.total;$('printDirectory').disabled=false;
     }catch(e){if(token===directorySequence){$('studentDirectory').innerHTML='<div class="report-empty">Unable to load student directory</div>';tapid.setMessage($('pageMessage'),e.message,'error');}}
   }
@@ -115,6 +116,7 @@
   $('printWorkspace').onclick=print;window.addEventListener('afterprint',restorePrint);
   if(mode==='employers'){
     $('employerReachScope').onchange=employerMajorChart;
+    document.addEventListener('click',e=>{const b=e.target.closest('[data-directory-dimension="employer"]');if(!b)return;$('employerReachScope').value=b.dataset.directoryValue;employerMajorChart();const directory=document.querySelector('.employer-details');directory.open=true;directory.scrollIntoView({behavior:'smooth',block:'center'});});
     const view=v=>{const approvals=v==='approvals';$('employerAnalytics').hidden=approvals;$('employerApprovalSection').hidden=!approvals;document.querySelectorAll('[data-employer-view]').forEach(b=>b.classList.toggle('active',b.dataset.employerView===v));};
     $('employerViewTabs').onclick=e=>{const b=e.target.closest('[data-employer-view]');if(b)view(b.dataset.employerView);};
     view(new URLSearchParams(location.search).get('view')==='approvals'?'approvals':'analytics');
@@ -124,10 +126,12 @@
   }
   if(mode==='students'){
     $('connectionDimension').onchange=connectionCharts;
+    document.addEventListener('click',e=>{const b=e.target.closest('[data-directory-dimension]');if(!b)return;const ids={major:'studentMajor',year:'studentYear',college:'studentCollege'};const id=ids[b.dataset.directoryDimension];if(!id)return;['studentCollege','studentMajor','studentYear','studentState','studentSearch'].forEach(key=>$(key).value='');$(id).value=b.dataset.directoryValue;page=0;loadDirectory();$('studentDirectory').scrollIntoView({behavior:'smooth',block:'center'});});
+    $('clearDirectoryFilters').onclick=()=>{['studentCollege','studentMajor','studentYear','studentState','studentSearch'].forEach(id=>$(id).value='');page=0;loadDirectory();};
     const initial=new URLSearchParams(location.search).get('state');if([...$('studentState').options].some(x=>x.value===initial))$('studentState').value=initial;
     let timer;const change=()=>{page=0;clearTimeout(timer);loadDirectory();};
     $('studentSearch').oninput=()=>{clearTimeout(timer);directorySequence++;$('printDirectory').disabled=true;timer=setTimeout(change,250);};
-    ['studentMajor','studentYear','studentState'].forEach(id=>$(id).onchange=change);
+    ['studentCollege','studentMajor','studentYear','studentState'].forEach(id=>$(id).onchange=change);
     $('previousStudents').onclick=()=>{page--;loadDirectory();};$('nextStudents').onclick=()=>{page++;loadDirectory();};
     $('printDirectory').onclick=()=>{document.body.classList.add('directory-print');$('printScope').textContent=admin.school_name+' · '+$('directoryScope').textContent+' · '+$('directoryPage').textContent+' · Generated '+generated.toLocaleString('en-US',{timeZone:'America/Los_Angeles'})+' PT';window.print();};
     $('addStudents').onclick=()=>{$('studentSignupLink').value=tapid.siteUrl('signup.html');$('copyMessage').textContent='';$('addStudentsDialog').showModal();};

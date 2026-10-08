@@ -186,9 +186,15 @@ export function createHandler({createClient,env,fetch:requestFetch,parsePdf}){
    if(body.filter_overrides!==undefined&&(!Array.isArray(body.filter_overrides)||body.filter_overrides.length>8||body.filter_overrides.some(k=>!['event','year','major','stage','priority','search','favorites','attention'].includes(k))))return reply(400,{error:'Invalid filter controls.'});
    if(body.previous_ids!==undefined&&(!Array.isArray(body.previous_ids)||body.previous_ids.length>1000||body.previous_ids.some(id=>typeof id!=='string'||id.length>80)))return reply(400,{error:'Invalid previous result scope.'});
    if(body.action!=='health'&&(typeof body.query!=='string'||body.query.trim().length<3||body.query.length>1600))return reply(400,{error:'Describe the role and experience you need in 3–1,600 characters.'});
-   const caller=createClient(url,service,{global:{headers:{Authorization:token}},auth:{persistSession:false,autoRefreshToken:false}});
+   const caller=createClient(url,env('SUPABASE_ANON_KEY')||service,{accessToken:async()=>token.slice(7),global:{headers:{Authorization:token}},auth:{persistSession:false,autoRefreshToken:false}});
    const documents=await caller.rpc('employer_search_documents');
-   if(documents.error)return reply(documents.error.code==='42501'?403:503,{error:documents.error.code==='42501'?'University-approved employer access required.':'Candidate Match database update is not installed or unavailable.'});
+   if(documents.error){
+    const denied=documents.error.code==='42501',detail=documents.error.details||'';
+    if(detail==='TAPID_SESSION_MISSING')return reply(401,{error:'Search could not identify your session. Sign out and sign in again.',error_code:'search_session_missing'});
+    const unverified=denied&&(detail==='TAPID_RECRUITER_UNVERIFIED'||documents.error.message==='Verified employer access required');
+    if(unverified)return reply(403,{error:'This recruiter account needs university approval. Company approval alone does not approve every recruiter.',error_code:'recruiter_not_approved'});
+    return reply(503,{error:denied?'Candidate Match database permissions are out of sync. Install the latest search SQL and redeploy the search function.':'Candidate Match database update is not installed or unavailable.',error_code:denied?'search_database_permissions':'search_database_unavailable'});
+   }
    if(!Array.isArray(documents.data))return reply(503,{error:'Unexpected search response.'});
    if(documents.data.length>1000)return reply(422,{error:'This prototype supports up to 1,000 public connected profiles per company.'});
    if(!documents.data.length&&body.action!=='health')return reply(200,{criteria:[],results:[],searched:0,message:'Connect with students who have active public profiles to start matching.',assistant_message:'You have no connected students with active public profiles yet.',ai_verified:false});

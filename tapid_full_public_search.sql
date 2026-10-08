@@ -26,9 +26,10 @@ create or replace function public.employer_search_documents()
 returns jsonb language plpgsql stable security definer set search_path='' as $$
 declare employer_company bigint; result jsonb;
 begin
+ if auth.uid() is null then raise exception 'Search session missing' using errcode='42501', detail='TAPID_SESSION_MISSING'; end if;
  select er.company_id into employer_company from public.employer_recruiters er
  where er.user_id=auth.uid() and er.verification_status='verified';
- if employer_company is null then raise exception 'Verified employer access required' using errcode='42501'; end if;
+ if employer_company is null then raise exception 'Verified employer access required' using errcode='42501', detail='TAPID_RECRUITER_UNVERIFIED'; end if;
  select coalesce(jsonb_agg(candidate.doc order by candidate.id),'[]'::jsonb) into result
  from (
   select p.id,jsonb_build_object('id',p.id,'username',p.username,
@@ -128,6 +129,78 @@ end;
 $$;
 revoke all on function public.employer_search_documents() from public,anon;
 grant execute on function public.employer_search_documents() to authenticated;
+
+
+create or replace function public.university_student_directory_filtered(
+  p_search text default '',p_major text default '',p_year text default '',p_state text default '',p_page integer default 0,p_college text default ''
+)
+returns jsonb language plpgsql stable security definer set search_path='' as $$
+declare v_school text;v_rows jsonb;v_total bigint;v_page integer:=greatest(0,coalesce(p_page,0));
+begin
+  v_school:=public.current_university_school();
+  if v_school is null then raise exception 'Verified university access required'; end if;
+  if coalesce(p_state,'') not in ('','unconfirmed','setup','ready','active','connected','no-connections','never-connected') then raise exception 'Invalid student filter'; end if;
+  with matched as (
+    select s.* from public.tapid_university_student_rows(v_school) s
+    where (coalesce(p_search,'')='' or position(lower(trim(p_search)) in lower(s.student_name||' '||coalesce(s.username,'')))>0)
+      and (coalesce(p_college,'')='' or public.tapid_program_college(v_school,s.major)=p_college)
+      and (coalesce(p_major,'')='' or s.major=p_major) and (coalesce(p_year,'')='' or s.class_year=p_year)
+      and (coalesce(p_state,'')='' or
+        (p_state='unconfirmed' and not s.email_confirmed) or
+        (p_state='setup' and s.email_confirmed and not s.public_active and not s.basics_complete) or
+        (p_state='ready' and s.email_confirmed and s.basics_complete and not s.public_active) or
+        (p_state='active' and s.public_active) or (p_state='connected' and s.connections>0) or
+        (p_state='no-connections' and s.public_active and s.connections=0) or (p_state='never-connected' and s.connections=0))
+  ),page_rows as (select * from matched order by joined_at desc,user_id limit 50 offset v_page*50)
+  select (select count(*) from matched),coalesce(jsonb_agg(jsonb_build_object(
+    'name',s.student_name,'username',case when s.public_active then s.username else null end,
+    'college',public.tapid_program_college(v_school,s.major),'joined_at',s.joined_at,'major',s.major,'class_year',s.class_year,
+    'email_confirmed',s.email_confirmed,'card_assigned',s.card_assigned,'public_active',s.public_active,
+    'status',case when not s.email_confirmed then 'Confirm email' when s.public_active then 'Active'
+      when not s.basics_complete then 'Finish basics' else 'Activate profile' end,
+    'connections',s.connections,'last_connection_at',s.last_connection_at
+  ) order by s.joined_at desc,s.user_id),'[]'::jsonb) into v_total,v_rows from page_rows s;
+  return jsonb_build_object('rows',v_rows,'total',v_total,'page',v_page,'page_size',50);
+end;$$;
+revoke all on function public.university_student_directory_filtered(text,text,text,text,integer,text) from public,anon;
+grant execute on function public.university_student_directory_filtered(text,text,text,text,integer,text) to authenticated;
+
+
+create or replace function public.university_fair_report_v2()
+returns jsonb language plpgsql stable security definer set search_path='' as $$
+declare v_report jsonb; v_events jsonb; v_school text;
+begin
+ v_school:=public.current_university_school();
+ if v_school is null then raise exception 'Verified university access required' using errcode='42501'; end if;
+ v_report:=public.university_fair_report();
+ select coalesce(jsonb_agg(e.value||jsonb_build_object('ends_at',case when e.value->>'key' like 'fair:%' then
+  (select cf.ends_at from public.career_fairs cf where 'fair:'||cf.id::text=e.value->>'key'
+   and public.tapid_school_key(cf.school_name)=public.tapid_school_key(v_school)) else null end)),'[]'::jsonb)
+ into v_events from jsonb_array_elements(coalesce(v_report->'events','[]'::jsonb)) e;
+ return v_report||jsonb_build_object('events',v_events);
+end;$$;
+revoke all on function public.university_fair_report_v2() from public,anon;
+grant execute on function public.university_fair_report_v2() to authenticated;
+
+-- First outbound message advances only new/planned connections. It never rolls back review or outcomes.
+create or replace function public.tapid_message_marks_contacted()
+returns trigger language plpgsql security definer set search_path='' as $$
+begin
+ if new.sender_role='employer' and exists(
+  select 1 from public.employer_recruiters er where er.user_id=new.sender_user_id
+   and er.company_id=new.company_id and er.verification_status='verified'
+ ) then
+  update public.employer_connections set candidate_status='contacted',updated_at=now()
+  where company_id=new.company_id and student_user_id=new.student_user_id
+   and candidate_status in ('connected','follow_up');
+ end if;
+ return new;
+end;
+$$;
+revoke all on function public.tapid_message_marks_contacted() from public,anon,authenticated;
+drop trigger if exists tapid_message_marks_contacted on public.connection_messages;
+create trigger tapid_message_marks_contacted after insert on public.connection_messages
+for each row execute function public.tapid_message_marks_contacted();
 
 
 notify pgrst, 'reload schema';

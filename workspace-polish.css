@@ -1,0 +1,56 @@
+/* A common reading scale, navigation and card rhythm across the three workspaces. */
+body.dashboard-page,body.university-dashboard-page{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;line-height:1.55;}
+.dashboard-page .subtle,.university-dashboard-page .subtle,.workspace-caption,.workspace-asof,.report-window-note{font-size:12px;line-height:1.6;}
+.dashboard-page .eyebrow,.university-dashboard-page .eyebrow{font-size:10px;}
+.dashboard-page .btn,.university-dashboard-page .btn{font-size:13px;min-height:40px;}
+.dashboard-page .dashboard-section,.university-dashboard-page .report-panel{padding:24px;}
+.dashboard-page .dashboard-nav-item{font-size:13px;}
+.workspace-editor-nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;padding:14px;background:#fff;border:1px solid #e3e9e0;border-radius:14px;}
+.workspace-editor-nav[hidden]{display:none;}
+.workspace-editor-nav .dashboard-nav-item{display:inline-flex;min-height:36px;padding:7px 12px;}
+.workspace-editor-heading{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 5px;font-size:16px;color:#174f35;}
+.workspace-editor-heading .text-action{font-size:13px;}
+.student-dashboard-page .dashboard-sidebar>.sidebar-divider{margin:12px 8px;}
+.student-dashboard-page .dashboard-sidebar>.btn{display:flex;margin:8px 0;font-size:12px;align-items:center;justify-content:center;}
+@media(min-width:761px){
+ .student-dashboard-page .dashboard-sidebar{bottom:auto;height:auto;padding:12px 8px;overflow:hidden;}
+ .student-dashboard-page .dashboard-nav-item{min-height:42px;padding:10px;font-size:13px;}
+ .student-dashboard-page .dashboard-section-nav{gap:3px;}
+}
+@media(min-width:761px) and (max-height:650px){.student-dashboard-page .dashboard-nav-item{min-height:34px;padding:6px 8px;}.student-dashboard-page .dashboard-section-nav{gap:1px;}}
+.profile-progress-copy,.profile-progress{display:none;}
+.dashboard-page .home-readiness,.dashboard-page .home-network{min-height:0;}
+.candidate-public-evidence{display:grid;gap:14px;margin:18px 0 24px;}
+.candidate-public-evidence h3{font-size:15px;margin:0 0 6px;color:#174f35;}
+.candidate-public-evidence p{font-size:14px;line-height:1.7;white-space:pre-wrap;margin:0;}
+.candidate-public-evidence article{background:#f7faf7;border:1px solid #e1e9e2;border-radius:12px;padding:16px;}
+.candidate-control-row{grid-template-columns:1fr;}
+.candidate-notes textarea{min-height:110px;}
+.workspace-task-heading{display:flex;justify-content:space-between;align-items:center;margin:24px 0 12px;}
+.workspace-task-heading h3{margin:0;font-size:16px;}
+.workspace-task-heading span{font-size:12px;color:#6b7d71;}
+.match-criterion{padding:12px 0;border-top:1px solid #dfebe2;}
+.match-criterion:first-child{border-top:0;}
+.match-criterion strong{font-size:14px;}.match-criterion small{display:block;color:#677c6c;font-size:12px;margin-top:3px;}
+.match-criterion p{margin:7px 0 0;line-height:1.65;font-size:14px;}
+.match-plan{font-size:13px;line-height:1.6;margin:16px 0;}
+.match-plan:empty{display:none;}.match-plan button{border:0;background:none;color:#236443;text-decoration:underline;font:inherit;cursor:pointer;}
+.match-missing{background:#fafbf8;border-radius:9px;padding:12px;color:#6b756d;font-size:13px;}
+.chart-filter-button{appearance:none;background:transparent;border:0;padding:0;text-align:left;color:#174f35;font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.chart-filter-button:focus-visible{outline:2px solid #26754f;outline-offset:3px;}
+.engagement-context{font-size:12px;color:#66786c;margin:6px 0;}
+.directory-filters{grid-template-columns:1.5fr repeat(4,minmax(0,1fr));}
+.print-options{display:flex;align-items:center;gap:10px;font-size:13px;}
+.fair-wizard-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.fair-wizard-nav button{flex:1;border:1px solid #dce6dd;border-radius:10px;background:#fff;padding:12px;font:inherit;color:#5a6e60;cursor:pointer;}
+.fair-wizard-nav button.active{background:#17563a;color:#fff;border-color:#17563a;}
+.fair-wizard-actions{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.fair-wizard-step[hidden]{display:none!important;}
+.fair-review-list{display:grid;gap:10px;margin:18px 0;}.fair-review-list>div{display:flex;justify-content:space-between;gap:20px;padding:12px;background:#f5f9f5;border-radius:9px;}
+.fair-review-warning{color:#805c24;font-size:13px;margin:12px 0;}
+@media(max-width:900px){.directory-filters{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:600px){.directory-filters{grid-template-columns:1fr;}.workspace-editor-nav{padding:10px;}.workspace-editor-nav .dashboard-nav-item{font-size:12px;}.fair-review-list>div{flex-direction:column;gap:4px;}.dashboard-page input,.dashboard-page textarea,.dashboard-page select{font-size:16px;}}
+@media print{.workspace-editor-nav,.fair-wizard-nav,.print-options,.workspace-task-heading{display:none!important;}body.report-summary-print [data-panel]:not([data-panel="overview"]):not([data-panel="comparison"]),body.report-summary-print .report-bottom{display:none!important;}}
+
+@media print{.chart-filter-button{color:#111;text-decoration:none;}.engagement-context{color:#333;}}
+.public-profile-page{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}

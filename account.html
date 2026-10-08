@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Account & Privacy — TapID</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="dashboard-theme.css?v=20261006-2"></head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Account & Privacy — TapID</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="dashboard-theme.css?v=20261008-audit-v12"><link rel="stylesheet" href="workspace-polish.css?v=20261008-audit-v12"></head>
 <body class="dashboard-page">
 <header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a><div class="nav-actions"><a class="btn btn-secondary" href="dashboard.html">Dashboard</a><button id="logoutBtn" class="btn btn-secondary" type="button">Log Out</button></div></header>
 <main class="shell settings-page"><div class="dashboard-hero"><div><div class="eyebrow">Your account</div><h1>Account &amp; Privacy</h1><p class="subtle">Control access, public visibility, and your TapID data.</p></div></div><div id="message" class="message" hidden></div>
@@ -10,7 +10,7 @@
 <section class="card"><div class="section-head"><div><h2>Password</h2><p class="subtle">Use at least eight characters.</p></div></div><div class="field"><label for="newPassword">New password</label><input id="newPassword" type="password" minlength="8" autocomplete="new-password"></div><button id="changePassword" class="btn btn-primary" type="button">Change Password</button></section>
 <section class="card danger-zone"><div class="section-head"><div><h2>Delete account</h2><p class="subtle">Permanently deletes your account and TapID records. This cannot be undone.</p></div></div><div class="field"><label for="deleteConfirm">Type DELETE to confirm</label><input id="deleteConfirm" autocomplete="off"></div><button id="deleteAccount" class="btn btn-danger" type="button">Permanently Delete Account</button></section>
 </div></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script><script>
+<script src="workspace-review.js?v=20261008-audit-v12"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script><script>
 let user,profile;const message=document.getElementById('message');
 const keys=['show_location','show_experiences','show_projects','show_skills','show_organizations','show_certifications','show_recommendations'];
 const ids=['showLocation','showExperiences','showProjects','showSkills','showOrganizations','showCertifications','showRecommendations'];

@@ -2,9 +2,16 @@
 'use strict';
 const $=id=>document.getElementById(id),escape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let fairs=[],companies=[],roster=[],fairId=null,dirty=false,saving=false,review=null;
+let wizardStep=1;
+function showStep(step){wizardStep=step;for(let i=1;i<=3;i++){ $('fairPanel'+i).hidden=i!==step;$('fairStep'+i).setAttribute('aria-current',i===step?'step':'false');$('fairStep'+i).classList.toggle('active',i===step);}updateSummary();}
+function detailsValid(publishing=false){if(!$('fairName').value.trim()){message('Enter a fair name.','error');showStep(1);$('fairName').focus();return false;}if(publishing&&(!$('fairStart').value||!$('fairLocation').value.trim())){message('Add a start time and location before publishing.','error');showStep(1);(!$('fairStart').value?$('fairStart'):$('fairLocation')).focus();return false;}if($('fairEnd').value&&(!$('fairStart').value||$('fairEnd').value<=$('fairStart').value)){message('End time must follow the start time.','error');showStep(1);$('fairEnd').focus();return false;}return true;}
+function companiesReady(){if(review||$('companyName').value.trim()){message(review?'Add or discard the import preview before continuing.':'Add the entered company to the list before continuing.','error');showStep(2);return false;}return true;}
+function goStep(step){if(step>1&&!detailsValid())return;if(step===3&&!companiesReady())return;showStep(step);}
+for(let i=1;i<=3;i++)$('fairStep'+i).onclick=()=>goStep(i);
+$('fairNext1').onclick=()=>goStep(2);$('fairNext2').onclick=()=>goStep(3);$('fairBack2').onclick=()=>showStep(1);$('fairBack3').onclick=()=>showStep(2);
 function message(text,type='success'){tapid.setMessage($('pageMessage'),text,type);}
 function markDirty(){dirty=true;$('dirtyStatus').textContent='Unsaved changes';updateSummary();}
-function updateSummary(){const name=$('fairName').value.trim()||'New career fair';$('saveFair').textContent=$('fairPublished').checked?'Save & show to students':'Save draft';$('saveSummary').textContent=`${name} · ${roster.length} ${roster.length===1?'company':'companies'} · ${$('fairPublished').checked?'Visible to students':'Draft'}`;}
+function updateSummary(){const name=$('fairName').value.trim()||'New career fair';$('saveFair').textContent=$('fairPublished').checked?'Save & show to students':'Save draft';$('saveSummary').textContent=`${name} · ${roster.length} ${roster.length===1?'company':'companies'} · ${$('fairPublished').checked?'Visible to students':'Draft'}`;const missing=roster.filter(r=>!r.company_id).length;$('fairReviewDetails').innerHTML=[['Fair',name],['Starts · Pacific time',$('fairStart').value.replace('T',' ')||'Not scheduled'],['Ends · Pacific time',$('fairEnd').value.replace('T',' ')||'Not set'],['Location',$('fairLocation').value||'Not set'],['Company list',roster.length+' companies · '+(roster.length-missing)+' linked accounts']].map(([label,value])=>`<div><strong>${escape(label)}</strong><span>${escape(value)}</span></div>`).join('');$('fairReviewWarning').hidden=!missing;$('fairReviewWarning').textContent=missing+' companies are not linked to a TapID account. Link them to notify their recruiters. Recruiter approvals are managed in Employers.';}
 function match(row){const exact=companies.filter(c=>c.name.trim().toLowerCase()===row.name.trim().toLowerCase());if(exact.length===1&&!row.company_id)row.company_id=exact[0].id;return row;}
 function renderRoster(){
   $('rosterCount').textContent=`${roster.length} ${roster.length===1?'company':'companies'}`;$('rosterEmpty').hidden=roster.length>0;
@@ -21,7 +28,7 @@ function openFair(f){
   fairId=f?.id??null;roster=(f?.companies||[]).map(r=>({...r,saved:true}));$('fairForm').reset();
   $('fairName').value=f?.name||'';$('fairStart').value=f?.start_local||'';$('fairEnd').value=f?.end_local||'';$('fairLocation').value=f?.location||'';$('fairDescription').value=f?.description||'';$('fairPublished').checked=Boolean(f?.published);
   $('editorTitle').textContent=f?'Edit career fair':'New career fair';dirty=false;$('dirtyStatus').textContent='';dismissImport();
-  $('viewFairReport').hidden=!f?.published;if(f)$('viewFairReport').href=`university-fairs.html?fair=${encodeURIComponent('fair:'+f.id)}`;renderList();renderRoster();
+  $('viewFairReport').hidden=!f?.published;if(f)$('viewFairReport').href=`university-fairs.html?fair=${encodeURIComponent('fair:'+f.id)}`;renderList();renderRoster();showStep(1);
 }
 async function load(){
   const result=await tapid.client.rpc('university_fair_setup_list');if(result.error)throw result.error;
@@ -38,9 +45,9 @@ $('dismissImport').onclick=dismissImport;
 $('companyCsv').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>5*1024*1024)throw new Error('Choose a CSV smaller than 5 MB.');review=TapIDFairImport.review(await file.text(),roster);$('importReview').hidden=false;$('importStats').textContent=`${review.valid.length} ready to add · ${review.duplicates} duplicates skipped · ${review.errors.length} rows need attention`;$('importErrors').textContent=review.errors.slice(0,8).join(' ') + (review.errors.length>8?' More errors in the CSV.':'');$('importRows').innerHTML=`<table><tbody>${review.valid.slice(0,20).map(r=>`<tr><td>${escape(r.name)}</td><td>${escape(r.external_id)}</td></tr>`).join('')}</tbody></table>${review.valid.length>20?'<p class="subtle">Showing the first 20 companies.</p>':''}`;$('applyImport').disabled=!review.valid.length;}catch(error){dismissImport();message(error.message,'error');}};
 $('applyImport').onclick=()=>{if(!review)return;const current=new Set(roster.map(r=>r.name.toLowerCase())),add=review.valid.filter(r=>!current.has(r.name.toLowerCase()));if(roster.length+add.length>2000){message('Keep the company list to 2,000 companies or fewer.','error');return;}roster.push(...add.map(match));dismissImport();markDirty();renderRoster();message(`${add.length} companies added to the list. Save the fair to finish.`);};
 $('fairForm').onsubmit=async e=>{
-  e.preventDefault();if(saving)return;if(review){message('Add or discard the import preview before saving.','error');$('importReview').scrollIntoView({behavior:'smooth'});return;}
+  e.preventDefault();if(saving)return;if(wizardStep!==3){goStep(wizardStep+1);return;}if(!detailsValid($('fairPublished').checked))return;if(review){message('Add or discard the import preview before saving.','error');$('importReview').scrollIntoView({behavior:'smooth'});return;}
   if($('companyName').value.trim()){message('Click Add company to include the company you entered.','error');$('companyName').focus();return;}
-  if($('fairEnd').value&&(!$('fairStart').value||$('fairEnd').value<$('fairStart').value)){message('End time must follow the start time.','error');return;}
+  if($('fairEnd').value&&(!$('fairStart').value||$('fairEnd').value<=$('fairStart').value)){message('End time must follow the start time.','error');return;}
   saving=true;const controls=[...$('fairForm').querySelectorAll('input,textarea,select,button')];controls.forEach(c=>c.disabled=true);$('newFair').disabled=true;$('refreshFairs').disabled=true;tapid.setBusy($('saveFair'),true,'Saving…');
   try{
     await requireUniversityCardAccess();const r=await tapid.client.rpc('university_save_fair_setup',{p_fair_id:fairId,p_name:$('fairName').value.trim(),p_start_local:$('fairStart').value||null,p_end_local:$('fairEnd').value||null,p_location:$('fairLocation').value.trim(),p_description:$('fairDescription').value.trim(),p_published:$('fairPublished').checked,p_companies:roster.map(r=>({name:r.name,external_id:r.external_id||'',company_id:r.company_id||null}))});
