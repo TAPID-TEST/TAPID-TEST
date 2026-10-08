@@ -65,24 +65,29 @@
       {label:'Companies connecting · last 30 days',value:U.number(recent),detail:U.number(companies.reduce((n,e)=>n+P.num(e.connections_30_days),0))+' new connections'}
     ]);
     $('approvalQueueCount').textContent=summary.pendingRecruiters?'· '+U.number(summary.pendingRecruiters):'';
+    const oldMajor=$('companyMajor').value,oldFair=$('companyFair').value;
+    const majors=[...new Set(population.employers.flatMap(e=>(e.majors||[]).filter(g=>P.num(g.connections)>0).map(g=>g.label)))].sort();
+    $('companyMajor').innerHTML='<option value="">Any major</option>'+majors.map(m=>`<option value="${U.esc(m)}">${U.esc(m)}</option>`).join('');$('companyMajor').value=majors.includes(oldMajor)?oldMajor:'';
+    $('companyFair').innerHTML='<option value="">Any career fair</option>'+fair.events.map(e=>`<option value="${U.esc(e.key)}">${U.esc(e.name)}</option>`).join('');$('companyFair').value=fair.events.some(e=>e.key===oldFair)?oldFair:'';
     renderCompanyDirectory();
   }
   function renderCompanyDirectory(){
     if(!population)return;
-    const filters={search:$('companySearch').value.trim(),status:$('companyStatus').value,activity:$('companyActivity').value};
+    const filters={search:$('companySearch').value.trim(),status:$('companyStatus').value,activity:$('companyActivity').value,major:$('companyMajor').value,event:$('companyFair').value};
     $('previousCompanies').disabled=$('nextCompanies').disabled=true;
     if(!Object.values(filters).some(Boolean)){
       $('employerDirectory').innerHTML='<div class="directory-prompt">Search or choose a filter to show companies.</div>';
       $('companyDirectoryScope').textContent='';$('companyDirectoryPage').textContent='';$('companyPagination').hidden=true;companyPage=0;return;
     }
-    const rows=P.filterCompanies(population.employers,filters),size=25;companyPage=Math.min(companyPage,Math.max(0,Math.ceil(rows.length/size)-1));
+    const directorySource=population.employers.map(e=>({...e,eventKeys:[...new Set(M.scope(fair.rows,{employer:String(e.company_id)}).map(r=>r.event_key))]}));
+    const rows=P.filterCompanies(directorySource,{...filters,sort:$('companySort').value}),size=25;companyPage=Math.min(companyPage,Math.max(0,Math.ceil(rows.length/size)-1));
     const visible=rows.slice(companyPage*size,(companyPage+1)*size);
     $('employerDirectory').innerHTML=visible.length?'<div class="company-directory-list">'+visible.map(e=>{
       const companyRows=M.scope(fair.rows,{employer:String(e.company_id)}),outcomes=M.summarize(companyRows,0,generated.getTime());
       const events=fair.events.map(event=>({name:event.name,date:date(event.date),...M.summarize(M.scope(companyRows,{event:event.key}),0,generated.getTime())})).filter(event=>event.connections>0);
-      return U.companyDetails(e,{outcomes,events,lastConnection:date(e.last_connection_at)});
+      return U.companyDetails(e,{outcomes,events,lastConnection:date(e.last_connection_at),expanded:rows.length===1});
     }).join('')+'</div>':'<div class="directory-prompt">No companies match these filters.</div>';
-    $('companyDirectoryScope').textContent=[filters.search?'Search: '+filters.search:null,filters.status,filters.activity].filter(Boolean).join(' · ');
+    $('companyDirectoryScope').textContent=[filters.search?'Search: '+filters.search:null,filters.status?'Status: '+filters.status:null,filters.activity?'Activity: '+filters.activity:null,filters.major,filters.event?fair.events.find(e=>e.key===filters.event)?.name:null].filter(Boolean).join(' · ');
     $('companyDirectoryPage').textContent=rows.length?`${companyPage*size+1}–${Math.min((companyPage+1)*size,rows.length)} of ${U.number(rows.length)} companies`:'0 companies';
     $('companyPagination').hidden=rows.length===0;$('previousCompanies').disabled=companyPage===0;$('nextCompanies').disabled=(companyPage+1)*size>=rows.length;
   }
@@ -136,8 +141,9 @@
   $('printWorkspace').onclick=print;window.addEventListener('afterprint',restorePrint);
   if(mode==='employers'){
     const applyCompanyFilters=()=>{companyPage=0;renderCompanyDirectory();};
-    $('companySearch').oninput=applyCompanyFilters;['companyStatus','companyActivity'].forEach(id=>$(id).onchange=applyCompanyFilters);
-    $('clearCompanyFilters').onclick=()=>{['companySearch','companyStatus','companyActivity'].forEach(id=>$(id).value='');applyCompanyFilters();};
+    $('companySearch').oninput=applyCompanyFilters;['companyStatus','companyActivity','companyMajor','companyFair','companySort'].forEach(id=>$(id).onchange=applyCompanyFilters);
+    $('clearCompanyFilters').onclick=()=>{['companySearch','companyStatus','companyActivity','companyMajor','companyFair'].forEach(id=>$(id).value='');applyCompanyFilters();};
+    document.addEventListener('click',e=>{const b=e.target.closest('[data-company-quick]');if(!b)return;['companySearch','companyMajor','companyFair'].forEach(id=>$(id).value='');$('companyStatus').value='approved';$('companyActivity').value=b.dataset.companyQuick==='approved'?'':b.dataset.companyQuick;applyCompanyFilters();});
     $('previousCompanies').onclick=()=>{companyPage--;renderCompanyDirectory();};$('nextCompanies').onclick=()=>{companyPage++;renderCompanyDirectory();};
     const activity=new URLSearchParams(location.search).get('connections');if(['zero','connected','1-5','6-20','21-plus','recent'].includes(activity)){$('companyActivity').value=activity;$('companyStatus').value='approved';}
     const view=v=>{const approvals=v==='approvals';$('employerAnalytics').hidden=approvals;$('employerApprovalSection').hidden=!approvals;document.querySelectorAll('[data-employer-view]').forEach(b=>b.classList.toggle('active',b.dataset.employerView===v));};

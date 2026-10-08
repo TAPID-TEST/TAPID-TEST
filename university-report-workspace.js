@@ -59,7 +59,7 @@
     $('refreshReport').disabled=true;$('printReport').disabled=$('exportReport').disabled=true;$('loadingReport').hidden=false;
     try{
       const ctx=await requireUniversityCardAccess();admin=ctx.admin;$('schoolName').textContent=admin.school_name;
-      const r=await tapid.client.rpc('university_fair_report_v2');if(r.error)throw r.error;
+      const r=await M.loadReport(tapid.client);tapid.setMessage($('pageMessage'),r.legacy?'Report loaded. Install the report timing update to include event end times.':'',r.legacy?'info':undefined);
       rows=r.data?.rows||[];events=r.data?.events||[];loadedAt=new Date(r.data?.generated_at||Date.now());
       const old=$('reportEvent').value;
       $('reportEvent').innerHTML='<option value="">All connection sources</option>'+[['completed','Completed fairs'],['past','Past events'],['in-progress','In progress'],['upcoming','Upcoming fairs'],['undated','Other sources']].map(([state,title])=>{const group=events.filter(e=>TapIDReview.fairState(e)===state);return group.length?`<optgroup label="${esc(title)}">${group.map(e=>`<option value="${esc(e.key)}">${esc(e.name+(e.date?' · '+date(e.date):''))}</option>`).join('')}</optgroup>`:'';}).join('');
@@ -70,7 +70,7 @@
       options('reportEmployer',[...new Map(rows.map(r=>[String(r.company_id),r.company_name])).entries()],'All employers');
       for(const [id,key,title]of [['reportMajor','major','All majors'],['reportYear','school_year','All class years']])options(id,[...new Set(rows.map(r=>r[key]).filter(Boolean))].sort().map(v=>[v,v]),title);
       render();
-    }catch(e){$('loadingReport').hidden=true;$('reportContent').hidden=true;tapid.setMessage($('pageMessage'),e.code==='PGRST202'?'Install the university workspace SQL update to enable reports.':e.message,'error');}
+    }catch(e){$('loadingReport').hidden=true;$('reportContent').hidden=true;tapid.setMessage($('pageMessage'),e.code==='PGRST202'?'Career-fair report functions are missing. Install the university report SQL update, then refresh.':e.message,'error');}
     finally{$('refreshReport').disabled=false;}
   }
   function csvCell(v){let value=String(v??'');if(/^[=+\-@\t\r]/.test(value))value="'"+value;return '"'+value.replaceAll('"','""')+'"';}

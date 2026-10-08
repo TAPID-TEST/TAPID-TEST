@@ -42,6 +42,7 @@
     for(const row of rows){const id=String(row[field]??'Unspecified');if(!groups.has(id))groups.set(id,[]);groups.get(id).push(row);}
     return [...groups].map(([key,values])=>({key,label:field==='company_id'?(values[0].company_name||'Unnamed employer'):key,...summarize(values,days,now)})).sort((a,b)=>b.connections-a.connections||a.label.localeCompare(b.label));
   }
-  const api={stages,stamp,pct,dateKey,observed,scope,summarize,breakdown};
+  async function loadReport(client){let result=await client.rpc('university_fair_report_v2');let legacy=false;if(result.error?.code==='PGRST202'){legacy=true;result=await client.rpc('university_fair_report');}if(result.error)throw result.error;if(!result.data||!Array.isArray(result.data.rows)||!Array.isArray(result.data.events))throw new Error('Career-fair report returned an unexpected response.');return {data:result.data,legacy};}
+  const api={stages,stamp,pct,dateKey,observed,scope,summarize,breakdown,loadReport};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.FairReport=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
