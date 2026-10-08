@@ -7,19 +7,16 @@
 <title>Dashboard — TapID</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet"/>
 <link href="styles.css" rel="stylesheet"/>
-<link rel="stylesheet" href="dashboard-theme.css?v=20261008-audit-v12"><link rel="stylesheet" href="dashboard-navigation.css?v=20261008-audit-v12"><link rel="stylesheet" href="career-interests.css?v=20261007-interests-v7"><link rel="stylesheet" href="workspace-polish.css?v=20261008-audit-v12"></head>
-<body class="dashboard-page student-dashboard-page">
-<header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a><div class="nav-actions"><a class="btn btn-secondary" href="account.html">Account &amp; Privacy</a><button class="btn btn-secondary" id="logoutBtn" type="button">Log Out</button></div></header>
+<link rel="stylesheet" href="dashboard-theme.css?v=20261008-layout-v13"><link rel="stylesheet" href="dashboard-navigation.css?v=20261008-layout-v13"><link rel="stylesheet" href="career-interests.css?v=20261007-interests-v7"><link rel="stylesheet" href="workspace-polish.css?v=20261008-layout-v13"><link rel="stylesheet" href="workspace-layout.css?v=20261008-layout-v13"></head>
+<body class="dashboard-page student-dashboard-page workspace-tight">
+<header class="shell topbar workspace-topbar"><a class="brand" href="index.html">Tap<span>ID</span></a><div class="workspace-identity"><h1 id="welcome">Your TapID</h1></div><div class="nav-actions"><a class="btn btn-secondary" href="account.html">Account &amp; Privacy</a><button class="btn btn-secondary" id="logoutBtn" type="button">Log Out</button></div></header>
 <main class="dashboard-shell dashboard shell">
-<div class="dashboard-hero dash-head">
-<div><div class="eyebrow">Your professional workspace</div><h1 id="welcome">Your TapID</h1><p class="subtle">Keep your professional identity current as you learn, build, and connect.</p></div>
 <a hidden href="#" id="publicBtn" rel="noopener" target="_blank">View Public Profile</a>
-</div>
 <div class="message" hidden="" id="message"></div>
 <div class="dashboard-grid">
-<div class="dashboard-main"><nav id="tapidEditorNav" class="workspace-editor-nav" aria-label="Edit your TapID" hidden><div class="workspace-editor-heading"><strong>My TapID</strong><button type="button" class="text-action" data-jump="share">Preview &amp; share ↗</button></div><button class="dashboard-nav-item" data-target="profile" type="button"><i class="fa-solid fa-user"></i><span>Profile</span></button><button class="dashboard-nav-item" data-target="contact" type="button"><i class="fa-solid fa-address-card"></i><span>Contact</span></button><button class="dashboard-nav-item" data-target="resume" type="button"><i class="fa-solid fa-file-lines"></i><span>Résumé</span></button><button class="dashboard-nav-item" data-target="links" type="button"><i class="fa-solid fa-link"></i><span>Links</span></button><button class="dashboard-nav-item" data-target="experience" type="button"><i class="fa-solid fa-briefcase"></i><span>Experience</span></button><button class="dashboard-nav-item" data-target="projects" type="button"><i class="fa-solid fa-diagram-project"></i><span>Projects</span></button><button class="dashboard-nav-item" data-target="skills" type="button"><i class="fa-solid fa-screwdriver-wrench"></i><span>Skills</span></button><button class="dashboard-nav-item" data-target="organizations" type="button"><i class="fa-solid fa-people-group"></i><span>Organizations</span></button><button class="dashboard-nav-item" data-target="certifications" type="button"><i class="fa-solid fa-certificate"></i><span>Certifications</span></button><button class="dashboard-nav-item" data-target="recommendations" type="button"><i class="fa-solid fa-comment-dots"></i><span>Recommendations</span></button></nav>
+<div class="dashboard-main"><nav id="tapidEditorNav" class="workspace-editor-nav" aria-label="Edit your TapID" hidden><div class="workspace-editor-heading"><strong>Edit TapID</strong><button type="button" class="text-action" data-jump="share">Preview &amp; share ↗</button></div><button class="dashboard-nav-item" data-target="profile" type="button"><i class="fa-solid fa-user"></i><span>Profile</span></button><button class="dashboard-nav-item" data-target="contact" type="button"><i class="fa-solid fa-address-card"></i><span>Contact</span></button><button class="dashboard-nav-item" data-target="resume" type="button"><i class="fa-solid fa-file-lines"></i><span>Résumé</span></button><button class="dashboard-nav-item" data-target="links" type="button"><i class="fa-solid fa-link"></i><span>Links</span></button><button class="dashboard-nav-item" data-target="experience" type="button"><i class="fa-solid fa-briefcase"></i><span>Experience</span></button><button class="dashboard-nav-item" data-target="projects" type="button"><i class="fa-solid fa-diagram-project"></i><span>Projects</span></button><button class="dashboard-nav-item" data-target="skills" type="button"><i class="fa-solid fa-screwdriver-wrench"></i><span>Skills</span></button><button class="dashboard-nav-item" data-target="organizations" type="button"><i class="fa-solid fa-people-group"></i><span>Organizations</span></button><button class="dashboard-nav-item" data-target="certifications" type="button"><i class="fa-solid fa-certificate"></i><span>Certifications</span></button><button class="dashboard-nav-item" data-target="recommendations" type="button"><i class="fa-solid fa-comment-dots"></i><span>Recommendations</span></button><button type="button" class="btn btn-secondary editor-mobile-preview" data-jump="share">Preview &amp; share ↗</button></nav>
 <section class="dashboard-section dashboard-home" data-section="home" id="dash-home">
-<div class="home-intro"><div><div class="eyebrow">Today at a glance</div><h2 id="homeGreeting">Welcome back</h2><p class="subtle" id="homeStatusText">Review your profile, connections, and next career opportunity.</p></div><span class="home-date" id="homeDate"></span></div>
+
 <div class="home-grid"><div class="card home-panel home-readiness"><div class="home-panel-heading"><div><div class="eyebrow">Profile snapshot</div><h2>Your professional profile</h2></div><button class="text-action" data-jump="profile" type="button">Edit profile <i class="fa-solid fa-arrow-right"></i></button></div><p class="subtle">Your next steps</p><div class="profile-progress-copy"><strong id="homeProfileProgressLabel">Setup checklist</strong><span id="homeProfileProgressValue">0%</span></div><div class="profile-progress"><span id="homeProfileProgressBar"></span></div><div class="readiness-rows" id="homeReadinessRows"></div></div><div class="card home-panel home-network"><div class="home-panel-heading"><div><div class="eyebrow">Your network</div><h2>Connections</h2></div><button class="text-action" data-jump="connections" type="button"><span id="homeConnectionBig">0</span> <span id="homeConnectionLabel">connections</span></button></div><p class="subtle">Latest connections</p><div id="homeActivityList" class="home-activity-list"></div><button class="btn btn-primary btn-block" data-jump="connections" type="button">View all connections</button><button class="text-action centered" data-jump="career-fairs" type="button">Explore career fair employers <i class="fa-solid fa-arrow-right"></i></button><div hidden><span id="homeUnreadMessages">0</span><span id="homePendingRequestCount">0</span><span id="homeAcceptedRequestCount">0</span><span id="homeDeclinedRequestCount">0</span><span id="homeAcceptedBar"></span><span id="homePendingBar"></span><span id="homeDeclinedBar"></span></div></div></div>
 <div class="card home-panel home-fairs"><div class="home-panel-heading"><div><div class="eyebrow">Upcoming opportunity</div><h2>Next career fair</h2></div><button class="text-action" data-jump="career-fairs" type="button">View all fairs <i class="fa-solid fa-arrow-right"></i></button></div><div id="homeUpcomingFairs" class="home-fair-list"><div class="inline-empty">Checking for your next career fair…</div></div></div>
 </section>
@@ -242,7 +239,7 @@
 </form>
 </dialog>
 <script src="career-interests.js?v=20261007-interests-v7"></script>
-<script src="student-home.js?v=20261008-audit-v12"></script>
+<script src="student-home.js?v=20261008-layout-v13"></script>
 <script>
     (function () {
       const navItems = Array.from(document.querySelectorAll('.dashboard-nav-item'));
@@ -252,9 +249,10 @@
         sections.forEach(section => { section.hidden = section !== target; });
         const editing=['profile','contact','resume','links','experience','projects','skills','organizations','certifications','recommendations'].includes(target.dataset.section);
         document.getElementById('tapidEditorNav').hidden=!editing;
+        document.body.classList.toggle('student-editor-open',editing);
         navItems.forEach(item=>{const primary=item.closest('.dashboard-sidebar');item.classList.toggle('active',primary&&item.dataset.target==='profile'?editing:item.dataset.target===target.dataset.section);item.setAttribute('aria-current',item.classList.contains('active')?'page':'false');});
         if (updateHash && history.replaceState) history.replaceState(null, '', '#' + target.dataset.section);
-        if (window.innerWidth < 900) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (updateHash) window.scrollTo({top:0,behavior:'auto'});
       }
       navItems.forEach(item => item.addEventListener('click', () => showSection(item.dataset.target)));
       document.addEventListener('click', event => { const jump = event.target.closest('[data-jump]'); if (jump) showSection(jump.dataset.jump); });
@@ -265,7 +263,7 @@
         if (sections.some(section => section.dataset.section === value)) showSection(value, false);
       });
     })();
-</script><script src="workspace-review.js?v=20261008-audit-v12"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</script><script src="workspace-review.js?v=20261008-layout-v13"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="fair-dashboard.js?v=20261007-fairalerts"></script><script src="app.js"></script>
 <script>
@@ -1049,13 +1047,6 @@
 
     function updateDashboardHome() {
       if (!currentProfile) return;
-      const first = currentProfile.first_name || 'there';
-      const greeting = document.getElementById('homeGreeting');
-      if (greeting) greeting.textContent = `Welcome back, ${first}`;
-      const statusText = document.getElementById('homeStatusText');
-      if (statusText) statusText.textContent = 'Here is a clear look at your profile, portfolio, and network.';
-      const date = document.getElementById('homeDate');
-      if (date) date.textContent = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
       const set = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=String(val); };
       set('homeExperienceCount', currentExperiences.length); set('homeProjectCount', currentProjects.length); set('homeSkillCount', currentSkills.length); set('homeCertificationCount', currentCertifications.length); set('homeConnectionBig', currentConnections.length); set('summaryConnectionCount', currentConnections.length);
 
