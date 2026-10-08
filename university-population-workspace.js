@@ -56,12 +56,6 @@
     $('connectionGrowth').innerHTML=U.columns(population.connection_growth.map(g=>({label:g.month,short:new Date(g.month+'-15T12:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}),value:g.connections})),'New unique student-company-source connections per month, last twelve months');
     for(const [id,groups,all]of [['studentMajor',population.majors,'All majors'],['studentYear',population.years,'All class years']]){const value=$(id).value;$(id).innerHTML=`<option value="">${all}</option>`+groups.map(g=>`<option value="${U.esc(g.label)}">${U.esc(g.label)}</option>`).join('');$(id).value=groups.some(g=>g.label===value)?value:'';}
   }
-  function employerMajorChart(){
-    const scope=$('employerReachScope').value,companies=P.engagedEmployers(population.employers).filter(e=>!scope||String(e.company_id)===scope),groups=new Map();
-    $('employerMajorScopeLabel').textContent=scope?(companies[0]?.name||'Selected employer'):'All approved employers';
-    for(const e of companies)for(const g of e.majors||[])groups.set(g.label,(groups.get(g.label)||0)+P.num(g.connections));
-    $('employerMajorChart').innerHTML=U.categoryBars([...groups].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value||a.label.localeCompare(b.label)));
-  }
   function employers(){
     const summary=P.employerSummary(population.employers),companies=P.engagedEmployers(population.employers),active=companies.filter(e=>P.num(e.connections)>0).length,recent=P.recentEmployers(companies).length;
     $('employerKpis').innerHTML=U.kpis([
@@ -71,11 +65,6 @@
       {label:'Companies connecting · last 30 days',value:U.number(recent),detail:U.number(companies.reduce((n,e)=>n+P.num(e.connections_30_days),0))+' new connections'}
     ]);
     $('approvalQueueCount').textContent=summary.pendingRecruiters?'· '+U.number(summary.pendingRecruiters):'';
-    $('employerVolumeChart').innerHTML=U.categoryBars(P.companyDistribution(companies).map(g=>({...g,filter:{dimension:'activity',value:g.key}})),'companies');
-    const selected=$('employerReachScope').value;
-    $('employerReachScope').innerHTML='<option value="">All approved employers</option>'+companies.map(e=>`<option value="${U.esc(e.company_id)}">${U.esc(e.name)}</option>`).join('');
-    $('employerReachScope').value=companies.some(e=>String(e.company_id)===selected)?selected:'';employerMajorChart();
-    $('employerActivityChart').innerHTML=U.columns(population.connection_growth.map(g=>({label:g.month,short:new Date(g.month+'-15T12:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}),value:g.employers})),'Approved companies recording new connections each month, last twelve months');
     renderCompanyDirectory();
   }
   function renderCompanyDirectory(){
@@ -87,7 +76,12 @@
       $('companyDirectoryScope').textContent='';$('companyDirectoryPage').textContent='';$('companyPagination').hidden=true;companyPage=0;return;
     }
     const rows=P.filterCompanies(population.employers,filters),size=25;companyPage=Math.min(companyPage,Math.max(0,Math.ceil(rows.length/size)-1));
-    $('employerDirectory').innerHTML=U.table(['Company','Access','Recruiters','Students reached','Connections','Fair sources','Last connection'],rows.slice(companyPage*size,(companyPage+1)*size).map(e=>[U.esc(e.name),U.esc(e.status),U.number(e.recruiters),U.number(e.students),U.number(e.connections),U.number(e.events),U.esc(date(e.last_connection_at))]));
+    const visible=rows.slice(companyPage*size,(companyPage+1)*size);
+    $('employerDirectory').innerHTML=visible.length?'<div class="company-directory-list">'+visible.map(e=>{
+      const companyRows=M.scope(fair.rows,{employer:String(e.company_id)}),outcomes=M.summarize(companyRows,0,generated.getTime());
+      const events=fair.events.map(event=>({name:event.name,date:date(event.date),...M.summarize(M.scope(companyRows,{event:event.key}),0,generated.getTime())})).filter(event=>event.connections>0);
+      return U.companyDetails(e,{outcomes,events,lastConnection:date(e.last_connection_at)});
+    }).join('')+'</div>':'<div class="directory-prompt">No companies match these filters.</div>';
     $('companyDirectoryScope').textContent=[filters.search?'Search: '+filters.search:null,filters.status,filters.activity].filter(Boolean).join(' · ');
     $('companyDirectoryPage').textContent=rows.length?`${companyPage*size+1}–${Math.min((companyPage+1)*size,rows.length)} of ${U.number(rows.length)} companies`:'0 companies';
     $('companyPagination').hidden=rows.length===0;$('previousCompanies').disabled=companyPage===0;$('nextCompanies').disabled=(companyPage+1)*size>=rows.length;
@@ -141,13 +135,11 @@
   }
   $('printWorkspace').onclick=print;window.addEventListener('afterprint',restorePrint);
   if(mode==='employers'){
-    $('employerReachScope').onchange=employerMajorChart;
     const applyCompanyFilters=()=>{companyPage=0;renderCompanyDirectory();};
     $('companySearch').oninput=applyCompanyFilters;['companyStatus','companyActivity'].forEach(id=>$(id).onchange=applyCompanyFilters);
     $('clearCompanyFilters').onclick=()=>{['companySearch','companyStatus','companyActivity'].forEach(id=>$(id).value='');applyCompanyFilters();};
     $('previousCompanies').onclick=()=>{companyPage--;renderCompanyDirectory();};$('nextCompanies').onclick=()=>{companyPage++;renderCompanyDirectory();};
     const activity=new URLSearchParams(location.search).get('connections');if(['zero','connected','1-5','6-20','21-plus','recent'].includes(activity)){$('companyActivity').value=activity;$('companyStatus').value='approved';}
-    document.addEventListener('click',e=>{const b=e.target.closest('[data-directory-dimension="activity"]');if(!b)return;$('companyStatus').value='approved';$('companyActivity').value=b.dataset.directoryValue;$('companySearch').value='';applyCompanyFilters();$('employerDirectoryPanel').scrollIntoView({behavior:'smooth',block:'start'});});
     const view=v=>{const approvals=v==='approvals';$('employerAnalytics').hidden=approvals;$('employerApprovalSection').hidden=!approvals;document.querySelectorAll('[data-employer-view]').forEach(b=>b.classList.toggle('active',b.dataset.employerView===v));};
     $('employerViewTabs').onclick=e=>{const b=e.target.closest('[data-employer-view]');if(b)view(b.dataset.employerView);};
     view(new URLSearchParams(location.search).get('view')==='approvals'?'approvals':'analytics');
