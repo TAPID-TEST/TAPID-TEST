@@ -35,3 +35,16 @@
   return `<div class="engagement-participation"><strong>${rate===null?'—':rate+'%'}</strong><span>${U.number(connected)} of ${U.number(total)} ${U.esc(label)} have connections</span><div class="participation-track" role="img" aria-label="${U.number(connected)} of ${U.number(total)} ${U.esc(label)} have connections"><i style="width:${rate||0}%"></i></div><div class="participation-legend"><span><i></i>Connected</span><span><i></i>No connections yet</span></div></div>`;
  };
 })(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(root){
+ const U=root.UniversityUI;
+ // Native buttons keep chart navigation available to keyboard and touch users.
+ U.categoryBars=function(items){
+  if(!items.length)return '<div class="report-empty">No student accounts yet</div>';
+  const max=Math.max(...items.map(x=>Number(x.value)||0),1);
+  return '<div class="category-chart" role="group" aria-label="Connections by category">'+items.map(x=>{
+   const value=Math.max(0,Number(x.value)||0),attrs=x.college!=null?`data-college-drill="${U.esc(x.college)}"`:x.filter?`data-directory-dimension="${U.esc(x.filter.dimension)}" data-directory-value="${U.esc(x.filter.value)}"`:'';
+   return `<button type="button" class="category-column" ${attrs} aria-label="${U.esc(x.label)}: ${U.number(value)} connections"><span class="category-plot"><span class="category-bar" style="height:${value/max*100}%"><strong>${U.number(value)}</strong></span></span><span class="category-label">${U.esc(x.label)}</span></button>`;
+  }).join('')+'</div>';
+ };
+})(typeof globalThis!=='undefined'?globalThis:this);

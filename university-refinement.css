@@ -12,3 +12,19 @@
 @media(max-width:900px){.student-directory .directory-filters{grid-template-columns:1fr 1fr}}
 @media(max-width:500px){.report-page .workspace-nav a{font-size:14px;min-width:0;padding:11px 12px}.student-directory .directory-filters{grid-template-columns:1fr}}
 @media print{#backToColleges{display:none!important}.kpi-link{text-decoration:none;color:#173e2e!important}.college-drill-bar{break-inside:avoid}}
+
+/* v16: aligned participation, actionable notifications and full-width column charts. */
+.population-page .workspace-grid>.card+.card{margin-top:0}
+.population-page .participation-grid{align-items:stretch;grid-template-columns:repeat(2,minmax(0,1fr))}
+.population-page .participation-grid>.card{display:flex;flex-direction:column;height:100%;margin:0;box-sizing:border-box}
+.participation-grid .workspace-panel-head{min-height:26px}.participation-grid .engagement-participation{flex:1;padding:8px 0}.participation-grid .engagement-participation>strong{font-size:52px;line-height:1.1;margin:6px 0 12px}
+.notification-queue-link{display:inline-flex;align-items:center;gap:8px}.notification-queue-link span{border-radius:20px;background:#e9f1ed;color:#15533a;padding:4px 8px;font-weight:700}
+.university-notifications{display:grid;gap:12px}.university-notice{display:grid;grid-template-columns:36px 1fr auto 16px;gap:12px;align-items:center;padding:16px;border:1px solid #e2e9e4;border-radius:12px;text-decoration:none;color:#173e2e}.university-notice strong{display:block;font-size:15px}.university-notice strong+span{display:block;font-size:12px;color:#6b7e73;margin-top:6px}.university-notice b{font-size:24px}.notice-icon{font-size:24px;color:#347853}.university-notice.needs-review{background:#fcf8ec;border-color:#e7d9aa}
+.engagement-gaps{display:grid;gap:12px}.engagement-gap{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:18px;border:1px solid #e2e9e4;border-radius:12px;text-decoration:none;color:#173e2e;background:#f8faf8}.engagement-gap b{font-size:34px;line-height:1}.engagement-gap>span{font-size:15px}.engagement-gap:hover,.university-notice:hover{border-color:#347853}.engagement-gap:focus-visible,.university-notice:focus-visible,.category-column:focus-visible{outline:3px solid #b68b24;outline-offset:3px}
+.category-chart{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:24px 18px;margin:38px 0 8px;width:100%}
+.category-column{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:0 8px 8px;border:0;border-radius:6px;background:transparent;color:#173e2e;cursor:pointer;font:inherit;min-width:0}
+.category-plot{display:flex;align-items:flex-end;justify-content:center;height:170px;border-bottom:2px solid #cbd8ce;background:repeating-linear-gradient(to top,transparent 0,transparent 41px,#eef3ef 42px,#eef3ef 43px)}
+.category-bar{display:block;position:relative;width:clamp(28px,60%,80px);background:linear-gradient(to top,#15533a,#4b946c);border-radius:7px 7px 0 0}.category-bar strong{position:absolute;bottom:100%;left:0;right:0;text-align:center;padding-bottom:8px;font-size:20px;font-weight:700}.category-label{text-align:center;font-size:14px;line-height:1.4;overflow-wrap:anywhere}.category-column:hover .category-label{text-decoration:underline}.category-column:hover .category-bar{background:#15533a}
+.company-directory-controls{display:flex;gap:16px;margin:12px 0;font-size:14px}.company-directory-controls a{color:#15533a}
+@media(max-width:700px){.population-page .participation-grid{grid-template-columns:1fr}.category-chart{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:24px 12px}.category-plot{height:140px}}
+@media print{.category-column{break-inside:avoid}.category-bar{background:#347853!important}.category-chart{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}.category-plot{height:120px}.university-notice,.engagement-gap{break-inside:avoid}.company-directory-controls{display:none!important}}

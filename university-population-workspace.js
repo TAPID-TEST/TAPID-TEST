@@ -18,11 +18,14 @@
       {label:'Interviews recorded',value:U.number(r.reached.interview),href:'university-fairs.html'}]);
     $('studentParticipation').innerHTML=U.participation(s.students_connected,s.accounts,'student accounts');
     $('employerParticipation').innerHTML=U.participation(e.approvedActive,e.approved,'approved companies');
-    $('overviewMilestones').innerHTML=U.bars(M.stages.filter(([key])=>!['connected','interview'].includes(key)).map(([key,label])=>({label,value:r.reached[key]})),r.connections);
-    const actions=[['Students without connections',s.accounts-s.students_connected,'university-students.html?state=never-connected'],['Approved companies without connections',e.approved-e.approvedActive,'university-employers.html'],['Recruiter approvals pending',e.pendingRecruiters,'university-employers.html?view=approvals']];
-    $('nextActions').innerHTML=actions.map(([label,count,href])=>`<a class="workspace-action" href="${href}"><span>${U.esc(label)}</span><b>${U.number(count)}</b></a>`).join('');
+    $('universityNoticeCount').textContent=U.number(e.pendingRecruiters);
+    const upcoming=fair.events.filter(event=>Number.isFinite(Date.parse(event.date))&&Date.parse(event.date)>generated.getTime());
+    $('universityNotifications').innerHTML=`<a class="university-notice ${e.pendingRecruiters?'needs-review':''}" href="university-employers.html?view=approvals"><span class="notice-icon" aria-hidden="true">◎</span><span><strong>${e.pendingRecruiters?'Employer requests awaiting review':'No pending employer requests'}</strong><span>${e.pendingRecruiters?'Open the approval queue':'View employer approvals'}</span></span><b>${U.number(e.pendingRecruiters)}</b><span aria-hidden="true">→</span></a>`+
+      (upcoming.length?`<a class="university-notice" href="university-fairs.html"><span class="notice-icon" aria-hidden="true">▦</span><span><strong>Upcoming career fairs</strong><span>View scheduled events</span></span><b>${U.number(upcoming.length)}</b><span aria-hidden="true">→</span></a>`:'');
+    const actions=[['Students with zero connections',Math.max(0,s.accounts-s.students_connected),'university-students.html?state=never-connected#studentDirectoryPanel'],['Approved companies with zero connections',Math.max(0,e.approved-e.approvedActive),'university-employers.html?connections=zero#employerDirectory']];
+    $('nextActions').innerHTML=actions.map(([label,count,href])=>`<a class="engagement-gap" href="${href}"><b>${U.number(count)}</b><span>${U.esc(label)}</span><span aria-hidden="true">→</span></a>`).join('');
     const events=fair.events.slice().sort((a,b)=>(Date.parse(b.date)||0)-(Date.parse(a.date)||0));
-    $('overviewFairs').innerHTML=U.table(['Career fair','Date','Students','Employers','Connections','Offers','Hires'],events.map(e=>{const r=M.summarize(M.scope(fair.rows,{event:e.key}),0,generated.getTime());return [`<a href="university-fairs.html?fair=${encodeURIComponent(e.key)}">${U.esc(e.name)}</a>`,U.esc(date(e.date)),U.number(r.students),U.number(r.employers),U.number(r.connections),U.number(r.reached.offer),U.number(r.reached.job)];}));
+    $('overviewFairs').innerHTML=U.table(['Career fair','Date','Students','Employers','Connections','Interviews','Offers'],events.map(e=>{const r=M.summarize(M.scope(fair.rows,{event:e.key}),0,generated.getTime());return [`<a href="university-fairs.html?fair=${encodeURIComponent(e.key)}">${U.esc(e.name)}</a>`,U.esc(date(e.date)),U.number(r.students),U.number(r.employers),U.number(r.connections),U.number(r.reached.interview),U.number(r.reached.offer)];}));
   }
   function connectionCharts(){
     const rows=population.engagement_groups;
@@ -33,13 +36,12 @@
     $('collegeChartHint').textContent=selectedCollege?'Connections by major':'Select a college to see its majors';
     $('backToColleges').hidden=!selectedCollege;
     if(allMajors||selectedCollege){
-      $('collegeConnections').innerHTML=U.volumeBars(P.engagementGroups(rows,'major',allMajors?'':selectedCollege).map(g=>({label:g.label,value:g.connections,filter:{dimension:'major',value:g.label}})));
+      $('collegeConnections').innerHTML=U.categoryBars(P.engagementGroups(rows,'major',allMajors?'':selectedCollege).map(g=>({label:g.label,value:g.connections,filter:{dimension:'major',value:g.label}})));
     }else{
-      const max=Math.max(...groups.map(g=>g.connections),1);
-      $('collegeConnections').innerHTML=groups.length?groups.map(g=>`<button type="button" class="college-drill-bar" data-college-drill="${U.esc(g.label)}" aria-label="${U.esc(g.label)}: ${U.number(g.connections)} connections. View majors"><span>${U.esc(g.label)}</span><strong>${U.number(g.connections)}</strong><span class="workspace-track"><i style="width:${g.connections/max*100}%"></i></span></button>`).join(''):'<div class="report-empty">No student accounts yet</div>';
+      $('collegeConnections').innerHTML=U.categoryBars(groups.map(g=>({label:g.label,value:g.connections,college:g.label})));
     }
     const yearOrder=['Freshman','Sophomore','Junior','Senior','Graduate'];const years=P.engagementGroups(rows,'year').sort((a,b)=>(yearOrder.includes(a.label)?yearOrder.indexOf(a.label):99)-(yearOrder.includes(b.label)?yearOrder.indexOf(b.label):99)||a.label.localeCompare(b.label));
-    $('yearConnections').innerHTML=U.volumeBars(years.map(g=>({label:g.label,value:g.connections,accounts:g.accounts,connected:g.connected,filter:{dimension:'year',value:g.label}})));
+    $('yearConnections').innerHTML=U.categoryBars(years.map(g=>({label:g.label,value:g.connections,accounts:g.accounts,connected:g.connected,filter:{dimension:'year',value:g.label}})));
   }
   function students(){
     const s=population.students;
@@ -74,7 +76,9 @@
     $('employerReachScope').innerHTML='<option value="">All approved employers</option>'+companies.map(e=>`<option value="${U.esc(e.company_id)}">${U.esc(e.name)}</option>`).join('');
     $('employerReachScope').value=companies.some(e=>String(e.company_id)===selected)?selected:'';employerMajorChart();
     $('employerActivityChart').innerHTML=U.columns(population.connection_growth.map(g=>({label:g.month,short:new Date(g.month+'-15T12:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}),value:g.employers})),'Approved companies recording new connections each month, last twelve months');
-    $('employerDirectory').innerHTML=U.table(['Company','Access','Recruiters','Students reached','Connections','Fair sources','Last connection'],population.employers.map(e=>[U.esc(e.name),U.esc(e.status),U.number(e.recruiters),U.number(e.students),U.number(e.connections),U.number(e.events),U.esc(date(e.last_connection_at))]));
+    const zeroCompanies=new URLSearchParams(location.search).get('connections')==='zero';
+    const directoryCompanies=zeroCompanies?companies.filter(e=>P.num(e.connections)===0):population.employers;
+    $('employerDirectory').innerHTML=U.table(['Company','Access','Recruiters','Students reached','Connections','Fair sources','Last connection'],directoryCompanies.map(e=>[U.esc(e.name),U.esc(e.status),U.number(e.recruiters),U.number(e.students),U.number(e.connections),U.number(e.events),U.esc(date(e.last_connection_at))]));
   }
   async function load(){
     const token=++loadSequence;$('printWorkspace').disabled=true;
