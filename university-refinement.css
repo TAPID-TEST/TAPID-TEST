@@ -28,3 +28,7 @@
 .company-directory-controls{display:flex;gap:16px;margin:12px 0;font-size:14px}.company-directory-controls a{color:#15533a}
 @media(max-width:700px){.population-page .participation-grid{grid-template-columns:1fr}.category-chart{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:24px 12px}.category-plot{height:140px}}
 @media print{.category-column{break-inside:avoid}.category-bar{background:#347853!important}.category-chart{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}.category-plot{height:120px}.university-notice,.engagement-gap{break-inside:avoid}.company-directory-controls{display:none!important}}
+
+/* v17: bounded filter-first directories and matching employer/student layout. */
+.directory-prompt{padding:20px 0 8px;color:#748477;font-size:14px}.employer-directory-filters{grid-template-columns:1.6fr 1fr 1fr!important}.population-page #employerActivityChart .workspace-chart{max-height:230px}
+@media(max-width:700px){.employer-directory-filters{grid-template-columns:1fr!important}}

@@ -39,3 +39,10 @@
  P.engagedEmployers=employers=>employers.filter(e=>e.status==='approved');
  P.recentEmployers=employers=>employers.filter(e=>P.num(e.connections_30_days)>0);
 })(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(root){
+ const P=typeof module!=='undefined'&&module.exports?module.exports:root.UniversityPopulation;
+ P.companyActivityMatches=function(e,activity){const n=P.num(e.connections);return !activity||activity==='zero'&&n===0||activity==='connected'&&n>0||activity==='1-5'&&n>=1&&n<=5||activity==='6-20'&&n>=6&&n<=20||activity==='21-plus'&&n>=21||activity==='recent'&&P.num(e.connections_30_days)>0;};
+ P.filterCompanies=function(rows,{search='',status='',activity=''}={}){return rows.filter(e=>(!search||String(e.name||'').toLowerCase().includes(search.trim().toLowerCase()))&&(!status||e.status===status)&&P.companyActivityMatches(e,activity));};
+ P.companyDistribution=function(rows){return [['zero','Zero connections'],['1-5','1–5 connections'],['6-20','6–20 connections'],['21-plus','21+ connections']].map(([key,label])=>({key,label,value:rows.filter(e=>P.companyActivityMatches(e,key)).length}));};
+})(typeof globalThis!=='undefined'?globalThis:this);
