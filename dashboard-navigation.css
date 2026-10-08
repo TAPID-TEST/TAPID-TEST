@@ -16,3 +16,58 @@
  .dashboard-page .dashboard-sidebar .sidebar-label,.dashboard-page .dashboard-sidebar .sidebar-divider,.dashboard-page .dashboard-sidebar>h2,.dashboard-page .dashboard-sidebar>p,.dashboard-page .dashboard-sidebar>.badge {display:none;}
 }
 @media print {.dashboard-page .dashboard-sidebar{display:none;}.dashboard-page .topbar{padding-left:0;}.dashboard-page .dashboard-hero,.dashboard-page .dashboard-shell>.message{margin-left:0;}.dashboard-page .dashboard-grid{display:block;}}
+
+.dashboard-page .dashboard-nav-item {grid-template-columns:18px minmax(0,1fr) 22px;font-family:inherit;}
+.dashboard-page .dashboard-nav-item .nav-count {grid-column:3;grid-row:1;justify-self:end;min-width:20px;height:20px;}
+.dashboard-page .dashboard-nav-item:focus-visible {outline:2px solid #2b7853;outline-offset:2px;}
+@media(min-width:761px) {
+ .student-dashboard-page .dashboard-sidebar {top:16px;bottom:16px;max-height:calc(100dvh - 32px);padding:8px;overflow:hidden;}
+ .student-dashboard-page .dashboard-section-nav {gap:0;}
+ .student-dashboard-page .dashboard-nav-item {min-height:32px;padding:6px 10px;font-size:12px;gap:8px;}
+ .student-dashboard-page .sidebar-label {font-size:8px;padding:3px 10px;line-height:12px;}
+ .student-dashboard-page .sidebar-group-label {margin-top:4px;padding-top:4px;}
+ .student-dashboard-page .dashboard-sidebar>h2,.student-dashboard-page .dashboard-sidebar>.status-badges,.student-dashboard-page .dashboard-sidebar>.profile-summary {display:none;}
+ .student-dashboard-page .sidebar-divider {margin:6px 8px;}
+ .student-dashboard-page .dashboard-sidebar>a {margin:3px 0;min-height:30px;padding:5px;font-size:11px;}
+}
+@media(min-width:761px) and (max-height:820px) {
+ .student-dashboard-page .dashboard-nav-item {min-height:27px;padding:4px 8px;}
+ .student-dashboard-page .sidebar-label {padding:1px 8px;line-height:10px;}
+ .student-dashboard-page .sidebar-group-label {margin-top:2px;padding-top:2px;}
+}
+/* Short landscape screens use visible horizontal navigation instead of a clipped rail. */
+@media(min-width:761px) and (max-height:680px) {
+ .student-dashboard-page .dashboard-sidebar {position:sticky;top:0;bottom:auto;width:100%;grid-column:1/-1;grid-row:1;z-index:20;}
+ .student-dashboard-page .dashboard-section-nav {display:flex;gap:4px;overflow-x:auto;}
+ .student-dashboard-page .dashboard-nav-item {flex:0 0 auto;white-space:nowrap;min-height:36px;}
+ .student-dashboard-page .dashboard-sidebar>.sidebar-divider,.student-dashboard-page .dashboard-sidebar>a,.student-dashboard-page .sidebar-label {display:none;}
+ .student-dashboard-page .dashboard-main {grid-row:2;grid-column:1/-1;}
+ .student-dashboard-page .topbar {padding-left:0;}
+ .student-dashboard-page .dashboard-hero,.student-dashboard-page .dashboard-shell>.message {margin-left:0;}
+}
+/* Notification links keep the same appearance before and after activation. */
+.student-dashboard-page .notification-item,.student-dashboard-page .notification-item:visited,.student-dashboard-page .notification-item:active {color:#173d2d;font:inherit;text-decoration:none;}
+.student-dashboard-page .notification-item {background:#f7faf7;border:1px solid #dae5dc;min-height:80px;}
+.student-dashboard-page .notification-item.unread {background:#f1f7f2;border-color:#c7decc;}
+.student-dashboard-page .notification-item:hover {background:#edf5ee;}
+.student-dashboard-page .notification-item strong {font-size:14px;}
+.student-dashboard-page .notification-item small,.student-dashboard-page .notification-item time {font-size:12px;line-height:1.45;}
+.student-dashboard-page .notification-dot {background:#236341;}
+.student-dashboard-page .home-network .home-panel-heading .text-action {font-size:16px;white-space:nowrap;}
+.student-dashboard-page .home-activity-list {gap:8px;}
+.student-dashboard-page .home-activity-item {min-height:70px;padding:12px;font:inherit;}
+.student-dashboard-page .home-activity-item>div {min-width:0;}
+.student-dashboard-page .home-activity-item strong {font-size:14px;}
+.student-dashboard-page .home-activity-item small {font-size:12px;line-height:1.4;overflow-wrap:anywhere;}
+
+@media(max-width:760px){.student-dashboard-page .dashboard-sidebar>.status-badges,.student-dashboard-page .dashboard-sidebar>.profile-summary,.student-dashboard-page .dashboard-sidebar>a{display:none;}}
+
+html:has(body.dashboard-page) {scrollbar-gutter:stable;}
+
+/* Same desktop rail dimensions and row scale for both account types. */
+@media(min-width:761px){
+ .employer-workspace-page .dashboard-sidebar{top:16px;bottom:16px;max-height:calc(100dvh - 32px);padding:8px;}
+ .employer-workspace-page .dashboard-section-nav{gap:0;}
+ .employer-workspace-page .dashboard-nav-item{min-height:32px;padding:6px 10px;font-size:12px;gap:8px;}
+}
+@media(min-width:761px) and (max-height:820px){.employer-workspace-page .dashboard-nav-item{min-height:27px;padding:4px 8px;}}

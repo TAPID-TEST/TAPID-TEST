@@ -1,0 +1,22 @@
+
+.career-interests-editor .career-writing-grid{display:grid;gap:24px;margin-top:8px;}
+.career-interests-editor .field{margin:0;}
+.career-interests-editor label{font-size:15px;font-weight:700;color:#174a35;}
+.career-interests-editor textarea{min-height:130px;font:inherit;line-height:1.7;padding:16px;border:1px solid #d6e3d9;border-radius:14px;background:#fafcf9;resize:vertical;}
+.career-interests-editor textarea:focus{background:white;outline:2px solid #8db89d;outline-offset:2px;}
+.career-practical{margin:28px 0;border:1px solid #dce7df;border-radius:14px;background:#fafcf9;}
+.career-practical>summary{padding:16px 18px;cursor:pointer;color:#174a35;font-weight:650;font-size:14px;}
+.career-practical>summary>span{margin-left:8px;color:#6d7b72;font-weight:400;font-size:12px;}
+.career-practical-body{padding:2px 18px 18px;display:grid;gap:18px;}
+.career-save-row{display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.career-save-row .toggle-row{margin:0;font-size:14px;}
+.career-save-row .btn{min-height:46px;}
+.career-save-row input[type=checkbox]{accent-color:#236443;}
+.public-profile-page .opportunity-public-grid{display:block;}
+.career-public-answer+.career-public-answer{margin-top:24px;}
+.career-public-answer h3{font-size:15px;color:#23573c;margin:0 0 8px;}
+.career-public-answer p{font-size:16px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;color:#35493c;max-width:80ch;}
+.career-public-practical{display:flex;flex-wrap:wrap;gap:20px 32px;border-top:1px solid #dce7df;margin:24px 0 0;padding-top:20px;}
+.career-public-practical dt{color:#6c7c70;font-size:12px;margin-bottom:5px;}
+.career-public-practical dd{color:#234d36;font-size:14px;margin:0;}
+@media(max-width:600px){.career-save-row{flex-direction:column;align-items:stretch;}.career-interests-editor textarea{font-size:16px;}.career-public-practical{display:grid;gap:16px;}}

@@ -3,7 +3,7 @@
   "private": true,
   "version": "3.0.0",
   "scripts": {
-    "test": "node tests/smoke.mjs && node tests/fair-reports.cjs && node tests/population-workspace.cjs && node tests/fair-setup.cjs && node tests/employer-onboarding.mjs && node tests/fair-notifications.cjs && node tests/employer-criteria-search.mjs && node tests/engagement-update.cjs && node tests/employer-flow.mjs && node tests/candidate-chat.mjs",
+    "test": "node tests/smoke.mjs && node tests/fair-reports.cjs && node tests/population-workspace.cjs && node tests/fair-setup.cjs && node tests/employer-onboarding.mjs && node tests/fair-notifications.cjs && node tests/employer-criteria-search.mjs && node tests/engagement-update.cjs && node tests/employer-flow.mjs && node tests/candidate-chat.mjs && node tests/public-profile-search.mjs && node tests/career-interests.mjs",
     "serve": "python3 -m http.server 8888"
   }
 }

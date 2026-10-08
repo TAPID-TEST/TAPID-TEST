@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="public-profile-theme.css?v=20261006-population">
-</head>
+<link rel="stylesheet" href="career-interests.css?v=20261007-interests-v7"></head>
 <body class="public-profile-page">
   <header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a></header>
   <main class="shell public-page">
@@ -29,7 +29,7 @@
       </section>
 
       <div class="public-portfolio-grid"><div class="public-portfolio-main">
-      <section id="opportunitiesSection" class="card public-section opportunity-highlight" hidden><div class="eyebrow">Open to opportunities</div><h2>What I’m Looking For</h2><div id="publicOpportunities" class="opportunity-public-grid"></div></section>
+      <section id="opportunitiesSection" class="card public-section opportunity-highlight" hidden><div class="eyebrow">Career interests</div><h2>What I’m looking for</h2><div id="publicOpportunities" class="opportunity-public-grid"></div></section>
 
       <section id="resumeSection" class="card public-section public-resume-section" hidden><div class="eyebrow">Professional documents</div><h2>Résumé</h2><p class="subtle">A concise overview of education, experience, and qualifications.</p><a id="resumeBtn" class="btn btn-primary" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-file-lines"></i> Open Résumé</a></section>
 
@@ -100,7 +100,8 @@
     </form>
   </dialog>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="career-interests.js?v=20261007-interests-v7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
   <script>
@@ -280,7 +281,12 @@
       document.getElementById('outcomesSection').hidden=!outcomesData.length;
     }
 
-    function renderPublicOpportunities(){const section=document.getElementById('opportunitiesSection'),root=document.getElementById('publicOpportunities');root.innerHTML='';if(!opportunityData){section.hidden=true;return;}if(opportunityData.opportunity_statement){const statement=document.createElement('p');statement.className='opportunity-public-statement';statement.textContent=opportunityData.opportunity_statement;root.appendChild(statement);}const blocks=[['Opportunities',opportunityData.opportunity_types],['Desired roles',opportunityData.desired_roles],['Industries',opportunityData.industries],['Preferred locations',opportunityData.preferred_locations]];blocks.forEach(([label,values])=>{if(!values?.length)return;const block=document.createElement('div');block.className='opportunity-public-block';block.innerHTML=`<strong>${escapeHtml(label)}</strong><div>${values.map(value=>`<span>${escapeHtml(value)}</span>`).join('')}</div>`;root.appendChild(block);});if(opportunityData.available_start_date){const block=document.createElement('div');block.className='opportunity-public-block';block.innerHTML=`<strong>Availability</strong><div><span>${escapeHtml(new Date(opportunityData.available_start_date+'T12:00:00').toLocaleDateString(undefined,{month:'long',year:'numeric'}))}</span>${opportunityData.willing_to_relocate?'<span>Willing to relocate</span>':''}</div>`;root.appendChild(block);}section.hidden=!root.children.length;}
+    function renderPublicOpportunities(){
+      const section=document.getElementById('opportunitiesSection'),root=document.getElementById('publicOpportunities');root.innerHTML='';
+      TapIDCareerInterests.publicSections(opportunityData).forEach(([label,text])=>{const block=document.createElement('div');block.className='career-public-answer';if(label){const heading=document.createElement('h3');heading.textContent=label;block.appendChild(heading);}const paragraph=document.createElement('p');paragraph.textContent=text;block.appendChild(paragraph);root.appendChild(block);});
+      const practical=TapIDCareerInterests.practicalDetails(opportunityData);if(practical.length){const list=document.createElement('dl');list.className='career-public-practical';practical.forEach(([label,text])=>{const pair=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=text;pair.append(dt,dd);list.appendChild(pair);});root.appendChild(list);}section.hidden=!root.children.length;
+    }
+
 
     function resetConnectForm() {
       document.getElementById('connectForm').reset();
