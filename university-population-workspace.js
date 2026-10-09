@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   const $=id=>document.getElementById(id),U=UniversityUI,P=UniversityPopulation,M=FairReport,mode=document.body.dataset.workspace;
-  let population=null,fair={rows:[],events:[]},admin=null,generated=null,page=0,directorySequence=0,directoryTotal=0,loadSequence=0,selectedCollege='',companyPage=0;
+  let population=null,fair={rows:[],events:[]},admin=null,generated=null,page=0,directorySequence=0,directoryTotal=0,loadSequence=0,selectedCollege='';
   const date=v=>v?new Date(v).toLocaleDateString('en-US',{timeZone:'America/Los_Angeles',month:'short',day:'numeric',year:'numeric'}):'—';
   const pct=(n,d)=>P.rate(n,d)===null?'—':P.rate(n,d)+'%';
   function heading(){
@@ -56,6 +56,12 @@
     $('connectionGrowth').innerHTML=U.columns(population.connection_growth.map(g=>({label:g.month,short:new Date(g.month+'-15T12:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}),value:g.connections})),'New unique student-company-source connections per month, last twelve months');
     for(const [id,groups,all]of [['studentMajor',population.majors,'All majors'],['studentYear',population.years,'All class years']]){const value=$(id).value;$(id).innerHTML=`<option value="">${all}</option>`+groups.map(g=>`<option value="${U.esc(g.label)}">${U.esc(g.label)}</option>`).join('');$(id).value=groups.some(g=>g.label===value)?value:'';}
   }
+  function employerMajorChart(){
+    const scope=$('employerReachScope').value,companies=P.engagedEmployers(population.employers).filter(e=>!scope||String(e.company_id)===scope),groups=new Map();
+    $('employerMajorScopeLabel').textContent=scope?(companies[0]?.name||'Selected employer'):'All approved employers';
+    for(const e of companies)for(const g of e.majors||[])groups.set(g.label,(groups.get(g.label)||0)+P.num(g.connections));
+    $('employerMajorChart').innerHTML=U.volumeBars([...groups].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value||a.label.localeCompare(b.label)));
+  }
   function employers(){
     const summary=P.employerSummary(population.employers),companies=P.engagedEmployers(population.employers),active=companies.filter(e=>P.num(e.connections)>0).length,recent=P.recentEmployers(companies).length;
     $('employerKpis').innerHTML=U.kpis([
@@ -65,31 +71,14 @@
       {label:'Companies connecting · last 30 days',value:U.number(recent),detail:U.number(companies.reduce((n,e)=>n+P.num(e.connections_30_days),0))+' new connections'}
     ]);
     $('approvalQueueCount').textContent=summary.pendingRecruiters?'· '+U.number(summary.pendingRecruiters):'';
-    const oldMajor=$('companyMajor').value,oldFair=$('companyFair').value;
-    const majors=[...new Set(population.employers.flatMap(e=>(e.majors||[]).filter(g=>P.num(g.connections)>0).map(g=>g.label)))].sort();
-    $('companyMajor').innerHTML='<option value="">Any major</option>'+majors.map(m=>`<option value="${U.esc(m)}">${U.esc(m)}</option>`).join('');$('companyMajor').value=majors.includes(oldMajor)?oldMajor:'';
-    $('companyFair').innerHTML='<option value="">Any career fair</option>'+fair.events.map(e=>`<option value="${U.esc(e.key)}">${U.esc(e.name)}</option>`).join('');$('companyFair').value=fair.events.some(e=>e.key===oldFair)?oldFair:'';
-    renderCompanyDirectory();
-  }
-  function renderCompanyDirectory(){
-    if(!population)return;
-    const filters={search:$('companySearch').value.trim(),status:$('companyStatus').value,activity:$('companyActivity').value,major:$('companyMajor').value,event:$('companyFair').value};
-    $('previousCompanies').disabled=$('nextCompanies').disabled=true;
-    if(!Object.values(filters).some(Boolean)){
-      $('employerDirectory').innerHTML='<div class="directory-prompt">Search or choose a filter to show companies.</div>';
-      $('companyDirectoryScope').textContent='';$('companyDirectoryPage').textContent='';$('companyPagination').hidden=true;companyPage=0;return;
-    }
-    const directorySource=population.employers.map(e=>({...e,eventKeys:[...new Set(M.scope(fair.rows,{employer:String(e.company_id)}).map(r=>r.event_key))]}));
-    const rows=P.filterCompanies(directorySource,{...filters,sort:$('companySort').value}),size=25;companyPage=Math.min(companyPage,Math.max(0,Math.ceil(rows.length/size)-1));
-    const visible=rows.slice(companyPage*size,(companyPage+1)*size);
-    $('employerDirectory').innerHTML=visible.length?'<div class="company-directory-list">'+visible.map(e=>{
-      const companyRows=M.scope(fair.rows,{employer:String(e.company_id)}),outcomes=M.summarize(companyRows,0,generated.getTime());
-      const events=fair.events.map(event=>({name:event.name,date:date(event.date),...M.summarize(M.scope(companyRows,{event:event.key}),0,generated.getTime())})).filter(event=>event.connections>0);
-      return U.companyDetails(e,{outcomes,events,lastConnection:date(e.last_connection_at),expanded:rows.length===1});
-    }).join('')+'</div>':'<div class="directory-prompt">No companies match these filters.</div>';
-    $('companyDirectoryScope').textContent=[filters.search?'Search: '+filters.search:null,filters.status?'Status: '+filters.status:null,filters.activity?'Activity: '+filters.activity:null,filters.major,filters.event?fair.events.find(e=>e.key===filters.event)?.name:null].filter(Boolean).join(' · ');
-    $('companyDirectoryPage').textContent=rows.length?`${companyPage*size+1}–${Math.min((companyPage+1)*size,rows.length)} of ${U.number(rows.length)} companies`:'0 companies';
-    $('companyPagination').hidden=rows.length===0;$('previousCompanies').disabled=companyPage===0;$('nextCompanies').disabled=(companyPage+1)*size>=rows.length;
+    $('employerVolumeChart').innerHTML=U.volumeBars(companies.map(e=>({label:e.name,value:e.connections,filter:{dimension:'employer',value:String(e.company_id)}})));
+    const selected=$('employerReachScope').value;
+    $('employerReachScope').innerHTML='<option value="">All approved employers</option>'+companies.map(e=>`<option value="${U.esc(e.company_id)}">${U.esc(e.name)}</option>`).join('');
+    $('employerReachScope').value=companies.some(e=>String(e.company_id)===selected)?selected:'';employerMajorChart();
+    $('employerActivityChart').innerHTML=U.columns(population.connection_growth.map(g=>({label:g.month,short:new Date(g.month+'-15T12:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}),value:g.employers})),'Approved companies recording new connections each month, last twelve months');
+    const zeroCompanies=new URLSearchParams(location.search).get('connections')==='zero';
+    const directoryCompanies=zeroCompanies?companies.filter(e=>P.num(e.connections)===0):population.employers;
+    $('employerDirectory').innerHTML=U.table(['Company','Access','Recruiters','Students reached','Connections','Fair sources','Last connection'],directoryCompanies.map(e=>[U.esc(e.name),U.esc(e.status),U.number(e.recruiters),U.number(e.students),U.number(e.connections),U.number(e.events),U.esc(date(e.last_connection_at))]));
   }
   async function load(){
     const token=++loadSequence;$('printWorkspace').disabled=true;
@@ -106,15 +95,12 @@
       if($('workspaceContent'))$('workspaceContent').hidden=false;
       $('printWorkspace').disabled=false;if(mode!=='students')tapid.setMessage($('pageMessage'),'');
       if(location.hash==='#studentDirectoryPanel')$('studentDirectoryPanel')?.scrollIntoView({block:'start'});
-      if(mode==='employers'&&location.hash==='#employerDirectory'){$('employerDirectoryPanel').scrollIntoView({block:'start'});}
+      if(mode==='employers'&&location.hash==='#employerDirectory'){const panel=document.querySelector('.employer-details');panel.open=true;panel.scrollIntoView({block:'start'});}
     }catch(e){if(token===loadSequence){if($('workspaceContent'))$('workspaceContent').hidden=true;tapid.setMessage($('pageMessage'),e.code==='PGRST202'?'Run tapid_engagement_analytics.sql to enable this view.':e.message,'error');}}
     finally{if(token===loadSequence){if($('loadingWorkspace'))$('loadingWorkspace').hidden=true;if($('refreshWorkspace'))$('refreshWorkspace').disabled=false;}}
   }
   async function loadDirectory(){
     const token=++directorySequence;$('printDirectory').disabled=true;$('previousStudents').disabled=$('nextStudents').disabled=true;
-    const active=['studentSearch','studentCollege','studentMajor','studentYear','studentState'].some(id=>$(id).value.trim());
-    if(!active){$('studentDirectory').innerHTML='<div class="directory-prompt">Search or choose a filter to show students.</div>';$('directoryScope').textContent='';$('directoryPage').textContent='';$('studentPagination').hidden=true;page=0;directoryTotal=0;tapid.setMessage($('pageMessage'),'');return;}
-    $('studentPagination').hidden=false;
     $('studentDirectory').innerHTML='<div class="report-empty">Loading students…</div>';
     try{
       const filters={p_search:$('studentSearch').value.trim(),p_major:$('studentMajor').value,p_year:$('studentYear').value,p_state:$('studentState').value,p_page:page,p_college:$('studentCollege').value};
@@ -140,12 +126,8 @@
   }
   $('printWorkspace').onclick=print;window.addEventListener('afterprint',restorePrint);
   if(mode==='employers'){
-    const applyCompanyFilters=()=>{companyPage=0;renderCompanyDirectory();};
-    $('companySearch').oninput=applyCompanyFilters;['companyStatus','companyActivity','companyMajor','companyFair','companySort'].forEach(id=>$(id).onchange=applyCompanyFilters);
-    $('clearCompanyFilters').onclick=()=>{['companySearch','companyStatus','companyActivity','companyMajor','companyFair'].forEach(id=>$(id).value='');applyCompanyFilters();};
-    document.addEventListener('click',e=>{const b=e.target.closest('[data-company-quick]');if(!b)return;['companySearch','companyMajor','companyFair'].forEach(id=>$(id).value='');$('companyStatus').value='approved';$('companyActivity').value=b.dataset.companyQuick==='approved'?'':b.dataset.companyQuick;applyCompanyFilters();});
-    $('previousCompanies').onclick=()=>{companyPage--;renderCompanyDirectory();};$('nextCompanies').onclick=()=>{companyPage++;renderCompanyDirectory();};
-    const activity=new URLSearchParams(location.search).get('connections');if(['zero','connected','1-5','6-20','21-plus','recent'].includes(activity)){$('companyActivity').value=activity;$('companyStatus').value='approved';}
+    $('employerReachScope').onchange=employerMajorChart;
+    document.addEventListener('click',e=>{const b=e.target.closest('[data-directory-dimension="employer"]');if(!b)return;$('employerReachScope').value=b.dataset.directoryValue;employerMajorChart();const directory=document.querySelector('.employer-details');directory.open=true;directory.scrollIntoView({behavior:'smooth',block:'center'});});
     const view=v=>{const approvals=v==='approvals';$('employerAnalytics').hidden=approvals;$('employerApprovalSection').hidden=!approvals;document.querySelectorAll('[data-employer-view]').forEach(b=>b.classList.toggle('active',b.dataset.employerView===v));};
     $('employerViewTabs').onclick=e=>{const b=e.target.closest('[data-employer-view]');if(b)view(b.dataset.employerView);};
     view(new URLSearchParams(location.search).get('view')==='approvals'?'approvals':'analytics');
