@@ -7,7 +7,7 @@
 <title>Dashboard — TapID</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet"/>
 <link href="styles.css" rel="stylesheet"/>
-<link rel="stylesheet" href="dashboard-theme.css?v=20261008-grouped-v14"><link rel="stylesheet" href="dashboard-navigation.css?v=20261008-grouped-v14"><link rel="stylesheet" href="career-interests.css?v=20261007-interests-v7"><link rel="stylesheet" href="workspace-polish.css?v=20261008-grouped-v14"><link rel="stylesheet" href="workspace-layout.css?v=20261008-grouped-v14"></head>
+<link rel="stylesheet" href="dashboard-theme.css?v=20261008-grouped-v14"><link rel="stylesheet" href="dashboard-navigation.css?v=20261008-grouped-v14"><link rel="stylesheet" href="career-interests.css?v=20261007-interests-v7"><link rel="stylesheet" href="workspace-polish.css?v=20261008-grouped-v14"><link rel="stylesheet" href="workspace-layout.css?v=20261008-grouped-v14"><link rel="stylesheet" href="major-selector.css?v=20261009-v21"></head>
 <body class="dashboard-page student-dashboard-page workspace-tight">
 <header class="shell topbar workspace-topbar"><a class="brand" href="index.html">Tap<span>ID</span></a><div class="workspace-identity"><h1 id="welcome">Your TapID</h1></div><div class="nav-actions"><a class="btn btn-secondary" href="account.html">Account &amp; Privacy</a><button class="btn btn-secondary" id="logoutBtn" type="button">Log Out</button></div></header>
 <main class="dashboard-shell dashboard shell">
@@ -37,7 +37,7 @@
 <div class="form-grid"><div class="field"><label for="firstName">First name</label><input id="firstName" required=""/></div><div class="field"><label for="lastName">Last name</label><input id="lastName" required=""/></div></div>
 <div class="field"><label for="username">TapID username</label><input autocapitalize="none" id="username" required="" spellcheck="false"/><div class="help" hidden="" id="usernameLockHelp">Locked after card activation so the NFC/QR URL stays permanent.</div></div>
 <div class="field"><label for="school">University</label><input id="school" required=""/></div>
-<div class="field"><label for="major">Major</label><input id="major" required=""/></div>
+<div class="field"><label for="major">Major</label><input id="majorSearch" type="search" placeholder="Search Cal Poly majors" aria-label="Search majors" autocomplete="off"><select id="major" required><option value="">Choose your major</option></select><label for="majorCollege">College · automatically assigned</label><input id="majorCollege" readonly placeholder="Select a major to see your college" aria-label="Assigned college"><small class="subtle">Select your official program. If your previous entry is not recognized, confirm it here.</small></div>
 <div class="form-grid"><div class="field"><label for="schoolYear">Year in school</label><select id="schoolYear" required=""><option value="">Select…</option><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option><option>Graduate Student</option><option>Alumni</option></select></div><div class="field"><label for="graduationYear">Graduation year</label><input id="graduationYear" max="2100" min="2000" required="" type="number"/></div></div>
 <div class="field" id="alumniSinceField" hidden><label for="alumniSince">Alumni since</label><input id="alumniSince" max="2100" min="1900" type="number"/><div class="help">Keeps your TapID useful after graduation while preserving your permanent profile URL.</div></div>
 <div class="field"><label for="bio">Short bio</label><textarea id="bio" maxlength="700"></textarea></div>
@@ -266,6 +266,7 @@
 </script><script src="workspace-review.js?v=20261008-grouped-v14"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="fair-dashboard.js?v=20261007-fairalerts"></script><script src="app.js"></script>
+<script src="calpoly-programs.js?v=20261009-v21"></script><script src="major-selector-v21.js?v=20261009-v21"></script>
 <script>
     let currentUser;
     let currentProfile;
@@ -314,7 +315,7 @@
       usernameInput.disabled = Boolean(profile.card_activated);
       document.getElementById('usernameLockHelp').hidden = !profile.card_activated;
       document.getElementById('school').value = profile.school || '';
-      document.getElementById('major').value = profile.major || '';
+      TapIDMajors.populate(profile.school || '', profile.major || '');
       document.getElementById('schoolYear').value = profile.school_year || '';
       document.getElementById('graduationYear').value = profile.graduation_year || '';
       document.getElementById('alumniSince').value = profile.alumni_since || '';

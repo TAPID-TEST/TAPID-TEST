@@ -42,6 +42,16 @@
     for(const row of rows){const id=String(row[field]??'Unspecified');if(!groups.has(id))groups.set(id,[]);groups.get(id).push(row);}
     return [...groups].map(([key,values])=>({key,label:field==='company_id'?(values[0].company_name||'Unnamed employer'):key,...summarize(values,days,now)})).sort((a,b)=>b.connections-a.connections||a.label.localeCompare(b.label));
   }
-  const api={stages,stamp,pct,dateKey,observed,scope,summarize,breakdown};
+  function leaderboard(rows,kind='employers'){
+    const groups=new Map();
+    for(const row of rows){const key=kind==='employers'?String(row.company_id??''):row.student_key;if(!key)continue;
+      if(!groups.has(key))groups.set(key,{key,label:kind==='employers'?(row.company_name||'Unnamed employer'):(row.student_name||'Student '+key.slice(0,6)),peers:new Set(),connections:new Set()});
+      const g=groups.get(key),peer=kind==='employers'?row.student_key:String(row.company_id??'');if(!peer)continue;g.peers.add(peer);g.connections.add(peer+':'+row.event_key);
+    }
+    const list=[...groups.values()].map(g=>({key:g.key,label:g.label,connections:g.connections.size,reached:g.peers.size})).sort((a,b)=>b.connections-a.connections||a.label.localeCompare(b.label));
+    let rank=0,last=-1;return list.map((g,i)=>{if(g.connections!==last){rank=i+1;last=g.connections;}return {...g,rank};});
+  }
+  async function loadReport(client){let result=await client.rpc('university_fair_report_v2');let legacy=false;if(result.error?.code==='PGRST202'){legacy=true;result=await client.rpc('university_fair_report');}if(result.error)throw result.error;if(!result.data||!Array.isArray(result.data.rows)||!Array.isArray(result.data.events))throw new Error('Career-fair report returned an unexpected response.');return {data:result.data,legacy};}
+  const api={stages,stamp,pct,dateKey,observed,scope,summarize,breakdown,leaderboard,loadReport};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.FairReport=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

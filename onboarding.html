@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Set Up Your TapID</title>
   <link rel="stylesheet" href="styles.css">
-</head>
+<link rel="stylesheet" href="major-selector.css?v=20261009-v21"></head>
 <body class="onboarding-page">
   <header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a><button id="logoutBtn" class="btn btn-secondary" type="button">Log Out</button></header>
   <main class="auth-wrap">
@@ -21,7 +21,7 @@
         </div>
         <div class="field"><label for="username">TapID username</label><input id="username" autocapitalize="none" spellcheck="false" required></div>
         <div class="field"><label for="school">University</label><input id="school" placeholder="Cal Poly" required></div>
-        <div class="field"><label for="major">Major</label><input id="major" placeholder="Civil Engineering" required></div>
+        <div class="field"><label for="major">Major</label><input id="majorSearch" type="search" placeholder="Search Cal Poly majors" aria-label="Search majors" autocomplete="off"><select id="major" required><option value="">Choose your major</option></select><label for="majorCollege">College · automatically assigned</label><input id="majorCollege" readonly placeholder="Select a major to see your college" aria-label="Assigned college"><small class="subtle">Select your official program. If your previous entry is not recognized, confirm it here.</small></div>
         <div class="form-grid">
           <div class="field"><label for="schoolYear">Year in school</label><select id="schoolYear" required><option value="">Select…</option><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option><option>Graduate Student</option><option>Alumni</option></select></div>
           <div class="field"><label for="graduationYear">Graduation year</label><input id="graduationYear" type="number" min="2000" max="2100" placeholder="2027" required></div>
@@ -35,7 +35,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="app.js?v=20261006-reports"></script>
-  <script>
+  <script src="calpoly-programs.js?v=20261009-v21"></script><script src="major-selector-v21.js?v=20261009-v21"></script>
+<script>
     let currentUser;
     const message = document.getElementById('message');
     const saveBtn = document.getElementById('saveBtn');
@@ -58,7 +59,7 @@
           document.getElementById('school').value = 'Cal Poly';
           document.getElementById('school').readOnly = true;
         }
-        document.getElementById('major').value = profile.major || '';
+        await TapIDMajors.populate(document.getElementById('school').value, profile.major || currentUser?.user_metadata?.major || '');
         document.getElementById('schoolYear').value = profile.school_year || '';
         document.getElementById('graduationYear').value = profile.graduation_year || '';
         document.getElementById('bio').value = profile.bio || '';

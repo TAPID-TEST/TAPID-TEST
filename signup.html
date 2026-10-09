@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Create TapID</title>
   <link rel="stylesheet" href="styles.css">
-</head>
+<link rel="stylesheet" href="major-selector.css?v=20261009-v21"></head>
 <body class="auth-page">
   <header class="auth-nav auth-shell">
     <a class="brand auth-brand" href="index.html">Tap<span>ID</span></a>
@@ -34,7 +34,7 @@
           </div>
         </div>
 
-        <input id="username" type="hidden">
+        <input id="username" type="hidden"><input id="school" type="hidden" value="Cal Poly"><div class="field"><label for="major">Major</label><input id="majorSearch" type="search" placeholder="Search Cal Poly majors" aria-label="Search majors" autocomplete="off"><select id="major" required><option value="">Choose your major</option></select><label for="majorCollege">College · automatically assigned</label><input id="majorCollege" readonly placeholder="Select a major to see your college" aria-label="Assigned college"></div>
 
         <div class="field">
           <label for="email">University email</label>
@@ -62,7 +62,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="app.js?v=20261006-reports"></script>
+  <script src="calpoly-programs.js?v=20261009-v21"></script><script src="major-selector-v21.js?v=20261009-v21"></script>
   <script>
+    TapIDMajors.populate("Cal Poly");
     const form = document.getElementById('signupForm');
     const message = document.getElementById('message');
     const button = document.getElementById('signupBtn');
@@ -82,8 +84,9 @@
       const username = `${stem.slice(0,24)}-${crypto.randomUUID().slice(0,8)}`;
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
+      const major = document.getElementById('major').value;
 
-      if (!firstName || !lastName || !username || !email || password.length < 8) {
+      if (!firstName || !lastName || !username || !email || !major || password.length < 8) {
         tapid.setMessage(message, 'Complete every field and use a password of at least 8 characters.', 'error');
         return;
       }
@@ -102,7 +105,9 @@
             data: {
               username,
               first_name: firstName,
-              last_name: lastName
+              last_name: lastName,
+              major,
+              school: "Cal Poly"
             }
           }
         });
