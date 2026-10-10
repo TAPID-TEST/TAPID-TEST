@@ -1,3 +1,172 @@
+(function(root){
+  'use strict';
+  const DAY=86400000;
+  const stages=[['connected','Connections'],['contacted','Employer activity'],['interview','Interview reached'],['offer','Offer extended'],['accepted_offer','Offer accepted'],['internship','Internship confirmed'],['job','Hired']];
+  const employerStages=new Set(['contacted','screening','interview','offer','accepted_offer','internship','job']);
+  const stamp=v=>v?Date.parse(v):NaN;
+  const pct=(n,d)=>d?Math.round(n/d*100):null;
+  const dateKey=v=>{if(!Number.isFinite(stamp(v)))return '';const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(v));const get=t=>parts.find(p=>p.type===t).value;return `${get('year')}-${get('month')}-${get('day')}`;};
+  function observed(row){
+    const values=(Array.isArray(row.milestones)?row.milestones:[]).filter(x=>Number.isFinite(stamp(x.at)));
+    if(Number.isFinite(stamp(row.connected_at)))values.push({stage:'connected',at:row.connected_at});
+    if(Number.isFinite(stamp(row.first_follow_up_at)))values.push({stage:'contacted',at:row.first_follow_up_at});
+    // Only the current stage is known if historical capture was absent.
+    if(row.candidate_status&&Number.isFinite(stamp(row.updated_at)))values.push({stage:row.candidate_status,at:row.updated_at});
+    return values;
+  }
+  function scope(rows,filters={}){
+    return rows.filter(r=>(!filters.event||r.event_key===filters.event)&&(!filters.employer||String(r.company_id)===filters.employer)&&(!filters.major||r.major===filters.major)&&(!filters.year||r.school_year===filters.year)&&(!filters.from||dateKey(r.connected_at)>=filters.from)&&(!filters.through||dateKey(r.connected_at)<=filters.through));
+  }
+  function summarize(rows,days=0,now=Date.now()){
+    const reached=Object.fromEntries(stages.map(([s])=>[s,0])),current={},delays=[];
+    let mature=0,stale=0;
+    for(const row of rows){
+      const start=stamp(row.connected_at),cutoff=days?Math.min(now,start+days*DAY):now;
+      if(!days||start+days*DAY<=now)mature++;
+      const marks=observed(row).filter(x=>stamp(x.at)>=start&&stamp(x.at)<=cutoff);
+      const unique=new Set(marks.map(x=>x.stage));
+      if([...unique].some(stage=>employerStages.has(stage)))unique.add('contacted');
+      for(const [s]of stages)if(unique.has(s))reached[s]++;
+      const status=row.candidate_status==='follow_up'?'connected':['internship','accepted_offer'].includes(row.candidate_status)?'offer':row.candidate_status||'connected';current[status]=(current[status]||0)+1;
+      const first=stamp(row.first_follow_up_at);
+      if(Number.isFinite(first)&&first>=start&&first<=cutoff)delays.push((first-start)/DAY);
+      const anyEmployerActivity=observed(row).some(x=>employerStages.has(x.stage)&&stamp(x.at)>=start&&stamp(x.at)<=now);
+      if(!Number.isFinite(first)&&!anyEmployerActivity&&now-start>=7*DAY)stale++;
+    }
+    delays.sort((a,b)=>a-b);
+    const median=delays.length?(delays[Math.floor((delays.length-1)/2)]+delays[Math.ceil((delays.length-1)/2)])/2:null;
+    return {connections:rows.length,students:new Set(rows.map(r=>r.student_key).filter(Boolean)).size,employers:new Set(rows.map(r=>r.company_id).filter(x=>x!=null)).size,reached,current,mature,stale,median,coverage:pct(reached.contacted,rows.length)};
+  }
+  function breakdown(rows,field,days,now){
+    const groups=new Map();
+    for(const row of rows){const id=String(row[field]??'Unspecified');if(!groups.has(id))groups.set(id,[]);groups.get(id).push(row);}
+    return [...groups].map(([key,values])=>({key,label:field==='company_id'?(values[0].company_name||'Unnamed employer'):key,...summarize(values,days,now)})).sort((a,b)=>b.connections-a.connections||a.label.localeCompare(b.label));
+  }
+  function leaderboard(rows,kind='employers'){
+    const groups=new Map();
+    for(const row of rows){const key=kind==='employers'?String(row.company_id??''):row.student_key;if(!key)continue;
+      if(!groups.has(key))groups.set(key,{key,label:kind==='employers'?(row.company_name||'Unnamed employer'):(row.student_name||'Student '+key.slice(0,6)),peers:new Set(),connections:new Set()});
+      const g=groups.get(key),peer=kind==='employers'?row.student_key:String(row.company_id??'');if(!peer)continue;g.peers.add(peer);g.connections.add(peer+':'+row.event_key);
+    }
+    const list=[...groups.values()].map(g=>({key:g.key,label:g.label,connections:g.connections.size,reached:g.peers.size})).sort((a,b)=>b.connections-a.connections||a.label.localeCompare(b.label));
+    let rank=0,last=-1;return list.map((g,i)=>{if(g.connections!==last){rank=i+1;last=g.connections;}return {...g,rank};});
+  }
+  async function loadReport(client){let result=await client.rpc('university_fair_report_v2');let legacy=false;if(result.error?.code==='PGRST202'){legacy=true;result=await client.rpc('university_fair_report');}if(result.error)throw result.error;if(!result.data||!Array.isArray(result.data.rows)||!Array.isArray(result.data.events))throw new Error('Career-fair report returned an unexpected response.');return {data:result.data,legacy};}
+  const api={stages,stamp,pct,dateKey,observed,scope,summarize,breakdown,leaderboard,loadReport};
+  if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.FairReport=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(root){
+  'use strict';
+  const num=value=>Math.max(0,Number(value)||0);
+  const rate=(n,d)=>d>0?Math.round(n/d*100):null;
+  function employerSummary(employers){
+    return {companies:employers.length,approved:employers.filter(e=>e.status==='approved').length,
+      pending:employers.filter(e=>e.status==='pending').length,declined:employers.filter(e=>e.status==='declined').length,
+      active:employers.filter(e=>num(e.connections)>0).length,
+      approvedActive:employers.filter(e=>e.status==='approved'&&num(e.connections)>0).length,
+      pendingRecruiters:employers.reduce((n,e)=>n+num(e.pending_recruiters),0),
+      recruiters:employers.reduce((n,e)=>n+num(e.recruiters),0)};
+  }
+  function setupStates(students){return [
+    {label:'Confirm email',value:num(students.unconfirmed),color:'#d5ddd3'},
+    {label:'Finish basics',value:num(students.setup_needed),color:'#acc3a9'},
+    {label:'Activate profile',value:num(students.ready_to_activate),color:'#73a581'},
+    {label:'Active profile',value:num(students.public_active),color:'#15533a'}
+  ];}
+  function compactGroups(groups,limit=8){
+    const sorted=groups.slice().sort((a,b)=>num(b.accounts)-num(a.accounts)||a.label.localeCompare(b.label));
+    if(sorted.length<=limit)return sorted;
+    return [...sorted.slice(0,limit-1),{label:'Other majors',accounts:sorted.slice(limit-1).reduce((n,g)=>n+num(g.accounts),0)}];
+  }
+  const api={num,rate,employerSummary,setupStates,compactGroups};
+  if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.UniversityPopulation=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+// Engagement charts retain every group. Small majors are never hidden in "Other".
+(function(root){
+ const P=typeof module!=='undefined'&&module.exports?module.exports:root.UniversityPopulation;
+ P.engagementGroups=function(rows,dimension,college=''){
+  const totals=new Map();
+  for(const row of rows||[]){if(college&&row.college!==college)continue;
+   const label=row[dimension]||'Not set';const group=totals.get(label)||{label,accounts:0,connected:0,connections:0};
+   for(const key of ['accounts','connected','connections'])group[key]+=P.num(row[key]);totals.set(label,group);
+  }
+  return [...totals.values()].sort((a,b)=>b.connections-a.connections||a.label.localeCompare(b.label));
+ };
+ P.engagedEmployers=employers=>employers.filter(e=>e.status==='approved');
+ P.recentEmployers=employers=>employers.filter(e=>P.num(e.connections_30_days)>0);
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(root){
+ const P=typeof module!=='undefined'&&module.exports?module.exports:root.UniversityPopulation;
+ P.companyActivityMatches=function(e,activity){const n=P.num(e.connections);return !activity||activity==='zero'&&n===0||activity==='connected'&&n>0||activity==='1-5'&&n>=1&&n<=5||activity==='6-20'&&n>=6&&n<=20||activity==='21-plus'&&n>=21||['100-plus','250-plus','500-plus','1000-plus'].includes(activity)&&n>=Number(activity.split('-')[0])||activity==='recent'&&P.num(e.connections_30_days)>0;};
+ P.filterCompanies=function(rows,{search='',status='',activity='',major='',event='',sort='connections'}={}){const filtered=rows.filter(e=>(!search||String(e.name||'').toLowerCase().includes(search.trim().toLowerCase()))&&(!status||status==='all'||e.status===status)&&P.companyActivityMatches(e,activity)&&(!major||(e.majors||[]).some(g=>g.label===major&&P.num(g.connections)>0))&&(!event||(e.eventKeys||[]).includes(event)));return filtered.sort((a,b)=>(sort==='name'?0:sort==='students'?P.num(b.students)-P.num(a.students):sort==='recent'?(Date.parse(b.last_connection_at)||0)-(Date.parse(a.last_connection_at)||0):P.num(b.connections)-P.num(a.connections))||String(a.name||'').localeCompare(String(b.name||'')));};
+ P.companyDistribution=function(rows){return [['zero','Zero connections'],['1-5','1–5 connections'],['6-20','6–20 connections'],['21-plus','21+ connections']].map(([key,label])=>({key,label,value:rows.filter(e=>P.companyActivityMatches(e,key)).length}));};
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(root){
+  'use strict';
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const number=v=>Number(v||0).toLocaleString();
+  function kpis(items){return items.map(x=>{const content=`<strong>${esc(x.value)}</strong><span>${esc(x.label)}</span>`;return x.href?`<a class="report-kpi kpi-link" href="${esc(x.href)}">${content}</a>`:`<article class="report-kpi">${content}</article>`;}).join('');}
+  function table(headers,rows){return rows.length?`<table class="report-table"><thead><tr>${headers.map(h=>`<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`:'<div class="report-empty">No data yet</div>';}
+  function bars(items,denominator){
+    if(!items.length)return '<div class="report-empty">No data yet</div>';
+    const max=denominator??Math.max(...items.map(x=>Number(x.value)||0),1);
+    return items.map(x=>{const value=Number(x.value)||0,width=max?Math.min(100,value/max*100):0;return `<div class="workspace-bar"><div><span>${esc(x.label)}</span><strong>${number(value)}${denominator!=null?` <small>${max?Math.round(value/max*100)+'%':'—'}</small>`:''}</strong></div><div class="workspace-track"><i style="width:${width}%;background:${x.color||'#347853'}"></i></div></div>`;}).join('');
+  }
+  function donut(items,label){
+    const total=items.reduce((n,x)=>n+(Number(x.value)||0),0);let angle=0;
+    const segments=items.map(x=>{const from=angle;angle+=total?Number(x.value)/total*100:0;return `${x.color} ${from}% ${angle}%`;});
+    return `<div class="donut-flex"><div class="report-donut" style="background:${total?'conic-gradient('+segments.join(',')+')':'#e5ebe1'}"><div><strong>${number(total)}</strong><small>${esc(label)}</small></div></div><div class="report-legend">${items.map(x=>`<div><i style="background:${x.color}"></i>${esc(x.label)} <b>${number(x.value)}</b></div>`).join('')}</div></div>`;
+  }
+  function columns(items,label){
+    const max=Math.max(...items.map(x=>Number(x.value)||0),1),width=620,base=155,step=560/Math.max(items.length,1);
+    return `<svg class="workspace-chart" viewBox="0 0 ${width} 198" role="img" aria-label="${esc(label)}">${[...new Set([0,Math.floor(max/2),max])].map(t=>`<line x1="32" x2="612" y1="${base-120*t/max}" y2="${base-120*t/max}" stroke="#e3e9df"/><text x="0" y="${base-120*t/max+4}" fill="#748477" font-size="10">${number(t)}</text>`).join('')}${items.map((x,i)=>{const v=Number(x.value)||0,h=v/max*120,pos=40+i*step;return `<rect x="${pos}" y="${base-h}" width="${Math.max(8,step-12)}" height="${h}" rx="5" fill="${i===items.length-1?'#15533a':'#88b195'}"><title>${esc(x.label)}: ${number(v)}</title></rect><text x="${pos+(step-12)/2}" y="${base-h-7}" text-anchor="middle" font-size="11" fill="#32563e">${number(v)}</text><text x="${pos+(step-12)/2}" y="177" text-anchor="middle" font-size="10" fill="#748477">${esc(x.short||x.label)}</text>`;}).join('')}</svg>`;
+  }
+  root.UniversityUI={esc,number,kpis,table,bars,donut,columns};
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(root){
+ const U=root.UniversityUI;
+ U.volumeBars=function(items,label='connections'){
+  if(!items.length||!items.some(x=>Number(x.value)>0||x.accounts!=null))return '<div class="report-empty">No '+U.esc(label)+' recorded yet</div>';
+  const total=items.reduce((n,x)=>n+(Number(x.value)||0),0),max=Math.max(...items.map(x=>Number(x.value)||0),1);
+  return '<div class="engagement-bars">'+items.map(x=>{
+   const value=Number(x.value)||0;return `<div class="engagement-row"><div class="engagement-row-head"><span>${x.filter?`<button type="button" class="chart-filter-button" data-directory-dimension="${U.esc(x.filter.dimension)}" data-directory-value="${U.esc(x.filter.value)}">${U.esc(x.label)}</button>`:U.esc(x.label)}</span><strong>${U.number(value)} <small>${U.esc(label)}</small></strong></div><div class="workspace-track" role="img" aria-label="${U.esc(x.label)}: ${U.number(value)} ${U.esc(label)}"><i style="width:${value/max*100}%"></i></div>${x.accounts!=null?`<p class="engagement-context">${x.accounts?Math.round((x.connected||0)/x.accounts*100)+'%':'—'} participation · ${U.number(x.connected||0)} of ${U.number(x.accounts)} students</p>`:`<span class="engagement-share">${(total?Math.round(value/total*100):0)}% of connections shown</span>`}</div>`;
+  }).join('')+'</div>';
+ };
+ U.participation=function(connected,total,label){
+  const rate=total?Math.round(connected/total*100):null;
+  return `<div class="engagement-participation"><strong>${rate===null?'—':rate+'%'}</strong><span>${U.number(connected)} of ${U.number(total)} ${U.esc(label)} have connections</span><div class="participation-track" role="img" aria-label="${U.number(connected)} of ${U.number(total)} ${U.esc(label)} have connections"><i style="width:${rate||0}%"></i></div><div class="participation-legend"><span><i></i>Connected</span><span><i></i>No connections yet</span></div></div>`;
+ };
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(root){
+ const U=root.UniversityUI;
+ // Native buttons keep chart navigation available to keyboard and touch users.
+ U.categoryBars=function(items,unit='connections'){
+  if(!items.length)return '<div class="report-empty">No student accounts yet</div>';
+  const max=Math.max(...items.map(x=>Number(x.value)||0),1);
+  return '<div class="category-chart" role="group" aria-label="Connections by category">'+items.map(x=>{
+   const value=Math.max(0,Number(x.value)||0),attrs=x.college!=null?`data-college-drill="${U.esc(x.college)}"`:x.filter?`data-directory-dimension="${U.esc(x.filter.dimension)}" data-directory-value="${U.esc(x.filter.value)}"`:'';
+   return `<button type="button" class="category-column" ${attrs} aria-label="${U.esc(x.label)}: ${U.number(value)} ${U.esc(unit)}"><span class="category-plot"><span class="category-bar" style="height:${value/max*100}%"><strong>${U.number(value)}</strong></span></span><span class="category-label">${U.esc(x.label)}</span></button>`;
+  }).join('')+'</div>';
+ };
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(root){
+ const U=root.UniversityUI;
+ U.companyDetails=function(company,{outcomes={reached:{}},events=[],lastConnection='—',expanded=false,available=true}={}){
+  const num=v=>U.number(v),stat=(label,value)=>`<div class="company-detail-stat"><strong>${U.esc(value)}</strong><span>${U.esc(label)}</span></div>`;
+  const outcome=v=>available?num(v):'—';
+  const majors=(company.majors||[]).filter(g=>Number(g.connections)>0);
+  const count=new Set(majors.map(g=>g.label).filter(label=>label&&!/^(not set|unspecified|unclassified major)$/i.test(label))).size;
+  return `<details class="company-directory-entry"${expanded?' open':''}><summary><span class="company-directory-identity"><strong>${U.esc(company.name)}</strong><span class="workspace-status ${U.esc(company.status)}">${U.esc(company.status)}</span></span><span><strong>${num(company.students)}</strong><span>Students reached</span></span><span><strong>${num(company.connections)}</strong><span>Connections</span></span><span><strong>${num(count)}</strong><span>Majors reached</span></span><span class="company-expand-action"><span class="company-view-label">View analytics</span><span class="company-hide-label">Hide analytics</span><span class="company-entry-chevron" aria-hidden="true">⌄</span></span></summary><div class="company-detail-body"><div class="company-detail-heading"><h3>${U.esc(company.name)}</h3><span>Last connection · ${U.esc(lastConnection)}</span></div><div class="company-detail-stats">${stat('Recruiter accounts',num(company.recruiters))}${stat('Approved recruiters',num(company.approved_recruiters))}${stat('Pending recruiter requests',num(company.pending_recruiters))}${stat('Majors reached',num(count))}${stat('Career-fair sources',num(company.events))}</div><div class="company-detail-grid"><section><h4>Connections by major</h4>${majors.length?U.volumeBars(majors.map(g=>({label:g.label,value:g.connections}))):'<p class="directory-prompt">No major connections recorded.</p>'}</section><section><h4>Last 30 days</h4><div class="company-detail-stats">${stat('New connections',num(company.connections_30_days))}${stat('Students reached',num(company.students_30_days))}</div><h4>Recorded outcomes</h4><div class="company-detail-stats">${stat('Interviews',outcome(outcomes.reached.interview))}${stat('Offers extended',outcome(outcomes.reached.offer))}${stat('Offers accepted',outcome(outcomes.reached.accepted_offer))}${stat('Internships confirmed',outcome(outcomes.reached.internship))}${stat('Hires',outcome(outcomes.reached.job))}</div></section></div><section><h4>Career-fair activity</h4>${!available?'<p class="directory-prompt">Fair outcomes are unavailable. Refresh to retry.</p>':events.length?U.table(['Career fair','Date','Students reached','Connections','Interviews','Offers'],events.map(e=>[U.esc(e.name),U.esc(e.date),num(e.students),num(e.connections),num(e.reached.interview),num(e.reached.offer)])):'<p class="directory-prompt">No career-fair connections recorded.</p>'}</section></div></details>`;
+ };
+})(typeof globalThis!=='undefined'?globalThis:this);
+
 (function(){
   'use strict';
   const $=id=>document.getElementById(id),U=UniversityUI,P=UniversityPopulation,M=FairReport,mode=document.body.dataset.workspace;

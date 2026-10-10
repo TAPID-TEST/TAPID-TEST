@@ -39,12 +39,23 @@
 (function(root){
  const U=root.UniversityUI;
  // Native buttons keep chart navigation available to keyboard and touch users.
- U.categoryBars=function(items){
+ U.categoryBars=function(items,unit='connections'){
   if(!items.length)return '<div class="report-empty">No student accounts yet</div>';
   const max=Math.max(...items.map(x=>Number(x.value)||0),1);
   return '<div class="category-chart" role="group" aria-label="Connections by category">'+items.map(x=>{
    const value=Math.max(0,Number(x.value)||0),attrs=x.college!=null?`data-college-drill="${U.esc(x.college)}"`:x.filter?`data-directory-dimension="${U.esc(x.filter.dimension)}" data-directory-value="${U.esc(x.filter.value)}"`:'';
-   return `<button type="button" class="category-column" ${attrs} aria-label="${U.esc(x.label)}: ${U.number(value)} connections"><span class="category-plot"><span class="category-bar" style="height:${value/max*100}%"><strong>${U.number(value)}</strong></span></span><span class="category-label">${U.esc(x.label)}</span></button>`;
+   return `<button type="button" class="category-column" ${attrs} aria-label="${U.esc(x.label)}: ${U.number(value)} ${U.esc(unit)}"><span class="category-plot"><span class="category-bar" style="height:${value/max*100}%"><strong>${U.number(value)}</strong></span></span><span class="category-label">${U.esc(x.label)}</span></button>`;
   }).join('')+'</div>';
+ };
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+(function(root){
+ const U=root.UniversityUI;
+ U.companyDetails=function(company,{outcomes={reached:{}},events=[],lastConnection='—',expanded=false,available=true}={}){
+  const num=v=>U.number(v),stat=(label,value)=>`<div class="company-detail-stat"><strong>${U.esc(value)}</strong><span>${U.esc(label)}</span></div>`;
+  const outcome=v=>available?num(v):'—';
+  const majors=(company.majors||[]).filter(g=>Number(g.connections)>0);
+  const count=new Set(majors.map(g=>g.label).filter(label=>label&&!/^(not set|unspecified|unclassified major)$/i.test(label))).size;
+  return `<details class="company-directory-entry"${expanded?' open':''}><summary><span class="company-directory-identity"><strong>${U.esc(company.name)}</strong><span class="workspace-status ${U.esc(company.status)}">${U.esc(company.status)}</span></span><span><strong>${num(company.students)}</strong><span>Students reached</span></span><span><strong>${num(company.connections)}</strong><span>Connections</span></span><span><strong>${num(count)}</strong><span>Majors reached</span></span><span class="company-expand-action"><span class="company-view-label">View analytics</span><span class="company-hide-label">Hide analytics</span><span class="company-entry-chevron" aria-hidden="true">⌄</span></span></summary><div class="company-detail-body"><div class="company-detail-heading"><h3>${U.esc(company.name)}</h3><span>Last connection · ${U.esc(lastConnection)}</span></div><div class="company-detail-stats">${stat('Recruiter accounts',num(company.recruiters))}${stat('Approved recruiters',num(company.approved_recruiters))}${stat('Pending recruiter requests',num(company.pending_recruiters))}${stat('Majors reached',num(count))}${stat('Career-fair sources',num(company.events))}</div><div class="company-detail-grid"><section><h4>Connections by major</h4>${majors.length?U.volumeBars(majors.map(g=>({label:g.label,value:g.connections}))):'<p class="directory-prompt">No major connections recorded.</p>'}</section><section><h4>Last 30 days</h4><div class="company-detail-stats">${stat('New connections',num(company.connections_30_days))}${stat('Students reached',num(company.students_30_days))}</div><h4>Recorded outcomes</h4><div class="company-detail-stats">${stat('Interviews',outcome(outcomes.reached.interview))}${stat('Offers extended',outcome(outcomes.reached.offer))}${stat('Offers accepted',outcome(outcomes.reached.accepted_offer))}${stat('Internships confirmed',outcome(outcomes.reached.internship))}${stat('Hires',outcome(outcomes.reached.job))}</div></section></div><section><h4>Career-fair activity</h4>${!available?'<p class="directory-prompt">Fair outcomes are unavailable. Refresh to retry.</p>':events.length?U.table(['Career fair','Date','Students reached','Connections','Interviews','Offers'],events.map(e=>[U.esc(e.name),U.esc(e.date),num(e.students),num(e.connections),num(e.reached.interview),num(e.reached.offer)])):'<p class="directory-prompt">No career-fair connections recorded.</p>'}</section></div></details>`;
  };
 })(typeof globalThis!=='undefined'?globalThis:this);

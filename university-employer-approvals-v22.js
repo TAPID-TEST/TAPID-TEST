@@ -1,0 +1,36 @@
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  let emailStates=new Map();
+  let records=[],status='pending',review=null,universityUser=null;
+  const when=v=>v?new Date(v).toLocaleDateString():'';
+  function safeWebsite(value){try{const url=new URL(value);return ['http:','https:'].includes(url.protocol)?url.href:null;}catch{return null;}}
+  async function sendApprovalEmail(userId){
+    const response=await tapid.client.functions.invoke('send-employer-approval-email',{body:{user_id:userId}});
+    if(response.error||response.data?.error)throw new Error('Approval is saved. The email could not be sent yet. Set up the email service or use Retry approval email.');
+    return response.data?.state==='sent'?'Approval email accepted by the email service.':'Approval email is being sent.';
+  }
+  function emailControl(r){
+    if(r.status!=='verified')return '';
+    const job=emailStates.get(r.user_id);
+    if(job?.state==='sent')return '<p class="approval-email-note">Approval email accepted</p>';
+    return `<p class="approval-email-note">${job?.state==='sending'?'Email sending':job?.state==='failed'?'Approval email needs attention':'Approval email pending'}</p><button class="btn btn-secondary" data-email="${esc(r.user_id)}">${job?'Retry approval email':'Send approval email'}</button>`;
+  }
+  function render(){
+    for(const key of ['pending','verified','rejected'])$(key+'Count').textContent=records.filter(r=>r.status===key).length;
+    const query=$('approvalSearch').value.trim().toLowerCase(),rows=records.filter(r=>r.status===status&&[r.company_name,r.recruiter_name,r.email].join(' ').toLowerCase().includes(query));
+    $('approvalList').innerHTML=rows.map(r=>{const website=safeWebsite(r.website);return `<article class="approval-card"><div><h3>${esc(r.company_name)}</h3><p>${esc(r.recruiter_name)}${r.title?' · '+esc(r.title):''}</p><p><a href="mailto:${esc(r.email)}">${esc(r.email)}</a> · <span>${r.email_confirmed?'Email confirmed':'Email unconfirmed'}</span></p>${website?`<p><a href="${esc(website)}" target="_blank" rel="noopener">${esc(new URL(website).hostname)} ↗</a></p>`:'<p>Website not provided</p>'}${r.description?`<p>${esc(r.description)}</p>`:''}<p class="approval-history">Requested ${esc(when(r.requested_at))}${r.reviewed_at?' · Last reviewed '+esc(when(r.reviewed_at)):''}</p>${r.reason?`<p>${esc(r.reason)}</p>`:''}${(r.history||[]).length?`<details class="approval-history"><summary>Approval history · ${r.history.length}</summary>${r.history.map(h=>`<p>${esc(when(h.at))} · ${esc(h.status==='verified'?'Approved':'Declined')} ${h.reason?'· '+esc(h.reason):''}</p>`).join('')}</details>`:''}</div><div class="approval-actions">${emailControl(r)}${r.status!=='verified'?`<button class="btn btn-primary" data-review="${esc(r.user_id)}" data-decision="verified" ${r.email_confirmed?'':'disabled'}>Approve</button>`:''}${r.status!=='rejected'?`<button class="btn btn-secondary" data-review="${esc(r.user_id)}" data-decision="rejected">${r.status==='verified'?'Revoke approval':'Decline'}</button>`:''}</div></article>`;}).join('')||'<div class="card report-empty">'+(query?'No matching employers':status==='pending'?'No recruiters awaiting review':status==='verified'?'No approved recruiters':'No declined recruiters')+'</div>';
+  }
+  async function load(){
+    $('refreshApprovals').disabled=true;
+    try{const ctx=await requireUniversityCardAccess();universityUser=ctx.user;$('schoolName').textContent=ctx.admin.school_name;const r=await tapid.client.rpc('university_employer_approvals');if(r.error)throw r.error;records=r.data||[];const emails=await tapid.client.rpc('university_approval_email_status');emailStates=new Map((emails.data||[]).map(j=>[j.user_id,j]));render();}
+    catch(e){tapid.setMessage($('approvalMessage'),e.code==='PGRST202'?'Install the university workspace SQL update to enable employer approvals.':e.message,'error');}
+    finally{$('refreshApprovals').disabled=false;}
+  }
+  $('approvalTabs').onclick=e=>{const b=e.target.closest('[data-status]');if(!b)return;status=b.dataset.status;document.querySelectorAll('[data-status]').forEach(x=>x.classList.toggle('active',x===b));render();};
+  $('approvalSearch').oninput=render;
+  $('approvalList').onclick=async e=>{const emailButton=e.target.closest('[data-email]');if(emailButton){emailButton.disabled=true;try{await requireUniversityCardAccess(universityUser.id);const message=await sendApprovalEmail(emailButton.dataset.email);await load();tapid.setMessage($('approvalMessage'),message,'success');}catch(error){tapid.setMessage($('approvalMessage'),error.message,'error');}finally{emailButton.disabled=false;}return;}const b=e.target.closest('[data-review]');if(!b)return;const row=records.find(r=>r.user_id===b.dataset.review);review={row,decision:b.dataset.decision};$('reviewTitle').textContent=review.decision==='verified'?'Approve recruiter':'Decline / revoke approval';$('reviewIdentity').textContent=row.company_name+' · '+row.email;$('reviewReason').value='';$('reviewReason').required=review.decision==='rejected';$('requiredReason').textContent=review.decision==='rejected'?'(required)':'(optional)';$('confirmReview').textContent=review.decision==='verified'?'Approve recruiter':'Decline recruiter';tapid.setMessage($('reviewMessage'),'');$('reviewDialog').showModal();};
+  for(const id of ['closeReview','cancelReview'])$(id).onclick=()=>$('reviewDialog').close();
+  $('reviewForm').onsubmit=async e=>{e.preventDefault();if(!review)return;const reason=$('reviewReason').value.trim();if(review.decision==='rejected'&&!reason)return;tapid.setBusy($('confirmReview'),true,'Saving…');try{await requireUniversityCardAccess(universityUser.id);const r=await tapid.client.rpc('review_employer_account',{p_user_id:review.row.user_id,p_status:review.decision,p_reason:reason||null});if(r.error)throw r.error;$('reviewDialog').close();const approvedUser=review.decision==='verified'?review.row.user_id:null;review=null;let feedback='Recruiter approval updated.',feedbackType='success';if(approvedUser){try{feedback='Recruiter approved. '+await sendApprovalEmail(approvedUser);}catch(error){feedback=error.message;feedbackType='error';}}await load();window.dispatchEvent(new Event('tapid-employer-approval-updated'));tapid.setMessage($('approvalMessage'),feedback,feedbackType);}catch(e){tapid.setMessage($('reviewMessage'),e.message,'error');}finally{tapid.setBusy($('confirmReview'),false);}};
+  $('refreshApprovals').onclick=load;$('logoutBtn').onclick=async()=>{await tapid.client.auth.signOut();sessionStorage.removeItem('tapid-university-explicit-login');location.replace('university-login.html');};load();
+})();
