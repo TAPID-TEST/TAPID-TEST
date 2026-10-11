@@ -1,23 +1,19 @@
-TAPID V23 — UNIVERSITY POPULATION RANKINGS AND CAREER FAIR WORKSPACE
+TAPID V24 — COMPACT UNIVERSITY ADMINISTRATION
 
-This package INCLUDES the previous V22 employer statistics/approval fix. Use this package instead of uploading V22 separately.
-Upload ALL 14 website files in this ZIP into the website root, replacing existing files and adding new ones. Commit, wait for deployment, then reload.
-No new SQL or Edge Function changes for this update. Previously supplied university engagement/report/approval SQL must already be installed. V21 SQL provides named student rankings and the standardized major catalog if it has not been installed yet.
+Includes the previous V23 university employer/student/career-fair update. Upload ALL 18 website files from this ZIP, then run tapid_university_administration_v24.sql in the Supabase SQL Editor. No Edge Function change. The SQL also aligns existing card issuance with recognized university-name aliases.
+The SQL adds two read-only university-scoped functions for student/card lookup and the latest 50 card records. Existing university engagement analytics/card issuance SQL is required. Prior V21 SQL remains needed for named rankings and the canonical program catalog.
 
-Changes:
-- Student leaderboard is on Students, above the student directory.
-- Employer leaderboard is on Employers, above the employer directory.
-- Both rank the top ten across fairs/sources by default and allow choosing a single fair. Tied counts share a rank; repeat recruiter connections to the same company at the same fair are deduplicated. Rankings are separate from directory filters and remain visible without a directory search.
-- Career Fairs now focuses on finding and reviewing events. Search by name, filter by event status or date range, and select View results.
-- Add a career fair remains linked to the existing setup workflow.
-- Removed duplicated KPI cards, both leaderboards and the extra student/employer analytics tabs from Career Fairs.
-- The selected event has a compact results table for connections, participating students and employers, interviews and offers. These are event-specific results, not university account totals.
-- Compare with another fair to see side-by-side counts and differences. Optional first 7/30/90-day results windows apply to recorded milestones. Completed-window comparison is available to avoid comparing mature results with incomplete windows.
-- A summary table across fairs provides quick results review. CSV exports that table; Print report / Save PDF includes the selected event, comparison and summary.
-- Previous fix included: employer KPI statistics, Approvals navigation independent of analytics loads, separate approval error messages, removal of the three nonworking quick-filter buttons, and resilient loading when fair outcome details fail.
-- Unfiltered student/employer directories still wait for search or filter selection. Employer detail analytics remain expandable.
+Administration:
+- One Administration title and university label. Removed repeated administration banners and large empty card layout.
+- Four section buttons: Account access, Majors & colleges, Cards & activation, Card activity. Only the selected workspace is shown.
+- Account access displays the verified current university account and scope. This release does not introduce staff invitation/role management, editable university settings or a general audit log.
+- Program catalog is searchable/filterable by college. Reads the canonical program-options function; Cal Poly's packaged catalog provides fallback if that function is unavailable. The catalog is read-only in Administration; updating it uses the existing controlled program update.
+- Student lookup returns at most 20 same-university matches and shows profile activation plus existing card serials/status/dates. Issuance form opens only after selecting a student; username is read-only. Existing serial uniqueness and verified-university checks are retained.
+- Card activity shows the latest 50 issuance records and their current status/activation date. It is a card-record view, not a log of every historical action.
+- Existing legacy CSV import and employer matching remain collapsed; matching data loads when opened. Import failure cannot prevent the main account/catalog workspace from loading.
+- Career-fair creation lives on Career Fairs. Back to overview and employer-approval links route to their existing pages.
 
-Validation: all 13 local suites, previous approval navigation/bundle checks, and new runtime tests for fair search/status/date filters, selection, comparison and leaderboard filtering passed. No signed-in live website or rendered browser verification was performed.
-Suggested commit: Reorganize university rankings and career fair results; fix employer approvals
+Previous V23 fixes included: employer KPI statistics, independent Approvals navigation, removed quick-filter shortcuts, Student/Employer leaderboards on their own tabs, directory filters, event search/status/date filters, fair result review/comparison, CSV and printing.
 
-Developer note: versioned employer/fair entry scripts bundle shared dependencies. Regenerate the bundles after editing their shared source modules.
+Validation: 13 existing local test suites, V23 runtime checks and administration-specific tests passed. Card selection, escaping, issuance payload guards and bounded university-scoped SQL interfaces were checked locally. SQL was not executed live; no signed-in or rendered browser verification performed.
+Commit: Simplify university administration and add scoped card lookup
