@@ -1,0 +1,685 @@
+{
+  "verified_at": "2026-10-11",
+  "catalog_edition": "2026-2028",
+  "source": "https://catalog.calpoly.edu/programs/programs.pdf",
+  "distinct_major_labels": 94,
+  "programs": [
+    {
+      "name": "Aerospace Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/aerospace/aerospace-engineering-bs/",
+        "https://catalog.calpoly.edu/engineering/aerospace/aerospace-engineering-ms/"
+      ]
+    },
+    {
+      "name": "Agricultural Business",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agribusiness/agricultural-business-bs/"
+      ]
+    },
+    {
+      "name": "Agricultural Communication",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agricultural-education-communication/agricultural-communication-bs/"
+      ]
+    },
+    {
+      "name": "Agricultural Science",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agricultural-education-communication/agricultural-science-bs/"
+      ]
+    },
+    {
+      "name": "Agricultural Systems Management",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/bioresource-agricultural-engineering/agricultural-systems-management-bs/"
+      ]
+    },
+    {
+      "name": "Animal Science",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/animal-science/animal-science-bs/"
+      ]
+    },
+    {
+      "name": "Anthropology and Geography",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/social-sciences/anthropology-geography-bs/"
+      ]
+    },
+    {
+      "name": "Architectural Engineering",
+      "college_name": "College of Architecture and Environmental Design",
+      "sources": [
+        "https://catalog.calpoly.edu/architecture-environmental-design/architectural-engineering/architectural-engineering-bs/",
+        "https://catalog.calpoly.edu/architecture-environmental-design/architectural-engineering/architectural-engineering-ms/"
+      ]
+    },
+    {
+      "name": "Architecture",
+      "college_name": "College of Architecture and Environmental Design",
+      "sources": [
+        "https://catalog.calpoly.edu/architecture-environmental-design/architecture/architecture-barch/"
+      ]
+    },
+    {
+      "name": "Art and Design",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/art-design/art-design-bfa/"
+      ]
+    },
+    {
+      "name": "Biochemistry",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/chemistry-biochemistry/biochemistry-bs/"
+      ]
+    },
+    {
+      "name": "Biological Sciences",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/biological-sciences/biological-sciences-bs/",
+        "https://catalog.calpoly.edu/science-mathematics/biological-sciences/biological-sciences-ms/"
+      ]
+    },
+    {
+      "name": "Biomedical Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/biomedical/biomedical-engineering-bs/",
+        "https://catalog.calpoly.edu/engineering/biomedical/biomedical-engineering-ms/"
+      ]
+    },
+    {
+      "name": "BioResource and Agricultural Engineering",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/bioresource-agricultural-engineering/bioresource-agricultural-engineering-bs/"
+      ]
+    },
+    {
+      "name": "Business Administration",
+      "college_name": "Orfalea College of Business",
+      "sources": [
+        "https://catalog.calpoly.edu/business/undergraduate/business-administration-bs/",
+        "https://catalog.calpoly.edu/business/graduate/business-adminstration-mba/"
+      ]
+    },
+    {
+      "name": "Chemistry",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/chemistry-biochemistry/chemistry-bs/"
+      ]
+    },
+    {
+      "name": "Child Development",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/psychology-child-development/child-development-bs/"
+      ]
+    },
+    {
+      "name": "City and Regional Planning",
+      "college_name": "College of Architecture and Environmental Design",
+      "sources": [
+        "https://catalog.calpoly.edu/architecture-environmental-design/city-regional-planning/city-regional-planning-bs/",
+        "https://catalog.calpoly.edu/architecture-environmental-design/city-regional-planning/city-regional-planning-mcrp/"
+      ]
+    },
+    {
+      "name": "Civil Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/civil-environmental/civil-engineering-bs/"
+      ]
+    },
+    {
+      "name": "Communication Studies",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/communication-studies/communication-studies-ba/"
+      ]
+    },
+    {
+      "name": "Comparative Ethnic Studies",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/ethnic-studies/comparative-ethnic-studies-ba/"
+      ]
+    },
+    {
+      "name": "Computer Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/computer-engineering/computer-engineering-bs/"
+      ]
+    },
+    {
+      "name": "Computer Science",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/computer-science-software/computer-science-bs/",
+        "https://catalog.calpoly.edu/engineering/computer-science-software/computer-science-ms/"
+      ]
+    },
+    {
+      "name": "Construction Management",
+      "college_name": "College of Architecture and Environmental Design",
+      "sources": [
+        "https://catalog.calpoly.edu/architecture-environmental-design/construction-management/construction-management-bs/"
+      ]
+    },
+    {
+      "name": "Dairy Science",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/animal-science/dairy-science-bs/"
+      ]
+    },
+    {
+      "name": "Data Science",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/data-science-bs/"
+      ]
+    },
+    {
+      "name": "Economics",
+      "college_name": "Orfalea College of Business",
+      "sources": [
+        "https://catalog.calpoly.edu/business/undergraduate/economics-bs/"
+      ]
+    },
+    {
+      "name": "Electrical Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/electrical/electrical-engineering-bs/",
+        "https://catalog.calpoly.edu/engineering/electrical/electrical-engineering-ms/"
+      ]
+    },
+    {
+      "name": "English",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/english/english-ba/",
+        "https://catalog.calpoly.edu/liberal-arts/english/english-ma/"
+      ]
+    },
+    {
+      "name": "Environmental Earth and Soil Sciences",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/natural-resources-management-environmental-sciences/environmental-earth-soil-sciences-bs/"
+      ]
+    },
+    {
+      "name": "Environmental Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/civil-environmental/environmental-engineering-bs/"
+      ]
+    },
+    {
+      "name": "Environmental Management and Protection",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/natural-resources-management-environmental-sciences/environmental-management-protection-bs/"
+      ]
+    },
+    {
+      "name": "Experience and Event Management",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/experience-industry-management/experience-and-event-management-bs/"
+      ]
+    },
+    {
+      "name": "Facilities Engineering Technology",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/engineering-technology/facilities-engineering-technology-bs/"
+      ]
+    },
+    {
+      "name": "Food Science",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/food-science-nutrition/food-science-bs/",
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/food-science-nutrition/food-science-ms/"
+      ]
+    },
+    {
+      "name": "Forest and Fire Sciences",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/natural-resources-management-environmental-sciences/forest-fire-sciences-bs/"
+      ]
+    },
+    {
+      "name": "General Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/general/engineering-bs/"
+      ]
+    },
+    {
+      "name": "Graphic Communication",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/graphic-communication/graphic-communication-bs/"
+      ]
+    },
+    {
+      "name": "History",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/history/history-ba/",
+        "https://catalog.calpoly.edu/liberal-arts/history/history-ma/"
+      ]
+    },
+    {
+      "name": "Industrial Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/industrial-manufacturing/industrial-engineering-bs/",
+        "https://catalog.calpoly.edu/engineering/industrial-manufacturing/industrial-engineering-ms/"
+      ]
+    },
+    {
+      "name": "Industrial Technology and Packaging",
+      "college_name": "Orfalea College of Business",
+      "sources": [
+        "https://catalog.calpoly.edu/business/undergraduate/industrial-technology-packaging-bs/"
+      ]
+    },
+    {
+      "name": "Interdisciplinary Studies",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/interdisciplinary-studies/interdisciplinary-studies-ba/"
+      ]
+    },
+    {
+      "name": "International Strategy and Security",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/philosophy/international-strategy-security-ba/"
+      ]
+    },
+    {
+      "name": "Journalism",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/journalism/journalism-bs/"
+      ]
+    },
+    {
+      "name": "Kinesiology",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/kinesiology-public-health/kinesiology-bs/"
+      ]
+    },
+    {
+      "name": "Landscape Architecture",
+      "college_name": "College of Architecture and Environmental Design",
+      "sources": [
+        "https://catalog.calpoly.edu/architecture-environmental-design/landscape-architecture/landscape-architecture-bla/"
+      ]
+    },
+    {
+      "name": "Liberal Arts and Engineering Studies",
+      "college_name": "Interdisciplinary Degree Programs",
+      "sources": [
+        "https://catalog.calpoly.edu/interdisciplinary-programs/liberal-arts-engineering-studies-bs/"
+      ]
+    },
+    {
+      "name": "Liberal Studies",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/liberal-studies/liberal-studies-bs/"
+      ]
+    },
+    {
+      "name": "Manufacturing Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/industrial-manufacturing/manufacturing-engineering-bs/"
+      ]
+    },
+    {
+      "name": "Marine Engineering Technology",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/engineering-technology/marine-engineering-technology-bs/"
+      ]
+    },
+    {
+      "name": "Marine Sciences",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/biological-sciences/marine-sciences-bs/"
+      ]
+    },
+    {
+      "name": "Marine Transportation",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/marine-transportation/marine-transportation-bs/"
+      ]
+    },
+    {
+      "name": "Materials Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/materials/materials-engineering-bs/"
+      ]
+    },
+    {
+      "name": "Mathematics",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/mathematics/mathematics-bs/",
+        "https://catalog.calpoly.edu/science-mathematics/mathematics/mathematics-ms/"
+      ]
+    },
+    {
+      "name": "Mechanical Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/mechanical/mechanical-engineering-bs/",
+        "https://catalog.calpoly.edu/engineering/mechanical-engineering-bs-solano/",
+        "https://catalog.calpoly.edu/engineering/mechanical/mechanical-engineering-ms/"
+      ]
+    },
+    {
+      "name": "Microbiology",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/biological-sciences/microbiology-bs/"
+      ]
+    },
+    {
+      "name": "Music",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/music/music-ba/"
+      ]
+    },
+    {
+      "name": "Nutrition",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/food-science-nutrition/nutrition-bs/",
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/food-science-nutrition/nutrition-ms/"
+      ]
+    },
+    {
+      "name": "Oceanography",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/oceanography-bs/"
+      ]
+    },
+    {
+      "name": "Philosophy",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/philosophy/philosophy-ba/"
+      ]
+    },
+    {
+      "name": "Physics",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/physics/physics-ba/",
+        "https://catalog.calpoly.edu/science-mathematics/physics/physics-bs/"
+      ]
+    },
+    {
+      "name": "Plant Sciences",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/plant-sciences/plant-sciences-bs/"
+      ]
+    },
+    {
+      "name": "Political Science",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/political-science/political-science-ba/"
+      ]
+    },
+    {
+      "name": "Psychology",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/psychology-child-development/psychology-bs/",
+        "https://catalog.calpoly.edu/liberal-arts/psychology-child-development/psychology-ms/"
+      ]
+    },
+    {
+      "name": "Public Health",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/kinesiology-public-health/public-health-bs/"
+      ]
+    },
+    {
+      "name": "Sociology",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/social-sciences/sociology-ba/"
+      ]
+    },
+    {
+      "name": "Software Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/computer-science-software/software-engineering-bs/"
+      ]
+    },
+    {
+      "name": "Spanish",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/world-languages-cultures/spanish-ba/"
+      ]
+    },
+    {
+      "name": "Statistics",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/statistics/statistics-bs/",
+        "https://catalog.calpoly.edu/science-mathematics/statistics/statistics-ms/"
+      ]
+    },
+    {
+      "name": "Theatre Arts",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/theatre-dance/theatre-arts-ba/"
+      ]
+    },
+    {
+      "name": "Wine and Viticulture",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/wine-viticulture/wine-viticulture-bs/"
+      ]
+    },
+    {
+      "name": "Agricultural Education",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agricultural-education-communication/agricultural-education-maged/"
+      ]
+    },
+    {
+      "name": "Agriculture, Specialization in Animal Science",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agriculture-animal-science-ms/"
+      ]
+    },
+    {
+      "name": "Agriculture, Specialization in BioResource and Agricultural Systems",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agriculture-bioresource-agricultural-systems-ms/"
+      ]
+    },
+    {
+      "name": "Agriculture, Specialization in Crop Science",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agriculture-crop-science-ms/"
+      ]
+    },
+    {
+      "name": "Agriculture, Specialization in Dairy Products Technology",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agriculture-dairy-products-technology-ms/"
+      ]
+    },
+    {
+      "name": "Agriculture, Specialization in Environmental Horticultural Science",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agriculture-environmental-horticultural-science-ms/"
+      ]
+    },
+    {
+      "name": "Agriculture, Specialization in Irrigation",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agriculture-irrigation-ms/"
+      ]
+    },
+    {
+      "name": "Agriculture, Specialization in Plant Protection Science",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agriculture-plant-protection-science-ms/"
+      ]
+    },
+    {
+      "name": "Agriculture, Specialization in Water Engineering",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/agriculture-water-engineering-ms/"
+      ]
+    },
+    {
+      "name": "Business Analytics",
+      "college_name": "Orfalea College of Business",
+      "sources": [
+        "https://catalog.calpoly.edu/business/graduate/business-analytics-ms/"
+      ]
+    },
+    {
+      "name": "City and Regional Planning and Civil Engineering",
+      "college_name": "Interdisciplinary Degree Programs",
+      "sources": [
+        "https://catalog.calpoly.edu/interdisciplinary-programs/transportation-planning-ce-ms-mcrp/"
+      ]
+    },
+    {
+      "name": "Civil and Environmental Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/civil-environmental/civil-environmental-engineering-ms/"
+      ]
+    },
+    {
+      "name": "Curriculum and Instruction",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/education/curriculum-instruction-ma/"
+      ]
+    },
+    {
+      "name": "Educational Leadership and Administration",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/education/educational-leadership-administration-ms/"
+      ]
+    },
+    {
+      "name": "Engineering Management",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/industrial-manufacturing/engineering-management-ms/"
+      ]
+    },
+    {
+      "name": "Environmental Sciences and Management",
+      "college_name": "College of Agriculture, Food and Environmental Sciences",
+      "sources": [
+        "https://catalog.calpoly.edu/agriculture-food-environmental-sciences/natural-resources-management-environmental-sciences/environmental-sciences-management-ms/"
+      ]
+    },
+    {
+      "name": "Fire Protection Engineering",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/fire-protection-engineering-ms/"
+      ]
+    },
+    {
+      "name": "Higher Education Counseling and Student Affairs",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/education/higher-education-counseling-student-affairs-ms/"
+      ]
+    },
+    {
+      "name": "Polymers and Coatings Science",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/chemistry-biochemistry/polymers-coatings-science-ms/"
+      ]
+    },
+    {
+      "name": "Public Policy",
+      "college_name": "College of Liberal Arts",
+      "sources": [
+        "https://catalog.calpoly.edu/liberal-arts/political-science/public-policy-mpp/"
+      ]
+    },
+    {
+      "name": "Quantitative Economics",
+      "college_name": "Orfalea College of Business",
+      "sources": [
+        "https://catalog.calpoly.edu/business/graduate/quantitative-economics-ms/"
+      ]
+    },
+    {
+      "name": "Special Education",
+      "college_name": "Bailey College of Science and Mathematics",
+      "sources": [
+        "https://catalog.calpoly.edu/science-mathematics/education/special-education-ms/"
+      ]
+    },
+    {
+      "name": "Transportation and Engineering Management",
+      "college_name": "College of Engineering",
+      "sources": [
+        "https://catalog.calpoly.edu/engineering/transportation-engineering-management-ms/"
+      ]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
-// Shared official program labels, retained legacy majors and explicit college mapping.
+// Verified against Cal Poly 2026–2028 bachelor/master program catalog, 2026-10-11 UTC.
+// Degree/campus variants with the same major share one label; minors/certificates are separate credentials.
 window.CalPolyPrograms=[
   {
     "name": "Aerospace Engineering",
@@ -77,10 +78,6 @@ window.CalPolyPrograms=[
     "college_name": "College of Liberal Arts"
   },
   {
-    "name": "BioResource and Agricultural Engineering",
-    "college_name": "College of Agriculture, Food and Environmental Sciences"
-  },
-  {
     "name": "Biochemistry",
     "college_name": "Bailey College of Science and Mathematics"
   },
@@ -91,6 +88,10 @@ window.CalPolyPrograms=[
   {
     "name": "Biomedical Engineering",
     "college_name": "College of Engineering"
+  },
+  {
+    "name": "BioResource and Agricultural Engineering",
+    "college_name": "College of Agriculture, Food and Environmental Sciences"
   },
   {
     "name": "Business Administration",
@@ -117,11 +118,11 @@ window.CalPolyPrograms=[
     "college_name": "Interdisciplinary Degree Programs"
   },
   {
-    "name": "Civil Engineering",
+    "name": "Civil and Environmental Engineering",
     "college_name": "College of Engineering"
   },
   {
-    "name": "Civil and Environmental Engineering",
+    "name": "Civil Engineering",
     "college_name": "College of Engineering"
   },
   {
@@ -370,10 +371,22 @@ window.CalPolyPrograms=[
   },
   {
     "name": "Transportation and Engineering Management",
-    "college_name": "Orfalea College of Business"
+    "college_name": "College of Engineering"
   },
   {
     "name": "Wine and Viticulture",
     "college_name": "College of Agriculture, Food and Environmental Sciences"
   }
 ];
+(function(){
+ const isCalPoly=school=>/^(cal poly(?:,? san luis obispo)?|california polytechnic state university(?:, san luis obispo)?)$/i.test(String(school||'').trim());
+ window.TapIDProgramCatalog={isCalPoly,async load(school){
+  const local=isCalPoly(school)?window.CalPolyPrograms:[];
+  try{const result=await tapid.client.rpc('tapid_program_options',{p_school:school});if(result.error)throw result.error;
+   const remote=result.data;if(!Array.isArray(remote)||!remote.every(r=>typeof r.name==='string'&&typeof r.college_name==='string'))throw new Error('Invalid program catalog');
+   // Keep every screen on the same verified catalog during partial deployments.
+   if(local.length){const byName=new Map(remote.map(r=>[r.name,r.college_name]));if(remote.length!==local.length||!local.every(r=>byName.get(r.name)===r.college_name))return local;}
+   return remote;
+  }catch(error){if(local.length)return local;throw error;}
+ }};
+})();
