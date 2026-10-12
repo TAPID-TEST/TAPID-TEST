@@ -6,7 +6,7 @@
   <title>TapID Profile</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="public-profile-theme.css?v=20261006-population">
+  <link rel="stylesheet" href="public-profile-theme.css?v=20261012-v29">
 <link rel="stylesheet" href="career-interests.css?v=20261007-interests-v7"><link rel="stylesheet" href="workspace-polish.css?v=20261008-audit-v12"></head>
 <body class="public-profile-page">
   <header class="shell topbar"><a class="brand" href="index.html">Tap<span>ID</span></a></header>
@@ -16,7 +16,7 @@
 
     <div id="publicContent" hidden>
       <section class="public-hero recruiter-hero">
-        <div class="public-identity-row"><div class="public-identity-copy"><div class="eyebrow">Professional identity</div><h1 id="name"></h1><div class="public-meta"><span id="major"></span><span id="schoolYear"></span><span id="school"></span><span id="gradYear"></span></div><div class="verified-school-badge" id="verifiedSchoolBadge" hidden><i class="fa-solid fa-circle-check"></i><span id="verifiedSchoolText"></span></div></div><img id="publicAvatar" class="public-avatar" alt="Profile photo" hidden></div>
+        <div class="public-identity-row"><div class="public-identity-copy"><div class="eyebrow">Professional identity</div><h1 id="name"></h1><div class="public-academic-details"><div id="major" class="public-academic-major"></div><div id="school" class="public-academic-school"></div><div class="public-academic-stage"><span id="schoolYear"></span><span id="gradYear"></span></div></div><div class="verified-school-badge" id="verifiedSchoolBadge" hidden><i class="fa-solid fa-circle-check"></i><span id="verifiedSchoolText"></span></div></div><img id="publicAvatar" class="public-avatar" alt="Profile photo" hidden></div>
         <p id="bio" class="public-bio"></p>
         <div class="hero-connect-panel">
         <div class="primary-action-grid">
@@ -31,7 +31,7 @@
       <div class="public-portfolio-grid"><div class="public-portfolio-main">
       <section id="opportunitiesSection" class="card public-section opportunity-highlight" hidden><div class="eyebrow">Career interests</div><h2>What I’m looking for</h2><div id="publicOpportunities" class="opportunity-public-grid"></div></section>
 
-      <section id="resumeSection" class="card public-section public-resume-section" hidden><div class="eyebrow">Professional documents</div><h2>Résumé</h2><p class="subtle">A concise overview of education, experience, and qualifications.</p><a id="resumeBtn" class="btn btn-primary" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-file-lines"></i> Open Résumé</a></section>
+      <section id="resumeSection" class="card public-section public-resume-section" hidden><div class="eyebrow">Professional documents</div><h2>Résumé</h2><a id="resumeBtn" class="btn btn-primary" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-file-lines"></i> Open Résumé</a></section>
 
       <section id="featuredExperienceSection" class="card public-section feature-section" hidden>
         <div class="eyebrow">Professional experience</div><h2>Featured Experience</h2>
@@ -406,13 +406,22 @@
         }
 
         document.getElementById('name').textContent = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
-        document.getElementById('major').textContent = profile.major || 'Major not listed';
-        document.getElementById('schoolYear').textContent = profile.school_year === 'Alumni' && profile.alumni_since
-          ? `Alumni since ${profile.alumni_since}`
-          : (profile.school_year || 'Year not listed');
-        document.getElementById('school').textContent = profile.school || 'University not listed';
-        document.getElementById('gradYear').textContent = profile.graduation_year ? `Class of ${profile.graduation_year}` : 'Graduation year not listed';
-        if(verificationData){const badge=document.getElementById('verifiedSchoolBadge');document.getElementById('verifiedSchoolText').textContent=`${verificationData.verification_label} · ${verificationData.school_name}`;badge.hidden=false;}
+        const academicDetails = {
+          major: profile.major,
+          school: profile.school,
+          schoolYear: profile.school_year === 'Alumni' && profile.alumni_since
+            ? `Alumni since ${profile.alumni_since}` : profile.school_year,
+          gradYear: profile.graduation_year ? `Class of ${profile.graduation_year}` : ''
+        };
+        Object.entries(academicDetails).forEach(([id, value]) => {
+          const element = document.getElementById(id);
+          element.textContent = value || '';
+          element.hidden = !value;
+        });
+        if (verificationData) {
+          document.getElementById('verifiedSchoolText').textContent = verificationData.verification_label;
+          document.getElementById('verifiedSchoolBadge').hidden = false;
+        }
         const bio = document.getElementById('bio'); bio.textContent = profile.bio || ''; bio.hidden = !profile.bio;
 
         if (profile.avatar_path && profile.avatar_is_public) { const avatar=document.getElementById('publicAvatar'); avatar.src=await tapid.signedFileUrl('avatars',profile.avatar_path); avatar.hidden=false; }

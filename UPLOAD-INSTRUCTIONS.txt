@@ -1,0 +1,2 @@
+Replace profile.html and public-profile-theme.css in your existing website folder, then publish the website. No SQL or Edge Function update is required.
+Commit: Polish public profile academic details and simplify resume section

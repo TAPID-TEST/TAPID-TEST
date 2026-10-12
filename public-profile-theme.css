@@ -34,3 +34,14 @@ body.public-profile-page{--green:#15533a;--gold:#b88c2a;--ink:#202a23;--text:#41
 .public-profile-page .btn-primary{background:linear-gradient(125deg,#15543b,#267348);border-color:#205f40;color:#fff;border-radius:9px;box-shadow:none}
 .public-profile-page .btn-secondary{background:#fff;border-color:#dfe5dc;color:#15533a;border-radius:9px;box-shadow:none}
 @media print{body.public-profile-page{background:#fff}.public-profile-page .public-hero{border-top:3px solid #15533a}}
+
+/* V29: professional academic hierarchy beneath the public name. */
+.public-profile-page .public-academic-details{display:grid;gap:7px;margin-top:18px;line-height:1.5}
+.public-profile-page .public-academic-major{color:#264f37;font-size:clamp(1.2rem,2.2vw,1.55rem);font-weight:650;letter-spacing:-.015em;overflow-wrap:anywhere}
+.public-profile-page .public-academic-school{color:#52685a;font-size:1.05rem;font-weight:500;overflow-wrap:anywhere}
+.public-profile-page .public-academic-stage{display:flex;flex-wrap:wrap;align-items:center;color:#69786f;font-size:.95rem;gap:0}
+.public-profile-page .public-academic-stage span:not([hidden])+span:not([hidden])::before{content:"·";padding:0 10px;color:#a5afa8}
+.public-profile-page .verified-school-badge{background:transparent;padding:0;border:0;border-radius:0;margin-top:13px;color:#52685a;font-size:.8rem;font-weight:500}
+.public-profile-page .verified-school-badge i{color:#15533a}
+.public-profile-page .public-academic-details [hidden],.public-profile-page .verified-school-badge[hidden]{display:none!important}
+@media(max-width:700px){.public-profile-page .public-academic-details{margin-top:14px;gap:5px}.public-profile-page .public-academic-school{font-size:1rem}}
