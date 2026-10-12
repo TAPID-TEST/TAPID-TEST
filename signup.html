@@ -61,7 +61,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="app.js?v=20261006-reports"></script>
+  <script src="app.js?v=20261006-reports"></script><script src="auth-email-guard.js?v=20261012-v31"></script>
   <script src="calpoly-programs.js?v=20261011-v25"></script><script src="major-selector-v25.js?v=20261009-v21"></script>
   <script>
     TapIDMajors.populate("Cal Poly");
@@ -76,6 +76,7 @@
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (button.disabled) return;
       tapid.setMessage(message, '');
 
       const firstName = document.getElementById('firstName').value.trim();
@@ -97,7 +98,7 @@
 
       tapid.setBusy(button, true, 'Creating account…');
       try {
-        const { data, error } = await tapid.client.auth.signUp({
+        const { data, error } = await tapid.requestAuthEmail(email,()=>tapid.client.auth.signUp({
           email,
           password,
           options: {
@@ -110,7 +111,7 @@
               school: "Cal Poly"
             }
           }
-        });
+        }));
         if (error) throw error;
 
         if (!data.session) {

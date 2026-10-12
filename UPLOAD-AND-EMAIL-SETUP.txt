@@ -1,0 +1,33 @@
+TapID V31: signup email handling plus all V30 fixes
+
+WEBSITE UPLOAD
+Replace these ten files in your existing website folder and publish. This is a patch, not the entire website.
+Includes the public profile polish, employer connection layout, permanently expanded student sidebar, unobstructed alerts, and Candidate Search labels.
+Adds shared signup/resend error handling, duplicate-submit protection, and a 60-second browser retry backoff.
+No database SQL or Edge Function deployment is required.
+
+REQUIRED EMAIL DELIVERY CONFIGURATION
+The website patch cannot increase Supabase's server email quota.
+If your project uses Supabase's built-in sender, current documentation limits it to two auth emails per hour and restricts delivery to organization team addresses.
+If custom SMTP is already enabled, review Supabase Auth logs and the provider's quota/error logs instead of assuming the built-in limit applies.
+
+1. Open your Supabase project.
+2. Go to Authentication > Emails > SMTP Settings (or Custom SMTP).
+3. Configure an email provider that supports SMTP using that provider's host, port, username, password, sender email, and sender name.
+4. Verify your sending domain/address as required by the provider.
+5. Keep SMTP credentials in the Supabase dashboard. Never put them in config.js or website code.
+6. Go to Authentication > Rate Limits. Set the email-sending allowance for your expected signup volume, within the provider's allowance. Current docs describe an initial custom SMTP limit of 30 emails/hour.
+7. Keep signup email confirmation enabled. TapID relies on confirmation for its school-email and onboarding workflows.
+8. Confirm Site URL and redirect allowlist include your deployed student, employer, and university login/onboarding routes. The patch preserves the existing redirect paths.
+9. After publishing and configuring delivery, test one new student and one employer signup with addresses you control. Confirm the emails arrive, links open the correct portal, and employer access still requires approval.
+10. If rate limiting continues, inspect Auth logs and SMTP provider logs for the specific limit. A local cooldown ending does not mean the server quota has reset.
+
+Do not repeatedly submit signup forms to test delivery. The patch never automatically retries or bypasses verification.
+This session did not access or change the hosted Supabase SMTP settings, and did not send test emails.
+
+Official references:
+https://supabase.com/docs/guides/auth/auth-smtp
+https://supabase.com/docs/guides/auth/rate-limits
+https://supabase.com/docs/guides/auth/debugging/error-codes
+
+Commit: Polish portals and handle signup email limits

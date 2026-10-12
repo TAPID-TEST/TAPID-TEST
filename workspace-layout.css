@@ -58,3 +58,18 @@ body.workspace-tight{--rail-width:205px;--rail-gap:24px;}
 
 .workspace-tight .dashboard-sidebar>#sideCompany,.workspace-tight .dashboard-sidebar>#sideVerified,.workspace-tight .dashboard-sidebar>.status-badges,.workspace-tight .dashboard-sidebar>.profile-summary,.workspace-tight .dashboard-sidebar>h2{display:none;}
 @media(max-width:760px),(max-height:560px){.workspace-tight .sidebar-fold:not([open])>summary{display:inline-flex;flex:0 0 auto;align-items:center;gap:8px;min-height:36px;padding:8px 10px;white-space:nowrap;}}
+
+/* V30: always-visible student navigation and unobstructed workspace alerts. */
+.workspace-tight .sidebar-fixed-group>.sidebar-group-title{margin:0;padding:5px 10px;font-size:12px;line-height:1.4;font-weight:700;color:#2b5941}
+.workspace-tight .dashboard-shell>#message,.workspace-tight .dashboard-shell>#globalMessage{margin:0 0 20px;overflow-wrap:anywhere;white-space:pre-wrap}
+@media(min-width:761px) and (min-height:561px){
+ .workspace-tight .dashboard-shell>#message,.workspace-tight .dashboard-shell>#globalMessage,.workspace-tight .dashboard-shell>#employerApprovalNotice{margin-left:calc(var(--rail-width) + var(--rail-gap))}
+}
+@media(max-width:760px),(max-height:560px){
+ .workspace-tight .dashboard-sidebar .sidebar-fixed-group{display:contents}
+ .workspace-tight .sidebar-fixed-group>.sidebar-group-title{display:none}
+ .workspace-tight .dashboard-shell>#message,.workspace-tight .dashboard-shell>#globalMessage{margin-left:0}
+}
+.candidate-profile-dialog .candidate-actions{margin:16px 0 24px}
+.candidate-profile-dialog .candidate-bio{white-space:pre-wrap;line-height:1.65}
+.candidate-profile-dialog .candidate-public-evidence article p{white-space:pre-wrap;line-height:1.6}

@@ -55,23 +55,23 @@
     <a href="login.html">Student sign in</a>
   </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js?v=20261006-reports"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js?v=20261006-reports"></script><script src="auth-email-guard.js?v=20261012-v31"></script>
   <script>
     const form=document.getElementById('form'), message=document.getElementById('message'), button=document.getElementById('button');let confirmationEmail='',confirmationNextSend=0;
     tapid.client.rpc('tapid_available_universities').then(r=>{if(r.error||!r.data?.length)return;const select=document.getElementById('university');select.innerHTML='';r.data.forEach(row=>{const option=document.createElement('option');option.value=row.school_name;option.textContent=row.school_name;select.appendChild(option);});});
     document.getElementById('resendConfirmation').onclick=async()=>{
-      const resend=document.getElementById('resendConfirmation');
+      const resend=document.getElementById('resendConfirmation');if(resend.disabled)return;
       if(Date.now()<confirmationNextSend){tapid.setMessage(message,'Please wait a minute before requesting another confirmation email.','error');return;}
-      tapid.setBusy(resend,true,'Sending…');try{const result=await tapid.client.auth.resend({type:'signup',email:confirmationEmail,options:{emailRedirectTo:tapid.siteUrl('employer-login.html?confirmed=1')}});if(result.error)throw result.error;confirmationNextSend=Date.now()+60000;tapid.setMessage(message,'Confirmation email requested. Check your inbox and spam folder.','success');}catch(error){tapid.setMessage(message,tapid.friendlyAuthError(error),'error');}finally{tapid.setBusy(resend,false);}
+      tapid.setBusy(resend,true,'Sending…');try{const result=await tapid.requestAuthEmail(confirmationEmail,()=>tapid.client.auth.resend({type:'signup',email:confirmationEmail,options:{emailRedirectTo:tapid.siteUrl('employer-login.html?confirmed=1')}}));if(result.error)throw result.error;confirmationNextSend=Date.now()+60000;tapid.setMessage(message,'Confirmation email requested. Check your inbox and spam folder.','success');}catch(error){tapid.setMessage(message,tapid.friendlyAuthError(error),'error');}finally{tapid.setBusy(resend,false);}
     };
     form.addEventListener('submit', async e=>{
-      e.preventDefault(); tapid.setMessage(message,'');
+      e.preventDefault(); if(button.disabled)return; tapid.setMessage(message,'');
       const company=document.getElementById('company').value.trim(), name=document.getElementById('name').value.trim(), email=document.getElementById('email').value.trim(), password=document.getElementById('password').value;
       if(!company||!name||!email||password.length<8||!form.checkValidity()){tapid.setMessage(message,'Complete every field and use a password of at least 8 characters.','error');return;}
       tapid.setBusy(button,true,'Creating account…');
       try{
         const emailRedirectTo=tapid.siteUrl('employer-login.html?confirmed=1');
-        const {data,error}=await tapid.client.auth.signUp({email,password,options:{emailRedirectTo,data:{user_type:'employer',employer_company:company,recruiter_name:name,employer_school:document.getElementById('university').value,company_website:document.getElementById('website').value.trim()}}});
+        const {data,error}=await tapid.requestAuthEmail(email,()=>tapid.client.auth.signUp({email,password,options:{emailRedirectTo,data:{user_type:'employer',employer_company:company,recruiter_name:name,employer_school:document.getElementById('university').value,company_website:document.getElementById('website').value.trim()}}}));
         if(error) throw error;
         if(!data.session){confirmationEmail=email;confirmationNextSend=Date.now()+60000;form.hidden=true;document.getElementById('confirmationPanel').hidden=false;document.getElementById('confirmationCopy').textContent=`We sent a confirmation link to ${email}. Confirm your email, then sign in to continue.`;return;}
         const {error:regError}=await tapid.client.rpc('register_employer',{p_company_name:company,p_recruiter_name:name,p_recruiter_email:email});

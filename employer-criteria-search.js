@@ -9,7 +9,7 @@
    let hasSearch=false,generation=0,history=[],lastRows=[],shown=25,overrides=new Set();
    const input=$('matchQuery'),button=$('matchSubmit'),status=$('matchStatus'),chips=$('matchCriteria'),results=$('matchResults'),summary=$('matchSummary'),chat=$('matchConversation'),context=$('matchContext'),historyPanel=$('matchHistory');
    input.placeholder=examplePrompt;
-   const setBusy=(busy,label='Find candidates')=>{button.disabled=busy;button.textContent=busy?'Thinking…':label;input.disabled=busy;filters.forEach(id=>$(id).disabled=busy);};
+   const setBusy=busy=>{button.disabled=busy;button.textContent=busy?(hasSearch?'Refining…':'Searching…'):(hasSearch?'Refine search':'Search');input.disabled=busy;filters.forEach(id=>$(id).disabled=busy);};
    const bubble=(role,text)=>{const item=document.createElement('div');item.className=`match-chat-message ${role}`;const label=document.createElement('strong');label.textContent=role==='user'?'You':'TapID';const message=document.createElement('p');message.textContent=text;item.append(label,message);chat.appendChild(item);chat.scrollTop=chat.scrollHeight;};
    const clear=()=>{generation++;history=[];lastRows=[];hasSearch=false;shown=25;input.value='';chips.innerHTML='';results.innerHTML='';chat.innerHTML='';summary.textContent='';status.textContent='';status.dataset.error='false';context.textContent='New search';historyPanel.hidden=true;historyPanel.open=false;input.placeholder=examplePrompt;$('matchMore').hidden=true;setBusy(false);input.focus();};
    const draw=()=>{results.innerHTML=lastRows.slice(0,shown).map(root.TapIDCandidateMatch.resultHtml).join('');$('matchMore').hidden=shown>=lastRows.length;
@@ -17,7 +17,7 @@
     results.querySelectorAll('[data-match-resume]').forEach(b=>b.onclick=()=>onResume(b.dataset.matchResume,status));
     results.querySelectorAll('[data-match-favorite]').forEach(b=>{const sync=()=>{const active=isFavorite(b.dataset.matchFavorite);b.textContent=active?'★':'☆';b.setAttribute('aria-pressed',String(active));};sync();b.onclick=async()=>{b.disabled=true;try{await onFavorite(b.dataset.matchFavorite);sync();}finally{b.disabled=false;}};});
    };
-   const invoke=async body=>{const response=await client.functions.invoke('search-student-experience',{body});if(response.error){let message='Candidate Match is unavailable. Check that the updated function is deployed.';try{const data=await response.error.context?.json();if(data?.error)message=data.error;}catch{}throw new Error(message);}return response.data;};
+   const invoke=async body=>{const response=await client.functions.invoke('search-student-experience',{body});if(response.error){let message='Candidate Search is unavailable. Check that the updated function is deployed.';try{const data=await response.error.context?.json();if(data?.error)message=data.error;}catch{}throw new Error(message);}return response.data;};
    form.onsubmit=async event=>{
     event.preventDefault();const query=input.value.trim();if(query.length<3)return;
     const mine=++generation;setBusy(true);status.textContent='';status.dataset.error='false';bubble('user',query);
